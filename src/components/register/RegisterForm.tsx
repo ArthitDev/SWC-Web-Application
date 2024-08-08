@@ -1,8 +1,11 @@
 import { Box, Link, TextField, Typography } from '@mui/material';
+import { registerAdmin } from 'api/register';
 import CustomButton from 'components/button/CustomButton';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
+import { toast } from 'react-toastify';
 
 type FormInputs = {
   username: string;
@@ -20,9 +23,22 @@ const RegisterForm: React.FC = () => {
     watch,
   } = useForm<FormInputs>();
 
-  const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    console.log('Register submitted', data);
-    router.push('/login');
+  const mutation = useMutation(registerAdmin, {
+    onSuccess: () => {
+      router.push('/login');
+    },
+  });
+
+  const onSubmit: SubmitHandler<FormInputs> = (formData) => {
+    toast.promise(mutation.mutateAsync(formData), {
+      pending: 'กำลังสมัครสมาชิก...',
+      success: 'ลงทะเบียนสำเร็จ',
+      error: {
+        render() {
+          return 'เกิดข้อผิดพลาดในการลงทะเบียน';
+        },
+      },
+    });
   };
 
   const password = watch('password');
@@ -110,6 +126,7 @@ const RegisterForm: React.FC = () => {
               mt: 3,
               mb: 2,
             }}
+            disabled={mutation.isLoading}
           />
         </Box>
       </Box>
