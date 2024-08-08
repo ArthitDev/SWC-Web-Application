@@ -24,7 +24,8 @@
     "paths": {
       "*": ["./*"],
       "@root/*": ["../*"],
-      "@public": ["../public/*"]
+      "@public": ["../public/*"],
+      "typeRoots": ["./types", "./node_modules/@types"]
     },
     "incremental": true,
     "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
