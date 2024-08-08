@@ -1,22 +1,10 @@
-import type { NextPage } from 'next';
-import Router from 'next/router';
-import { useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import React from 'react';
 
-const AdminPage: NextPage = () => {
-  useEffect(() => {
-    const adminTest = true;
-    if (adminTest) {
-      Router.push('/admin');
-    } else {
-      Router.push('/login');
-    }
-  }, []);
+const DynamicWoundPanel = dynamic(() => import('components/admin/WoundPanel'));
 
-  return (
-    <div>
-      <h1>Admin Page</h1>
-    </div>
-  );
+const WoundPage: React.FC = () => {
+  return <DynamicWoundPanel />;
 };
 
-export default AdminPage;
+export default WoundPage;
