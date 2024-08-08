@@ -30,6 +30,7 @@ const COLORS = {
     0: '#E5E5EA',
     1: '#F4F6F9',
     5: '#486B9F',
+    6: '#235ADB',
   },
   red: {
     4: '#FF3B30',
