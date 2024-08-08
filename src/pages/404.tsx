@@ -16,7 +16,7 @@ export default function Custom404() {
         return { path: '/', text: 'Go back to homepage' };
       }
       if (
-        ['/login', '/admin', '/register'].some((path) =>
+        ['/login', '/admin', '/register', '/resetpassword'].some((path) =>
           asPath.startsWith(path)
         )
       ) {
