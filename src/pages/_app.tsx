@@ -6,6 +6,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import axios from 'axios';
 import AdminLayout from 'layout/AdminLayout';
 import AuthLayout from 'layout/AuthLayout';
+import LandingLayout from 'layout/LandingLayout';
 import MainLayout from 'layout/MainLayout';
 import { AppProps } from 'next/app';
 import { Prompt } from 'next/font/google';
@@ -38,16 +39,19 @@ export default function MyApp({ Component, pageProps }: MyAppProps) {
   const router = useRouter();
 
   const getLayoutComponent = () => {
-    if (router.pathname.startsWith('/admin')) {
-      return AdminLayout;
+    switch (true) {
+      case router.pathname === '/':
+        return LandingLayout;
+      case router.pathname.startsWith('/home'):
+        return MainLayout;
+      case router.pathname.startsWith('/admin'):
+        return AdminLayout;
+      case router.pathname.startsWith('/login') ||
+        router.pathname.startsWith('/registeradmin'):
+        return AuthLayout;
+      default:
+        return MainLayout;
     }
-    if (
-      router.pathname.startsWith('/login') ||
-      router.pathname.startsWith('/registeradmin')
-    ) {
-      return AuthLayout;
-    }
-    return MainLayout;
   };
 
   const LayoutComponent = getLayoutComponent();

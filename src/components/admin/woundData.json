@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "type": "แผลถลอก",
+    "name": "แผลถลอก (Abrasion wound)",
+    "description": "ค่อนาเมศไษรสัด . . . ",
+    "image": "/images/wound1.jpg"
+  },
+  {
+    "id": 2,
+    "type": "แผลไหม้",
+    "name": "แผลถลอก (Abrasion wound)",
+    "description": "ค่อนาเมศไษรสัด . . . ",
+    "image": "/images/wound2.jpg"
+  },
+  {
+    "id": 3,
+    "type": "แผลฟกช้ำ",
+    "name": "แผลถลอก (Abrasion wound)",
+    "description": "ค่อนาเมศไษรสัด . . . ",
+    "image": "/images/wound3.jpg"
+  },
+  {
+    "id": 4,
+    "type": "แผลฟกช้ำ",
+    "name": "แผลถลอก (Abrasion wound)",
+    "description": "ค่อนาเมศไษรสัด . . . ",
+    "image": "/images/wound4.jpg"
+  }
+]

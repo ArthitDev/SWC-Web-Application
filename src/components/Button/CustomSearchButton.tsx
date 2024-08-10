@@ -14,6 +14,7 @@ const CustomSearchButton: React.FC<CustomSearchButtonProps> = ({
     <Button
       variant="contained"
       sx={{
+        fontSize: '16px',
         height: '40px',
         minWidth: '150px',
         backgroundColor: COLORS.blue[6],

@@ -4,6 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import React, { useState } from 'react';
+import COLORS from 'theme/colors';
 
 interface UserProfileProps {
   user: { username: string; email: string };
@@ -31,7 +32,15 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout }) => {
       }}
     >
       <IconButton onClick={handleMenuOpen} color="inherit">
-        <Avatar>{user.username[0]}</Avatar>
+        <Avatar
+          sx={{
+            color: COLORS.blue[6],
+            backgroundColor: 'white',
+            fontWeight: 500,
+          }}
+        >
+          {user.username[0]}
+        </Avatar>
       </IconButton>
       <Menu
         anchorEl={anchorEl}

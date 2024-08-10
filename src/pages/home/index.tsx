@@ -1,11 +1,10 @@
-import type { NextPage } from 'next';
+import dynamic from 'next/dynamic';
+import React from 'react';
 
-const Homepage: NextPage = () => {
-  return (
-    <div>
-      <h1>Homepage</h1>
-    </div>
-  );
+const DynamicHomepage = dynamic(() => import('components/home/Hoempage'));
+
+const Homepage: React.FC = () => {
+  return <DynamicHomepage />;
 };
 
 export default Homepage;
