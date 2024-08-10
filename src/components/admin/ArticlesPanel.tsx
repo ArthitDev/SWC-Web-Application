@@ -1,10 +1,11 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomAddButton from 'components/button/CustomAddButton';
-import SearchBox from 'components/search/SearchBox';
 import React, { useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
 import withAuth from 'utils/withAuth';
+
+import CustomAddButton from '../button/CustomAddButton';
+import SearchBox from '../search/SearchBox';
 
 const ArticlesPanel: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
