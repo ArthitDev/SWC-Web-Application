@@ -1,5 +1,5 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomButtonAdd from 'components/button/CustomButtonAdd';
+import CustomButtonAdd from 'components/button/CustomButtonForAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
 import WoundForm from 'components/form/WoundForm';
 import SearchBox from 'components/search/SearchBox';
