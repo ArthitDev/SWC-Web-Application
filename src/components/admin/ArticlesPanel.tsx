@@ -1,5 +1,5 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomButtonAdd from 'components/button/CustomButtonForAdd';
+import CustomButtonForAdd from 'components/button/CustomButtonForAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
 import ArticlesForm from 'components/form/ArticlesForm';
 import SearchBox from 'components/search/SearchBox';
@@ -50,14 +50,14 @@ const ArticlesPanel: React.FC<ArticlesPanelProps> = () => {
                 </Typography>
               </Grid>
               <Grid item>
-                <CustomButtonAdd
+                <CustomButtonForAdd
                   variant="contained"
                   color="primary"
                   startIcon={<IoAddCircleOutline size={24} />}
                   onClick={toggleDrawer(true)}
                 >
                   เพิ่มบทความ
-                </CustomButtonAdd>
+                </CustomButtonForAdd>
               </Grid>
             </Grid>
           </Box>

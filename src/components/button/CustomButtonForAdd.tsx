@@ -3,11 +3,11 @@ import { Button } from '@mui/material';
 import React from 'react';
 import COLORS from 'theme/colors';
 
-type CustomButtonAddProps = ButtonProps & {
+type CustomButtonForAddProps = ButtonProps & {
   onClick: () => void;
 };
 
-const CustomButtonAdd: React.FC<CustomButtonAddProps> = ({
+const CustomButtonForAdd: React.FC<CustomButtonForAddProps> = ({
   onClick,
   ...props
 }) => {
@@ -30,4 +30,4 @@ const CustomButtonAdd: React.FC<CustomButtonAddProps> = ({
   );
 };
 
-export default CustomButtonAdd;
+export default CustomButtonForAdd;

@@ -1,5 +1,5 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomButtonAdd from 'components/button/CustomButtonForAdd';
+import CustomButtonForAdd from 'components/button/CustomButtonForAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
 import DidyouknowForm from 'components/form/DidyouknowForm';
 import SearchBox from 'components/search/SearchBox';
@@ -49,14 +49,14 @@ const DidyouknowPanel: React.FC = () => {
                 </Typography>
               </Grid>
               <Grid item>
-                <CustomButtonAdd
+                <CustomButtonForAdd
                   variant="contained"
                   color="primary"
                   startIcon={<IoAddCircleOutline size={24} />}
                   onClick={toggleDrawer(true)}
                 >
                   เพิ่มรู้หรือไม่
-                </CustomButtonAdd>
+                </CustomButtonForAdd>
               </Grid>
             </Grid>
           </Box>

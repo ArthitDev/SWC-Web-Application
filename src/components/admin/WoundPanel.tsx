@@ -1,5 +1,5 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomButtonAdd from 'components/button/CustomButtonForAdd';
+import CustomButtonForAdd from 'components/button/CustomButtonForAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
 import WoundForm from 'components/form/WoundForm';
 import SearchBox from 'components/search/SearchBox';
@@ -51,14 +51,14 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
                 </Typography>
               </Grid>
               <Grid item>
-                <CustomButtonAdd
+                <CustomButtonForAdd
                   variant="contained"
                   color="primary"
                   startIcon={<IoAddCircleOutline size={24} />}
                   onClick={toggleDrawer(true)}
                 >
                   เพิ่มแผล
-                </CustomButtonAdd>
+                </CustomButtonForAdd>
               </Grid>
             </Grid>
           </Box>
