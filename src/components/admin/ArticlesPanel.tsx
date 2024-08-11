@@ -1,10 +1,9 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomButtonAdd from 'components/button/CustomButtonForAdd';
+// import CustomButtonAdd from 'components/button/CustomButtonForAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
 import ArticlesForm from 'components/form/ArticlesForm';
 import SearchBox from 'components/search/SearchBox';
 import React, { useState } from 'react';
-import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
 import { ArticleFormData } from 'types/AdminFormDataTypes';
 import withAuth from 'utils/withAuth';
@@ -50,14 +49,14 @@ const ArticlesPanel: React.FC<ArticlesPanelProps> = () => {
                 </Typography>
               </Grid>
               <Grid item>
-                <CustomButtonAdd
+                {/* <CustomButtonAdd
                   variant="contained"
                   color="primary"
                   startIcon={<IoAddCircleOutline size={24} />}
                   onClick={toggleDrawer(true)}
                 >
                   เพิ่มบทความ
-                </CustomButtonAdd>
+                </CustomButtonAdd> */}
               </Grid>
             </Grid>
           </Box>
