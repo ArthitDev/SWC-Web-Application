@@ -1,11 +1,11 @@
 import { Box, Link, TextField, Typography } from '@mui/material';
-import { loginAdmin } from 'api/login';
 import CustomButton from 'components/button/CustomButton';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
+import { loginAdmin } from 'services/login';
 
 type FormInputs = {
   username: string;
@@ -87,9 +87,6 @@ const LoginForm: React.FC = () => {
           />
         </Box>
       </Box>
-      {/* <Link href="/register" variant="body2">
-        {'สร้างบัญชี Admin'}
-      </Link> */}
     </>
   );
 };

@@ -1,16 +1,30 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomAddButton from 'components/button/CustomAddButton';
+import CustomButtonAdd from 'components/button/CustomButtonAdd';
+import ReusableDrawer from 'components/drawer/ReusableDrawer';
+import ArticlesForm from 'components/form/ArticlesForm';
 import SearchBox from 'components/search/SearchBox';
 import React, { useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
+import { ArticleFormData } from 'types/AdminFormDataTypes';
 import withAuth from 'utils/withAuth';
 
-const ArticlesPanel: React.FC = () => {
+type ArticlesPanelProps = {};
+
+const ArticlesPanel: React.FC<ArticlesPanelProps> = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleSearch = () => {
     console.log('Searching for:', searchTerm);
+  };
+
+  const toggleDrawer = (open: boolean) => () => {
+    setIsDrawerOpen(open);
+  };
+
+  const handleFormSubmit = (data: ArticleFormData) => {
+    console.log('Form Data:', data);
   };
 
   return (
@@ -36,14 +50,14 @@ const ArticlesPanel: React.FC = () => {
                 </Typography>
               </Grid>
               <Grid item>
-                <CustomAddButton
+                <CustomButtonAdd
                   variant="contained"
                   color="primary"
                   startIcon={<IoAddCircleOutline size={24} />}
-                  onClick={() => ({})}
+                  onClick={toggleDrawer(true)}
                 >
                   เพิ่มบทความ
-                </CustomAddButton>
+                </CustomButtonAdd>
               </Grid>
             </Grid>
           </Box>
@@ -70,7 +84,7 @@ const ArticlesPanel: React.FC = () => {
                 <Typography>เนื้อหา</Typography>
               </Grid>
               <Grid item xs={2} sx={{ textAlign: 'center' }}>
-                <Typography>รูปภาพ</Typography>
+                <Typography>รูปปก</Typography>
               </Grid>
               <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>จัดการ</Typography>
@@ -79,6 +93,16 @@ const ArticlesPanel: React.FC = () => {
           </Box>
         </Paper>
       </Box>
+      <ReusableDrawer
+        open={isDrawerOpen}
+        onClose={toggleDrawer(false)}
+        title="เพิ่มบทความใหม่"
+      >
+        <ArticlesForm
+          onSubmit={handleFormSubmit}
+          onClose={toggleDrawer(false)}
+        />
+      </ReusableDrawer>
     </Box>
   );
 };

@@ -6,10 +6,10 @@ import Container from '@mui/material/Container';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
-import { logout } from 'api/logout';
 import { useUserProfile } from 'hooks/useUserProfile';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { logout } from 'services/logout';
 import { NavButton, TypographyListItemText } from 'styles/Navbar.style';
 
 import Logo from './Logo';
@@ -17,7 +17,8 @@ import NavList from './NavList';
 import UserProfile from './UserProfile';
 
 const pages = [
-  { label: 'แผล', path: '/admin' },
+  { label: 'หน้าหลัก', path: '/admin' },
+  { label: 'แผล', path: '/admin/wound' },
   { label: 'บทความ', path: '/admin/articles' },
   { label: 'เคล็ดไม่ลับ', path: '/admin/trick' },
   { label: 'รู้หรือไม่', path: '/admin/didyouknow' },

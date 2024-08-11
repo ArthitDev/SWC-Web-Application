@@ -10,9 +10,7 @@ export default function Landing({ children }: LandingProps) {
     <Box
       sx={{
         background:
-          'linear-gradient(347deg, rgba(58,156,253,1) 40%, rgba(23,35,110,1) 100%)',
-        // background:
-        //   "linear-gradient(347deg, rgba(58,156,253,1) 40%, rgba(23,35,110,1) 100%)",
+          'linear-gradient(335deg, rgba(58,156,253,1) 40%, rgba(23,35,110,1) 100%)',
         minHeight: '100vh',
         width: '100%',
       }}

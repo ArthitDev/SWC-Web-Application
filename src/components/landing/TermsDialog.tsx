@@ -1,4 +1,5 @@
 import { Box, Button, Dialog, DialogContent, Typography } from '@mui/material';
+import Image from 'next/image';
 import React from 'react';
 import { FaFolderOpen } from 'react-icons/fa6';
 import { IoMdCamera } from 'react-icons/io';
@@ -26,7 +27,10 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onClose }) => {
     >
       <DialogContent>
         <Box display="flex" flexDirection="column" alignItems="center">
-          <img
+          <Image
+            width={512}
+            height={512}
+            priority={true}
             src="/images/documentCheck.png"
             alt="Landing Logo"
             style={{
@@ -60,7 +64,7 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onClose }) => {
           </Typography>
           <Typography variant="body2">
             แอปนี้ให้ข้อมูลเกี่ยวกับบาดแผลประเภทต่างๆ
-            และบริการวิเคราะห์บาดแผลผ่านรูปภาพ
+            และบริการวิเคราะห์บาดแผลผ่านรูปแผล
             โดยไม่จำเป็นต้องลงทะเบียนหรือล็อกอิน
           </Typography>
         </Box>
@@ -70,10 +74,10 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onClose }) => {
             variant="body2"
             sx={{ fontWeight: 'bold', mb: 1, textIndent: '20px' }}
           >
-            2. การอัปโหลดรูปภาพ
+            2. การอัปโหลดรูปแผล
           </Typography>
           <Typography variant="body2">
-            ผู้ใช้สามารถอัปโหลดรูปภาพบาดแผลเพื่อรับการวิเคราะห์และคำแนะนำ
+            ผู้ใช้สามารถอัปโหลดรูปแผลบาดแผลเพื่อรับการวิเคราะห์และคำแนะนำ
             โปรดทราบว่าการวิเคราะห์นี้ไม่ใช่การวินิจฉัยทางการแพทย์และไม่สามารถแทนการปรึกษาแพทย์ได้
           </Typography>
         </Box>
@@ -102,7 +106,7 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onClose }) => {
               style={{ marginRight: '8px' }}
             />
             <Typography variant="body2">
-              แอปจำเป็นต้องขออนุญาตเข้าถึงพื้นที่จัดเก็บข้อมูลเพื่อเลือกรูปภาพที่มีอยู่แล้ว
+              แอปจำเป็นต้องขออนุญาตเข้าถึงพื้นที่จัดเก็บข้อมูลเพื่อเลือกรูปแผลที่มีอยู่แล้ว
             </Typography>
           </Box>
         </Box>
@@ -116,7 +120,7 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onClose }) => {
           </Typography>
           <Typography variant="body2">
             เราให้ความสำคัญกับความเป็นส่วนตัวของคุณ
-            รูปภาพที่อัปโหลดจะถูกใช้เพื่อการวิเคราะห์เท่านั้น
+            รูปแผลที่อัปโหลดจะถูกใช้เพื่อการวิเคราะห์เท่านั้น
             และจะไม่ถูกเก็บไว้บนเซิร์ฟเวอร์ของเราหลังจากการวิเคราะห์เสร็จสิ้น
           </Typography>
         </Box>
@@ -143,6 +147,7 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onClose }) => {
         }}
       >
         <Button
+          disableElevation={true}
           variant="contained"
           onClick={onClose}
           startIcon={<MdCheck size={24} />}

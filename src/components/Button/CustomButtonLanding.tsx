@@ -27,6 +27,7 @@ const CustomeButtonLanding: React.FC<CustomeButtonLandingProps> = ({
 }) => {
   return (
     <MuiButton
+      disableElevation={true}
       variant={variant}
       sx={{
         borderRadius: 2,

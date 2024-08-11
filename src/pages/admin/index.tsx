@@ -1,10 +1,12 @@
 import dynamic from 'next/dynamic';
 import React from 'react';
 
-const DynamicWoundPanel = dynamic(() => import('components/admin/WoundPanel'));
+const DynamicDashboardPanel = dynamic(
+  () => import('components/admin/DashboardPanel')
+);
 
-const WoundPage: React.FC = () => {
-  return <DynamicWoundPanel />;
+const DashboardPage: React.FC = () => {
+  return <DynamicDashboardPanel />;
 };
 
-export default WoundPage;
+export default DashboardPage;

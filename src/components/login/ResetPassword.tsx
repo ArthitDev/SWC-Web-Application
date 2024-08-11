@@ -6,13 +6,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { resetPassword } from 'api/resetPassword';
 import CustomButton from 'components/button/CustomButton';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
+import { resetPassword } from 'services/resetPassword';
 
 type FormInputs = {
   newPassword: string;

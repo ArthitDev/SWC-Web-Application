@@ -1,16 +1,29 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomAddButton from 'components/button/CustomAddButton';
+import CustomButtonAdd from 'components/button/CustomButtonAdd';
+import ReusableDrawer from 'components/drawer/ReusableDrawer';
+import TrickForm from 'components/form/TrickForm';
 import SearchBox from 'components/search/SearchBox';
 import React, { useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
+import { TrickFormData } from 'types/AdminFormDataTypes';
 import withAuth from 'utils/withAuth';
 
 const TrickPanel: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleSearch = () => {
     console.log('Searching for:', searchTerm);
+  };
+
+  const toggleDrawer = (open: boolean) => () => {
+    setIsDrawerOpen(open);
+  };
+
+  const handleFormSubmit = (data: TrickFormData) => {
+    console.log('Form Data:', data);
+    // Handle form submission logic here
   };
 
   return (
@@ -32,18 +45,18 @@ const TrickPanel: React.FC = () => {
             <Grid container alignItems="center" justifyContent="space-between">
               <Grid item>
                 <Typography variant="h5" sx={{ fontWeight: 'Medium' }}>
-                  จัดการข้อมูลรู้หรือไม่ได้ที่นี่
+                  จัดการข้อมูลเคล็ดไม่ลับได้ที่นี่
                 </Typography>
               </Grid>
               <Grid item>
-                <CustomAddButton
+                <CustomButtonAdd
                   variant="contained"
                   color="primary"
                   startIcon={<IoAddCircleOutline size={24} />}
-                  onClick={() => ({})}
+                  onClick={toggleDrawer(true)}
                 >
                   เพิ่มเคล็ดไม่ลับ
-                </CustomAddButton>
+                </CustomButtonAdd>
               </Grid>
             </Grid>
           </Box>
@@ -73,6 +86,13 @@ const TrickPanel: React.FC = () => {
           </Box>
         </Paper>
       </Box>
+      <ReusableDrawer
+        open={isDrawerOpen}
+        onClose={toggleDrawer(false)}
+        title="เพิ่มเคล็ดไม่ลับใหม่"
+      >
+        <TrickForm onSubmit={handleFormSubmit} onClose={toggleDrawer(false)} />
+      </ReusableDrawer>
     </Box>
   );
 };

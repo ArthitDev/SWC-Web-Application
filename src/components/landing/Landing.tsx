@@ -1,5 +1,6 @@
 import { Box, Fade, Slide, Typography } from '@mui/material';
 import CustomeButtonLanding from 'components/button/CustomButtonLanding';
+import Image from 'next/image';
 import router from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { IoMdInformationCircleOutline } from 'react-icons/io';
@@ -30,23 +31,25 @@ const LandingPage: React.FC = () => {
     <Box
       display="flex"
       flexDirection="column"
-      justifyContent="center"
+      justifyContent="flex-start"
       alignItems="center"
       height="100vh"
       overflow="hidden"
       p={1}
+      pt={10}
     >
       <Slide in={true} direction="up" timeout={1700}>
-        <img
-          src="/images/logo-landing.png"
-          alt="Landing Logo"
-          style={{
-            width: '100%',
-            maxWidth: '300px',
-            height: 'auto',
-            marginBottom: 10,
-          }}
-        />
+        <div style={{ maxWidth: '300px', marginBottom: 10 }}>
+          <Image
+            src="/images/logo-landing.png"
+            alt="Landing Logo"
+            width={1000}
+            height={424}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+            style={{ width: '100%', height: 'auto' }}
+            priority={true}
+          />
+        </div>
       </Slide>
       <Fade in={showContent} timeout={1500}>
         <Box
@@ -56,17 +59,41 @@ const LandingPage: React.FC = () => {
           textAlign="center"
           sx={{ color: 'white' }}
         >
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" gutterBottom sx={{ fontWeight: '600' }}>
             รู้จักประเภทแผล ด้วย AI อัจฉริยะ
           </Typography>
-          <Typography variant="h6">
+          <Typography variant="h6" sx={{ fontWeight: '600' }}>
             และ วิธีการดูแลรักษาอย่างถูกวิธีด้วย{' '}
-            <span style={{ color: '#E58C28' }}>SWC</span>
+            <span
+              style={{
+                color: '#E58C28',
+                position: 'relative',
+                display: 'inline-block',
+              }}
+            >
+              SWC
+              <Image
+                width={513}
+                height={115}
+                priority={true}
+                src="/images/under_swc.png"
+                alt="underline"
+                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 513px"
+                style={{
+                  position: 'absolute',
+                  bottom: '-1px',
+                  left: '0',
+                  width: '100%',
+                  height: 'auto',
+                }}
+              />
+            </span>
           </Typography>
-          <Typography variant="body1" mt={2}>
+
+          <Typography variant="inherit" mt={2}>
             เริ่มต้นการวินิจฉัยแผลและเรียนรู้ข้อมูลแผล
           </Typography>
-          <Typography variant="body1" mt={1}>
+          <Typography variant="inherit" mt={1}>
             ไปกับ Smart Wound Care (SWC)
           </Typography>
           <CustomeButtonLanding
@@ -74,9 +101,9 @@ const LandingPage: React.FC = () => {
             fullWidth
             text="เริ่มต้นใช้งาน"
             sx={{
-              fontWeight: 'regular',
-              fontSize: '22px',
-              mt: 5,
+              fontWeight: '500',
+              fontSize: '20px',
+              mt: 7,
               mb: 2,
               p: 3,
             }}

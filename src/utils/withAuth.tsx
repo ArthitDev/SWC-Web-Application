@@ -1,6 +1,6 @@
-import axiosInstance from 'api/axiosInstance';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import axiosInstance from 'services/axiosInstance';
 
 const withAuth = (WrappedComponent: React.ComponentType) => {
   const Wrapper: React.FC = (props) => {

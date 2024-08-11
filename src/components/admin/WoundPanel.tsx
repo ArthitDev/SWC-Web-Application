@@ -1,18 +1,31 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomAddButton from 'components/button/CustomAddButton';
+import CustomButtonAdd from 'components/button/CustomButtonAdd';
+import ReusableDrawer from 'components/drawer/ReusableDrawer';
+import WoundForm from 'components/form/WoundForm';
 import SearchBox from 'components/search/SearchBox';
 import React, { useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
+import { WoundFormData } from 'types/AdminFormDataTypes';
 import withAuth from 'utils/withAuth';
 
 type WoundPanelProps = {};
 
 const WoundPanel: React.FC<WoundPanelProps> = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleSearch = () => {
     console.log('Searching for:', searchTerm);
+  };
+
+  const toggleDrawer = (open: boolean) => () => {
+    setIsDrawerOpen(open);
+  };
+
+  const handleFormSubmit = (data: WoundFormData) => {
+    console.log('Form Data:', data);
+    // Handle form submission logic here
   };
 
   return (
@@ -38,14 +51,14 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
                 </Typography>
               </Grid>
               <Grid item>
-                <CustomAddButton
+                <CustomButtonAdd
                   variant="contained"
                   color="primary"
                   startIcon={<IoAddCircleOutline size={24} />}
-                  onClick={() => ({})}
+                  onClick={toggleDrawer(true)}
                 >
                   เพิ่มแผล
-                </CustomAddButton>
+                </CustomButtonAdd>
               </Grid>
             </Grid>
           </Box>
@@ -72,7 +85,7 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
                 <Typography>เนื้อหา</Typography>
               </Grid>
               <Grid item xs={2} sx={{ textAlign: 'center' }}>
-                <Typography>รูปภาพ</Typography>
+                <Typography>รูปปก</Typography>
               </Grid>
               <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>จัดการ</Typography>
@@ -81,6 +94,14 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
           </Box>
         </Paper>
       </Box>
+
+      <ReusableDrawer
+        open={isDrawerOpen}
+        onClose={toggleDrawer(false)}
+        title="เพิ่มแผลใหม่"
+      >
+        <WoundForm onSubmit={handleFormSubmit} onClose={toggleDrawer(false)} />
+      </ReusableDrawer>
     </Box>
   );
 };

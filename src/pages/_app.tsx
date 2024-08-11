@@ -9,7 +9,6 @@ import AuthLayout from 'layout/AuthLayout';
 import LandingLayout from 'layout/LandingLayout';
 import MainLayout from 'layout/MainLayout';
 import { AppProps } from 'next/app';
-import { Prompt } from 'next/font/google';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -22,11 +21,6 @@ import pageTitles from '../config/pageTitles';
 
 const clientSideEmotionCache = createEmotionCache();
 const queryClient = new QueryClient();
-
-const prompt = Prompt({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-});
 
 type MyAppProps = AppProps & {
   emotionCache?: EmotionCache;
@@ -61,12 +55,12 @@ export default function MyApp({ Component, pageProps }: MyAppProps) {
     <CacheProvider value={emotionCache}>
       <Head>
         <title>{title}</title>
-        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
-          <div className={prompt.className}>
+          <div>
             <LayoutComponent>
               <Component {...pageProps} />
             </LayoutComponent>
