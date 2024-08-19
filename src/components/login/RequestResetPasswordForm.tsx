@@ -10,8 +10,8 @@ import CustomButton from 'components/button/CustomButton';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import { useMutation } from 'react-query';
-import { toast } from 'react-toastify';
 import { requestResetPassword } from 'services/requestResetPassword';
 
 type FormInputs = {
@@ -34,7 +34,7 @@ const RequestResetPassword: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     toast.promise(mutation.mutateAsync(data), {
-      pending: 'กำลังส่งคำขอรีเซ็ตรหัสผ่าน...',
+      loading: 'กำลังส่งคำขอรีเซ็ตรหัสผ่าน...',
       success: 'ส่งคำขอรีเซ็ตรหัสผ่านสำเร็จ กรุณาตรวจสอบอีเมลของคุณ',
       error: 'การส่งคำขอรีเซ็ตรหัสผ่านล้มเหลว กรุณาลองใหม่อีกครั้ง',
     });
@@ -51,7 +51,7 @@ const RequestResetPassword: React.FC = () => {
             alignItems: 'center',
           }}
         >
-          <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
+          <Typography component="h2" variant="h6">
             ขอรีเซ็ตรหัสผ่าน
           </Typography>
           <Box

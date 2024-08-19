@@ -1,15 +1,24 @@
-import { Box, Link, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Link,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import CustomButton from 'components/button/CustomButton';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import { useMutation } from 'react-query';
-import { toast } from 'react-toastify';
 import { loginAdmin } from 'services/login';
 
 type FormInputs = {
   username: string;
   password: string;
+  rememberMe: boolean;
 };
 
 const LoginForm: React.FC = () => {
@@ -28,7 +37,7 @@ const LoginForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     toast.promise(mutation.mutateAsync(data), {
-      pending: 'กำลังเข้าสู่ระบบ...',
+      loading: 'กำลังเข้าสู่ระบบ...',
       success: 'เข้าสู่ระบบสำเร็จ',
       error: 'เข้าสู่ระบบล้มเหลว กรุณาตรวจสอบข้อมูลอีกครั้ง',
     });
@@ -42,7 +51,7 @@ const LoginForm: React.FC = () => {
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
-        sx={{ mt: 1, width: '100%' }}
+        sx={{ width: '100%' }}
       >
         <TextField
           margin="normal"
@@ -66,9 +75,32 @@ const LoginForm: React.FC = () => {
           error={!!errors.password}
           helperText={errors.password?.message}
         />
-        <Link href="/login/request-reset-password" variant="body2">
-          {'ลืมรหัสผ่าน ?'}
-        </Link>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mt: 1,
+          }}
+        >
+          <Tooltip
+            title={
+              <Typography sx={{ fontSize: '14px' }}>
+                ระบบจะจดจำบัญชีของคุณในอุปกรณ์นี้
+                ไม่ต้องเข้าสู่ระบบใหม่เมื่อกลับมาอีกครั้ง
+              </Typography>
+            }
+          >
+            <FormControlLabel
+              control={<Checkbox {...register('rememberMe')} color="primary" />}
+              label={<Typography variant="body2">จดจำฉันไว้ในระบบ</Typography>}
+            />
+          </Tooltip>
+
+          <Link href="/login/request-reset-password" variant="body2">
+            {'ลืมรหัสผ่าน ?'}
+          </Link>
+        </Box>
         <Box
           sx={{
             display: 'flex',

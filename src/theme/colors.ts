@@ -48,6 +48,12 @@ const COLORS = {
     5: 'rgba(255, 149, 0, 1)',
     6: '#FF9500',
   },
+  yellow: {
+    1: '#fff3cc',
+    2: '#ffe899',
+    3: '#ffdc66',
+    4: '#ffd132',
+  },
   transparent: {
     1: 'rgba(0,0,0,0.1)',
     2: 'rgba(0,0,0,0.3)',

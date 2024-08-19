@@ -1,3 +1,5 @@
+// src/utils/withAuth.tsx
+import { useAuth } from 'contexts/AuthContext';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import axiosInstance from 'services/axiosInstance';
@@ -5,20 +7,25 @@ import axiosInstance from 'services/axiosInstance';
 const withAuth = (WrappedComponent: React.ComponentType) => {
   const Wrapper: React.FC = (props) => {
     const router = useRouter();
+    const { isAuthenticated, setIsAuthenticated } = useAuth();
 
     const checkAuth = async () => {
       try {
         await axiosInstance.get('/api/admin');
+        setIsAuthenticated(true);
       } catch (err) {
+        setIsAuthenticated(false);
         router.push('/login');
       }
     };
 
     useEffect(() => {
-      checkAuth();
-    }, []);
+      if (!isAuthenticated) {
+        checkAuth();
+      }
+    }, [isAuthenticated]);
 
-    return <WrappedComponent {...props} />;
+    return isAuthenticated ? <WrappedComponent {...props} /> : null;
   };
 
   return Wrapper;

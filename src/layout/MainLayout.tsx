@@ -1,3 +1,5 @@
+import { Box } from '@mui/material';
+import BottomNav from 'components/bottombar/BottomNav';
 import React, { ReactNode } from 'react';
 
 interface MainLayoutProps {
@@ -6,8 +8,9 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div>
+    <Box sx={{ pb: 7 }}>
       <main>{children}</main>
-    </div>
+      <BottomNav />
+    </Box>
   );
 }

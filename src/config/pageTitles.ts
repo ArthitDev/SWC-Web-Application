@@ -5,10 +5,10 @@ const pageTitles: { [key: string]: string } = {
   '/admin/articles': 'SWC Admin  |  Articles',
   '/admin/trick': 'SWC Admin  |  Trick',
   '/admin/didyouknow': 'SWC Admin  |  Did You Know',
-  '/login': 'SWC Admin Login',
-  '/login/request-reset-password': 'Request Reset Password',
-  '/login/reset-password': 'Reset Password',
-  '/registeradmin': 'SWC Admin Register',
+  '/login': 'SWC Admin |  Login',
+  '/login/request-reset-password': 'SWC Admin | Request Reset Password',
+  '/login/reset-password': 'SWC Admin | Reset Password',
+  '/registeradmin': 'SWC Admin | Register',
 };
 
 export default pageTitles;

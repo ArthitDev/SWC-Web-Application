@@ -1,9 +1,9 @@
-import 'react-toastify/dist/ReactToastify.css';
 import '../styles/globals.css';
 
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import axios from 'axios';
+import { AuthProvider } from 'contexts/AuthContext';
 import AdminLayout from 'layout/AdminLayout';
 import AuthLayout from 'layout/AuthLayout';
 import LandingLayout from 'layout/LandingLayout';
@@ -12,8 +12,8 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { Bounce, ToastContainer } from 'react-toastify';
 import createEmotionCache from 'theme/createEmotionCache';
 import theme from 'theme/theme';
 
@@ -29,14 +29,15 @@ type MyAppProps = AppProps & {
 axios.defaults.withCredentials = true;
 
 export default function MyApp({ Component, pageProps }: MyAppProps) {
+  // const [showModal, setShowModal] = useState(false);
   const emotionCache = clientSideEmotionCache;
   const router = useRouter();
 
   const getLayoutComponent = () => {
     switch (true) {
-      case router.pathname === '/':
+      case router.pathname === '/' || router.pathname === '/landing':
         return LandingLayout;
-      case router.pathname.startsWith('/home'):
+      case router.pathname.startsWith('/app'):
         return MainLayout;
       case router.pathname.startsWith('/admin'):
         return AdminLayout;
@@ -61,22 +62,19 @@ export default function MyApp({ Component, pageProps }: MyAppProps) {
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
           <div>
-            <LayoutComponent>
-              <Component {...pageProps} />
-            </LayoutComponent>
-            <ToastContainer
-              position="top-right"
-              autoClose={3000}
-              hideProgressBar
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="colored"
-              transition={Bounce}
-            />
+            <AuthProvider>
+              <LayoutComponent>
+                <Component {...pageProps} />
+                {/* <LandingPageModal
+                  open={showModal}
+                  title="ยืนยันไปยังหน้าแนะนำ"
+                  description="คุณต้องการไปยังหน้าแนะนำอีกครั้งใช่ไหม ?"
+                  onConfirm={handleConfirm}
+                  onCancel={handleCancel}
+                /> */}
+              </LayoutComponent>
+            </AuthProvider>
+            <Toaster />
           </div>
         </QueryClientProvider>
       </ThemeProvider>

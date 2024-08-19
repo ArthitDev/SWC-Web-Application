@@ -1,15 +1,16 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomButtonForAdd from 'components/button/CustomButtonForAdd';
+import CustomButtonAdd from 'components/button/CustomButtonAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
-import TrickForm from 'components/form/TrickForm';
+import WoundForm from 'components/form/WoundForm';
 import SearchBox from 'components/search/SearchBox';
 import React, { useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
-import { TrickFormData } from 'types/AdminFormDataTypes';
 import withAuth from 'utils/withAuth';
 
-const TrickPanel: React.FC = () => {
+type WoundPanelProps = {};
+
+const WoundPanel: React.FC<WoundPanelProps> = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -21,11 +22,6 @@ const TrickPanel: React.FC = () => {
     setIsDrawerOpen(open);
   };
 
-  const handleFormSubmit = (data: TrickFormData) => {
-    console.log('Form Data:', data);
-    // Handle form submission logic here
-  };
-
   return (
     <Box>
       <Box mt={3} display="flex" justifyContent="center">
@@ -34,7 +30,7 @@ const TrickPanel: React.FC = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
-            placeholder="ค้นหารู้หรือไม่..."
+            placeholder="ค้นหาแผล..."
             buttonLabel="ค้นหา"
           />
         </Box>
@@ -45,18 +41,18 @@ const TrickPanel: React.FC = () => {
             <Grid container alignItems="center" justifyContent="space-between">
               <Grid item>
                 <Typography variant="h5" sx={{ fontWeight: 'Medium' }}>
-                  จัดการข้อมูลเคล็ดไม่ลับได้ที่นี่
+                  จัดการข้อมูลแผลได้ที่นี่
                 </Typography>
               </Grid>
               <Grid item>
-                <CustomButtonForAdd
+                <CustomButtonAdd
                   variant="contained"
                   color="primary"
                   startIcon={<IoAddCircleOutline size={24} />}
                   onClick={toggleDrawer(true)}
                 >
-                  เพิ่มเคล็ดไม่ลับ
-                </CustomButtonForAdd>
+                  เพิ่มแผล
+                </CustomButtonAdd>
               </Grid>
             </Grid>
           </Box>
@@ -76,25 +72,32 @@ const TrickPanel: React.FC = () => {
               <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>ลำดับ</Typography>
               </Grid>
-              <Grid item xs={6} sx={{ textAlign: 'center' }}>
+              <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>ชื่อ</Typography>
               </Grid>
               <Grid item xs={4} sx={{ textAlign: 'center' }}>
+                <Typography>เนื้อหา</Typography>
+              </Grid>
+              <Grid item xs={2} sx={{ textAlign: 'center' }}>
+                <Typography>รูปปก</Typography>
+              </Grid>
+              <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>จัดการ</Typography>
               </Grid>
             </Grid>
           </Box>
         </Paper>
       </Box>
+
       <ReusableDrawer
         open={isDrawerOpen}
         onClose={toggleDrawer(false)}
-        title="เพิ่มเคล็ดไม่ลับใหม่"
+        title="เพิ่มแผล"
       >
-        <TrickForm onSubmit={handleFormSubmit} onClose={toggleDrawer(false)} />
+        <WoundForm onClose={toggleDrawer(false)} />
       </ReusableDrawer>
     </Box>
   );
 };
 
-export default withAuth(TrickPanel);
+export default withAuth(WoundPanel);

@@ -1,15 +1,16 @@
 import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomButtonForAdd from 'components/button/CustomButtonForAdd';
+import CustomButtonAdd from 'components/button/CustomButtonAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
-import DidyouknowForm from 'components/form/DidyouknowForm';
+import ArticleForm from 'components/form/ArticleForm';
 import SearchBox from 'components/search/SearchBox';
 import React, { useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
-import { DidyouknowFormData } from 'types/AdminFormDataTypes';
 import withAuth from 'utils/withAuth';
 
-const DidyouknowPanel: React.FC = () => {
+type ArticlePanelProps = {};
+
+const ArticlePanel: React.FC<ArticlePanelProps> = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -21,11 +22,6 @@ const DidyouknowPanel: React.FC = () => {
     setIsDrawerOpen(open);
   };
 
-  const handleFormSubmit = (data: DidyouknowFormData) => {
-    console.log('Form Data:', data);
-    // Handle form submission logic here
-  };
-
   return (
     <Box>
       <Box mt={3} display="flex" justifyContent="center">
@@ -34,7 +30,7 @@ const DidyouknowPanel: React.FC = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
-            placeholder="ค้นหาเคล็ดไม่ลับ..."
+            placeholder="ค้นหาบทความ..."
             buttonLabel="ค้นหา"
           />
         </Box>
@@ -45,18 +41,18 @@ const DidyouknowPanel: React.FC = () => {
             <Grid container alignItems="center" justifyContent="space-between">
               <Grid item>
                 <Typography variant="h5" sx={{ fontWeight: 'Medium' }}>
-                  จัดการข้อมูลรู้หรือไม่ได้ที่นี่
+                  จัดการข้อมูลบทความได้ที่นี่
                 </Typography>
               </Grid>
               <Grid item>
-                <CustomButtonForAdd
+                <CustomButtonAdd
                   variant="contained"
                   color="primary"
                   startIcon={<IoAddCircleOutline size={24} />}
                   onClick={toggleDrawer(true)}
                 >
-                  เพิ่มรู้หรือไม่
-                </CustomButtonForAdd>
+                  เพิ่มบทความ
+                </CustomButtonAdd>
               </Grid>
             </Grid>
           </Box>
@@ -76,28 +72,32 @@ const DidyouknowPanel: React.FC = () => {
               <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>ลำดับ</Typography>
               </Grid>
-              <Grid item xs={6} sx={{ textAlign: 'center' }}>
+              <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>ชื่อ</Typography>
               </Grid>
               <Grid item xs={4} sx={{ textAlign: 'center' }}>
+                <Typography>เนื้อหา</Typography>
+              </Grid>
+              <Grid item xs={2} sx={{ textAlign: 'center' }}>
+                <Typography>รูปปก</Typography>
+              </Grid>
+              <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>จัดการ</Typography>
               </Grid>
             </Grid>
           </Box>
         </Paper>
       </Box>
+
       <ReusableDrawer
         open={isDrawerOpen}
         onClose={toggleDrawer(false)}
-        title="เพิ่มรู้หรือไม่ใหม่"
+        title="เพิ่มบทความ"
       >
-        <DidyouknowForm
-          onSubmit={handleFormSubmit}
-          onClose={toggleDrawer(false)}
-        />
+        <ArticleForm onClose={toggleDrawer(false)} />
       </ReusableDrawer>
     </Box>
   );
 };
 
-export default withAuth(DidyouknowPanel);
+export default withAuth(ArticlePanel);

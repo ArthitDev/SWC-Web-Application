@@ -11,5 +11,8 @@ const fetchUserProfile = async () => {
 };
 
 export const useUserProfile = () => {
-  return useQuery('userProfile', fetchUserProfile);
+  return useQuery('userProfile', fetchUserProfile, {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
 };

@@ -27,6 +27,11 @@ const LandingPage: React.FC = () => {
     setOpenModal(false);
   };
 
+  const handleClick = () => {
+    router.push('/app');
+    localStorage.setItem('hasVisitedLandingPage', 'true');
+  };
+
   return (
     <Box
       display="flex"
@@ -97,13 +102,13 @@ const LandingPage: React.FC = () => {
             ไปกับ Smart Wound Care (SWC)
           </Typography>
           <CustomeButtonLanding
-            onClick={() => router.push('/home')}
+            onClick={handleClick}
             fullWidth
             text="เริ่มต้นใช้งาน"
             sx={{
               fontWeight: '500',
               fontSize: '20px',
-              mt: 7,
+              mt: 5,
               mb: 2,
               p: 3,
             }}

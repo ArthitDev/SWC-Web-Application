@@ -10,8 +10,8 @@ import CustomButton from 'components/button/CustomButton';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { useMutation } from 'react-query';
-import { toast } from 'react-toastify';
 import { resetPassword } from 'services/resetPassword';
 
 type FormInputs = {
@@ -36,7 +36,7 @@ const ResetPassword: React.FC = () => {
       router.push('/login');
     },
     onError: () => {
-      toast.error('รีเซ็ตรหัสผ่านล้มเหลว กรุณาลองใหม่ Token อาจไม่ถูกต้อง');
+      toast.error('รีเซ็ตรหัสผ่านล้มเหลว กรุณาลองใหม่');
     },
   });
 
@@ -44,7 +44,7 @@ const ResetPassword: React.FC = () => {
     if (token) {
       mutation.mutate({ token, newPassword: data.newPassword });
     } else {
-      toast.error('Token ไม่ถูกต้อง');
+      toast.error('ข้อมูลยืนยัน Admin ไม่ถูกต้อง');
     }
   };
 
@@ -60,7 +60,7 @@ const ResetPassword: React.FC = () => {
           alignItems: 'center',
         }}
       >
-        <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
+        <Typography component="h2" variant="h6">
           รีเซ็ตรหัสผ่าน
         </Typography>
         <Box

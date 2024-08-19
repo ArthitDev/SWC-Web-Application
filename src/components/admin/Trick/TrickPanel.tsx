@@ -1,19 +1,25 @@
-import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomButtonForAdd from 'components/button/CustomButtonForAdd';
+import { Box, Grid, Paper, Typography, useMediaQuery } from '@mui/material';
+import CustomButtonAdd from 'components/button/CustomButtonAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
-import ArticlesForm from 'components/form/ArticlesForm';
+import TrickForm from 'components/form/TrickForm';
 import SearchBox from 'components/search/SearchBox';
 import React, { useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
-import { ArticleFormData } from 'types/AdminFormDataTypes';
+import { TrickData } from 'types/AdminGetDataTypes';
 import withAuth from 'utils/withAuth';
 
-type ArticlesPanelProps = {};
+import TrickCard from './TrickCard';
 
-const ArticlesPanel: React.FC<ArticlesPanelProps> = () => {
+const TrickPanel: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [editingTrick, setEditingTrick] = useState<TrickData | null>(null); // สถานะแก้ไข
+
+  // เพิ่ม useMediaQuery เพื่อปรับ pt ตามขนาดหน้าจอ
+  const isSmallScreen = useMediaQuery((theme: any) =>
+    theme.breakpoints.down('sm')
+  );
 
   const handleSearch = () => {
     console.log('Searching for:', searchTerm);
@@ -21,10 +27,12 @@ const ArticlesPanel: React.FC<ArticlesPanelProps> = () => {
 
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
+    if (!open) setEditingTrick(null); // ปิด Drawer ให้ล้างข้อมูลการแก้ไข
   };
 
-  const handleFormSubmit = (data: ArticleFormData) => {
-    console.log('Form Data:', data);
+  const handleEditClick = (item: TrickData) => {
+    setEditingTrick(item);
+    setIsDrawerOpen(true);
   };
 
   return (
@@ -35,29 +43,33 @@ const ArticlesPanel: React.FC<ArticlesPanelProps> = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
-            placeholder="ค้นหาบทความ..."
+            placeholder="ค้นหารเคล็ดไม่ลับ..."
             buttonLabel="ค้นหา"
           />
         </Box>
       </Box>
       <Box display="flex" justifyContent="center">
-        <Paper elevation={0} sx={{ width: '100%', m: '15px' }}>
+        <Paper elevation={0} sx={{ width: '100%', m: '15px', pb: 5 }}>
           <Box p={3} pt={5} pb={5}>
             <Grid container alignItems="center" justifyContent="space-between">
               <Grid item>
-                <Typography variant="h5" sx={{ fontWeight: 'Medium' }}>
-                  จัดการข้อมูลบทความได้ที่นี่
+                <Typography
+                  variant="h5"
+                  pb={isSmallScreen ? 2 : 0}
+                  sx={{ fontWeight: 'Medium' }}
+                >
+                  จัดการข้อมูลเคล็ดไม่ลับได้ที่นี่
                 </Typography>
               </Grid>
               <Grid item>
-                <CustomButtonForAdd
+                <CustomButtonAdd
                   variant="contained"
                   color="primary"
                   startIcon={<IoAddCircleOutline size={24} />}
                   onClick={toggleDrawer(true)}
                 >
-                  เพิ่มบทความ
-                </CustomButtonForAdd>
+                  เพิ่มเคล็ดไม่ลับ
+                </CustomButtonAdd>
               </Grid>
             </Grid>
           </Box>
@@ -77,34 +89,29 @@ const ArticlesPanel: React.FC<ArticlesPanelProps> = () => {
               <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>ลำดับ</Typography>
               </Grid>
-              <Grid item xs={2} sx={{ textAlign: 'center' }}>
+              <Grid item xs={6} sx={{ textAlign: 'justify' }}>
                 <Typography>ชื่อ</Typography>
               </Grid>
               <Grid item xs={4} sx={{ textAlign: 'center' }}>
-                <Typography>เนื้อหา</Typography>
-              </Grid>
-              <Grid item xs={2} sx={{ textAlign: 'center' }}>
-                <Typography>รูปปก</Typography>
-              </Grid>
-              <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>จัดการ</Typography>
               </Grid>
             </Grid>
           </Box>
+          <TrickCard onEdit={handleEditClick} />
         </Paper>
       </Box>
       <ReusableDrawer
         open={isDrawerOpen}
         onClose={toggleDrawer(false)}
-        title="เพิ่มบทความใหม่"
+        title={editingTrick ? 'แก้ไขรู้หรือไม่' : 'เพิ่มเคล็ดไม่ลับใหม่'}
       >
-        <ArticlesForm
-          onSubmit={handleFormSubmit}
-          onClose={toggleDrawer(false)}
+        <TrickForm
+          onCloseDrawer={toggleDrawer(false)}
+          initialData={editingTrick}
         />
       </ReusableDrawer>
     </Box>
   );
 };
 
-export default withAuth(ArticlesPanel);
+export default withAuth(TrickPanel);

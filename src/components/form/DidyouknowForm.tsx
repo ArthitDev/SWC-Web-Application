@@ -1,63 +1,122 @@
-import { Box, Button, TextField } from '@mui/material';
-import React from 'react';
+import { Box, TextField, Typography } from '@mui/material';
+import CustomButtonSave from 'components/button/CustomButtonSave';
+import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-
-type FormData = {
-  didyouknowName: string;
-  didyouknowContent: string;
-};
+import toast from 'react-hot-toast';
+import { useMutation } from 'react-query';
+import { createDidyouknow, updateDidyouknow } from 'services/didyouknowService';
+import { DidyouknowFormData } from 'types/AdminFormDataPostTypes';
+import { DidyouknowData } from 'types/AdminGetDataTypes';
 
 type DidyouknowFormProps = {
-  onSubmit: (data: FormData) => void;
-  onClose: () => void;
+  onCloseDrawer: () => void;
+  initialData?: DidyouknowData | null;
 };
 
 const DidyouknowForm: React.FC<DidyouknowFormProps> = ({
-  onSubmit,
-  onClose,
+  onCloseDrawer,
+  initialData,
 }) => {
-  const { control, handleSubmit, reset } = useForm<FormData>();
+  const { control, handleSubmit, setValue } = useForm<DidyouknowFormData>({
+    defaultValues: initialData || {
+      didyouknow_name: '',
+      didyouknow_content: '',
+    },
+  });
 
-  const handleFormSubmit = (data: FormData) => {
-    onSubmit(data);
-    reset();
-    onClose();
+  const mutation = useMutation(
+    initialData
+      ? (data: DidyouknowFormData) => updateDidyouknow(initialData.id, data)
+      : createDidyouknow,
+    {
+      onMutate: () => {
+        toast.loading('กำลังบันทึกข้อมูล...');
+      },
+      onSuccess: () => {
+        toast.dismiss();
+        toast.success(
+          initialData ? 'แก้ไขรู้หรือไม่ สำเร็จ!' : 'รู้หรือไม่ถูกสร้างสำเร็จ!'
+        );
+        onCloseDrawer();
+      },
+      onError: () => {
+        toast.dismiss();
+        toast.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (initialData) {
+      setValue('didyouknow_name', initialData.didyouknow_name);
+      setValue('didyouknow_content', initialData.didyouknow_content);
+    }
+  }, [initialData, setValue]);
+
+  const handleFormSubmit = (data: DidyouknowFormData) => {
+    mutation.mutate(data);
   };
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
-      <Controller
-        name="didyouknowName"
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextField
-            {...field}
-            label="ชื่อบทความ"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-          />
-        )}
-      />
-      <Controller
-        name="didyouknowContent"
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextField
-            {...field}
-            label="เนื้อหา"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-          />
-        )}
-      />
+      <Box>
+        <Typography variant="h6">ชื่อรู้หรือไม่</Typography>
+        <Controller
+          name="didyouknow_name"
+          control={control}
+          defaultValue=""
+          rules={{
+            required: 'โปรดป้อนชื่อรู้หรือไม่',
+          }}
+          render={({ field, fieldState }) => (
+            <TextField
+              {...field}
+              placeholder="ป้อนชื่อรู้หรือไม่"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+            />
+          )}
+        />
+      </Box>
+      <Box mt={2}>
+        <Typography variant="h6">เนื้อหา</Typography>
+        <Controller
+          name="didyouknow_content"
+          control={control}
+          defaultValue=""
+          rules={{
+            required: 'โปรดป้อนเนื้อหา',
+            minLength: {
+              value: 10,
+              message: 'เนื้อหาควรมีอย่างน้อย 10 ตัวอักษร',
+            },
+          }}
+          render={({ field, fieldState }) => (
+            <TextField
+              {...field}
+              placeholder="ป้อนเนื้อหา"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              multiline
+              rows={3}
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+            />
+          )}
+        />
+      </Box>
       <Box mt={3} display="flex" justifyContent="flex-end">
-        <Button type="submit" variant="contained" color="primary">
-          บันทึก
-        </Button>
+        <CustomButtonSave
+          variant="contained"
+          color="primary"
+          loading={mutation.isLoading}
+        >
+          {initialData ? 'บันทึกการแก้ไข' : 'บันทึก'}
+        </CustomButtonSave>
       </Box>
     </form>
   );

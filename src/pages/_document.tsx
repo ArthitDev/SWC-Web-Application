@@ -23,14 +23,17 @@ class MyDocument extends Document {
           />
           <meta
             name="keywords"
-            content="Wound Care, AI, Smart Wound Care, วิธี , รักษาแผล, วินิจฉัยแผล"
+            content="Wound Care, AI, Smart Wound Care, วิธี , รักษาแผล, วินิจฉัยแผล ,ปัญญาประดิษฐ์"
           />
           <meta property="og:title" content="SWC Web Application" />
           <meta
             property="og:description"
             content="Smart Wound Care - วินิจฉัยและให้คำแนะนำในการดูแลรักษาแผลด้วย AI อัจฉริยะ"
           />
-          <meta property="og:url" content="https://www.swcwebapp.com" />
+          <meta
+            property="og:url"
+            content="https://www.swc-application.vercel.com"
+          />
           <meta property="og:image" content="/images/og-image.png" />
           <meta property="og:type" content="website" />
         </Head>

@@ -5,15 +5,15 @@ import { useEffect, useState } from 'react';
 
 export default function Custom404() {
   const [countdown, setCountdown] = useState(10);
-  const [redirectPath, setRedirectPath] = useState('/');
+  const [redirectPath, setRedirectPath] = useState('/app');
   const [buttonText, setButtonText] = useState('Go back to homepage');
   const router = useRouter();
 
   useEffect(() => {
     const getRedirectInfo = () => {
       const { asPath } = router;
-      if (asPath.startsWith('/home')) {
-        return { path: '/', text: 'Go back to homepage' };
+      if (asPath.startsWith('/app')) {
+        return { path: '/app', text: 'Go back to homepage' };
       }
       if (
         ['/login', '/admin', '/register', '/resetpassword'].some((path) =>
@@ -22,7 +22,7 @@ export default function Custom404() {
       ) {
         return { path: '/login', text: 'Go to login page' };
       }
-      return { path: '/', text: 'Go back to homepage' };
+      return { path: '/app', text: 'Go back to homepage' };
     };
 
     const { path, text } = getRedirectInfo();

@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import React from 'react';
 
 const DynamicDidyouknowPanel = dynamic(
-  () => import('components/admin/DidyouknowPanel')
+  () => import('components/admin/Didyouknow/DidyouknowPanel')
 );
 
 const DidyouknowPage: React.FC = () => {

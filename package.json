@@ -21,7 +21,9 @@
     "@mui/icons-material": "^5.16.6",
     "@mui/material": "^5.16.6",
     "axios": "^1.7.3",
+    "csstype": "^3.0.10",
     "framer-motion": "^11.3.24",
+    "lucide-react": "^0.427.0",
     "next": "14.2.4",
     "nookies": "^2.5.2",
     "react": "^18.3.1",
@@ -42,6 +44,7 @@
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
+    "autoprefixer": "^10.4.20",
     "eslint": "8.20.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-next": "12.2.2",
@@ -54,7 +57,9 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-unused-imports": "^3.2.0",
     "husky": "^8.0.3",
+    "postcss": "^8.4.41",
     "prettier": "^2.8.8",
+    "tailwindcss": "^3.4.10",
     "typescript": "5.1.6"
   }
 }

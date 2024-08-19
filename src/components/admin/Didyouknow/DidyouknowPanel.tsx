@@ -1,19 +1,25 @@
-import { Box, Grid, Paper, Typography } from '@mui/material';
-import CustomButtonForAdd from 'components/button/CustomButtonForAdd';
+import { Box, Grid, Paper, Typography, useMediaQuery } from '@mui/material';
+import CustomButtonAdd from 'components/button/CustomButtonAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
-import WoundForm from 'components/form/WoundForm';
+import DidyouknowForm from 'components/form/DidyouknowForm';
 import SearchBox from 'components/search/SearchBox';
 import React, { useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
-import { WoundFormData } from 'types/AdminFormDataTypes';
+import { DidyouknowData } from 'types/AdminGetDataTypes'; // import ประเภทข้อมูล
 import withAuth from 'utils/withAuth';
 
-type WoundPanelProps = {};
+import DidyouknowCard from './DidyouknowCard';
 
-const WoundPanel: React.FC<WoundPanelProps> = () => {
+const DidyouknowPanel: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [editingDidyouknow, setEditingDidyouknow] =
+    useState<DidyouknowData | null>(null); // สถานะแก้ไข
+
+  const isSmallScreen = useMediaQuery((theme: any) =>
+    theme.breakpoints.down('sm')
+  );
 
   const handleSearch = () => {
     console.log('Searching for:', searchTerm);
@@ -21,11 +27,12 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
 
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
+    if (!open) setEditingDidyouknow(null); // ปิด Drawer ให้ล้างข้อมูลการแก้ไข
   };
 
-  const handleFormSubmit = (data: WoundFormData) => {
-    console.log('Form Data:', data);
-    // Handle form submission logic here
+  const handleEditClick = (item: DidyouknowData) => {
+    setEditingDidyouknow(item);
+    setIsDrawerOpen(true);
   };
 
   return (
@@ -36,29 +43,33 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
-            placeholder="ค้นหาแผล..."
+            placeholder="ค้นหารู้หรือไม่..."
             buttonLabel="ค้นหา"
           />
         </Box>
       </Box>
       <Box display="flex" justifyContent="center">
-        <Paper elevation={0} sx={{ width: '100%', m: '15px' }}>
+        <Paper elevation={0} sx={{ width: '100%', m: '15px', pb: 5 }}>
           <Box p={3} pt={5} pb={5}>
             <Grid container alignItems="center" justifyContent="space-between">
               <Grid item>
-                <Typography variant="h5" sx={{ fontWeight: 'Medium' }}>
-                  จัดการข้อมูลแผลได้ที่นี่
+                <Typography
+                  variant="h5"
+                  pb={isSmallScreen ? 2 : 0}
+                  sx={{ fontWeight: 'Medium' }}
+                >
+                  จัดการข้อมูลรู้หรือไม่ได้ที่นี่
                 </Typography>
               </Grid>
               <Grid item>
-                <CustomButtonForAdd
+                <CustomButtonAdd
                   variant="contained"
                   color="primary"
                   startIcon={<IoAddCircleOutline size={24} />}
                   onClick={toggleDrawer(true)}
                 >
-                  เพิ่มแผล
-                </CustomButtonForAdd>
+                  เพิ่มรู้หรือไม่
+                </CustomButtonAdd>
               </Grid>
             </Grid>
           </Box>
@@ -78,32 +89,29 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
               <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>ลำดับ</Typography>
               </Grid>
-              <Grid item xs={2} sx={{ textAlign: 'center' }}>
+              <Grid item xs={7} sx={{ textAlign: 'justify' }}>
                 <Typography>ชื่อ</Typography>
-              </Grid>
-              <Grid item xs={4} sx={{ textAlign: 'center' }}>
-                <Typography>เนื้อหา</Typography>
-              </Grid>
-              <Grid item xs={2} sx={{ textAlign: 'center' }}>
-                <Typography>รูปปก</Typography>
               </Grid>
               <Grid item xs={2} sx={{ textAlign: 'center' }}>
                 <Typography>จัดการ</Typography>
               </Grid>
             </Grid>
           </Box>
+          <DidyouknowCard onEdit={handleEditClick} />
         </Paper>
       </Box>
-
       <ReusableDrawer
         open={isDrawerOpen}
         onClose={toggleDrawer(false)}
-        title="เพิ่มแผลใหม่"
+        title={editingDidyouknow ? 'แก้ไขรู้หรือไม่' : 'เพิ่มรู้หรือไม่ใหม่'}
       >
-        <WoundForm onSubmit={handleFormSubmit} onClose={toggleDrawer(false)} />
+        <DidyouknowForm
+          onCloseDrawer={toggleDrawer(false)}
+          initialData={editingDidyouknow}
+        />
       </ReusableDrawer>
     </Box>
   );
 };
 
-export default withAuth(WoundPanel);
+export default withAuth(DidyouknowPanel);
