@@ -1,1 +1,0 @@
-SWC Web Application
