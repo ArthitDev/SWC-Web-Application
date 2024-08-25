@@ -6,20 +6,31 @@ import SearchBox from 'components/search/SearchBox';
 import React, { useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
+import { ArticleData } from 'types/AdminGetDataTypes';
 import withAuth from 'utils/withAuth';
+
+import ArticleCard from './ArticleCard';
 
 type ArticlePanelProps = {};
 
 const ArticlePanel: React.FC<ArticlePanelProps> = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
+  const [editingArticle, setEditingArticle] = useState<ArticleData | null>(
+    null
+  );
   const handleSearch = () => {
     console.log('Searching for:', searchTerm);
   };
 
   const toggleDrawer = (open: boolean) => () => {
     setIsDrawerOpen(open);
+    if (!open) setEditingArticle(null);
+  };
+
+  const handleEditArticle = (item: ArticleData) => {
+    setEditingArticle(item);
+    setIsDrawerOpen(true);
   };
 
   return (
@@ -86,15 +97,19 @@ const ArticlePanel: React.FC<ArticlePanelProps> = () => {
               </Grid>
             </Grid>
           </Box>
+          <ArticleCard onEdit={handleEditArticle} />
         </Paper>
       </Box>
 
       <ReusableDrawer
         open={isDrawerOpen}
         onClose={toggleDrawer(false)}
-        title="เพิ่มบทความ"
+        title={editingArticle ? 'แก้ไขบทความ' : 'เพิ่มบทความใหม่'}
       >
-        <ArticleForm onClose={toggleDrawer(false)} />
+        <ArticleForm
+          onCloseDrawer={toggleDrawer(false)}
+          initialData={editingArticle}
+        />
       </ReusableDrawer>
     </Box>
   );

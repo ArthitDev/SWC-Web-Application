@@ -1,14 +1,14 @@
 export type WoundFormData = {
   wound_name: string;
   wound_content: string;
-  wound_cover: string | File | null;
+  wound_cover: string | null | File;
   ref: string;
 };
 
 export type ArticleFormData = {
   article_name: string;
   author_name: string;
-  article_cover: string | File | null;
+  article_cover: string | null | File;
   article_content: string;
   ref: string;
 };

@@ -7,12 +7,6 @@ const MultiLoading = () => {
   return (
     <Box pt={0}>
       <Loading />
-      <Loading />
-      <Loading />
-      <Loading />
-      <Loading />
-      <Loading />
-      <Loading />
     </Box>
   );
 };

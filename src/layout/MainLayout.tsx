@@ -8,7 +8,7 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   return (
-    <Box sx={{ pb: 7 }}>
+    <Box sx={{ pb: 9 }}>
       <main>{children}</main>
       <BottomNav />
     </Box>

@@ -1,26 +1,58 @@
 import { Box, TextField, Typography } from '@mui/material';
 import CustomButtonSave from 'components/button/CustomButtonSave';
 import ImageUpload from 'components/input/ImageUpload';
-import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useMutation } from 'react-query';
-import { createArticle } from 'services/articleService';
+import { createArticle, updateArticle } from 'services/articleService';
 import COLORS from 'theme/colors';
 import { ArticleFormData } from 'types/AdminFormDataPostTypes';
+import { ArticleData } from 'types/AdminGetDataTypes';
+
+const TinyMCEEditor = dynamic(() => import('components/editor/TinyMCEEditor'), {
+  ssr: false,
+});
 
 type ArticleFormProps = {
-  onClose: () => void;
+  onCloseDrawer: () => void;
+  initialData?: ArticleData | null;
 };
 
-const ArticleForm: React.FC<ArticleFormProps> = ({ onClose }) => {
-  const { control, handleSubmit, reset, setValue } = useForm<ArticleFormData>();
+const ArticleForm: React.FC<ArticleFormProps> = ({
+  onCloseDrawer,
+  initialData,
+}) => {
+  const { control, handleSubmit, reset, setValue } = useForm<ArticleFormData>({
+    defaultValues: initialData || {
+      article_name: '',
+      article_content: '',
+    },
+  });
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (initialData) {
+      setValue('article_name', initialData.article_name);
+      setValue('article_content', initialData.article_content);
+      setPreviewImage(
+        `https://drive.google.com/thumbnail?id=${initialData.article_cover}`
+      );
+    }
+  }, [initialData, setValue]);
+
   const mutation = useMutation(
-    (data: { formData: ArticleFormData; image: File }) =>
-      createArticle(data.formData, data.image),
+    initialData
+      ? (data: { formData: ArticleFormData; image: File | null }) =>
+          updateArticle(
+            initialData.id.toString(),
+            data.formData,
+            data.image || undefined
+          )
+      : (data: { formData: ArticleFormData; image: File }) =>
+          createArticle(data.formData, data.image),
     {
       onMutate: () => {
         setLoading(true);
@@ -28,10 +60,14 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onClose }) => {
       },
       onSuccess: () => {
         toast.dismiss();
-        toast.success('ข้อมูลบทความถูกสร้างสำเร็จ!');
+        toast.success(
+          initialData
+            ? 'แก้ไขข้อมูลบทความสำเร็จ!'
+            : 'ข้อมูลบทความถูกสร้างสำเร็จ!'
+        );
         setLoading(false);
         reset();
-        onClose();
+        onCloseDrawer();
       },
       onError: () => {
         toast.dismiss();
@@ -41,9 +77,19 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onClose }) => {
     }
   );
 
-  const handleFormSubmit = async (data: ArticleFormData) => {
-    const imageFile = data.article_cover as unknown as File;
-    mutation.mutate({ formData: data, image: imageFile });
+  const handleFormSubmit = (data: ArticleFormData) => {
+    const imageFile = data.article_cover as unknown as File | null;
+    if (imageFile) {
+      mutation.mutate({ formData: data, image: imageFile });
+    } else {
+      toast.error('โปรดอัพโหลดรูปภาพ');
+      setLoading(false);
+    }
+  };
+
+  const handleClearImage = () => {
+    setPreviewImage(null);
+    setValue('article_cover', null);
   };
 
   const handleImageUpload = (file: File | null) => {
@@ -54,12 +100,9 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onClose }) => {
         setValue('article_cover', file);
       };
       reader.readAsDataURL(file);
+    } else {
+      handleClearImage();
     }
-  };
-
-  const handleClearImage = () => {
-    setPreviewImage(null);
-    setValue('article_cover', null);
   };
 
   return (
@@ -97,39 +140,6 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onClose }) => {
           )}
         />
       </Box>
-      <Box mb={2}>
-        <Typography variant="h6">ชื่อผู้เขียน</Typography>
-        <Controller
-          name="author_name"
-          control={control}
-          defaultValue=""
-          rules={{
-            required: 'โปรดป้อนชื่อผู้เขียน',
-          }}
-          render={({ field, fieldState }) => (
-            <TextField
-              {...field}
-              fullWidth
-              margin="normal"
-              placeholder="ป้อนชื่อผู้เขียน"
-              error={!!fieldState.error}
-              helperText={fieldState.error?.message}
-              InputProps={{
-                sx: {
-                  marginBottom: 0,
-                  height: 48,
-                  borderColor: COLORS.gray[1],
-                  borderRadius: 1,
-                  '&.Mui-focused fieldset': {
-                    border: '1px solid',
-                    borderColor: 'primary.main',
-                  },
-                },
-              }}
-            />
-          )}
-        />
-      </Box>
       <Box>
         <Typography variant="h6">รูปปก</Typography>
         <ImageUpload
@@ -138,30 +148,18 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ onClose }) => {
           onClearImage={handleClearImage}
         />
       </Box>
-      <Box mb={5} mt={2}>
-        <Typography variant="h6">เนื้อหา</Typography>
+      <Box mb={5} mt={3}>
+        <Typography sx={{ mb: 2 }} variant="h6">
+          เนื้อหา
+        </Typography>
         <Controller
           name="article_content"
           control={control}
-          defaultValue=""
-          rules={{
-            required: 'โปรดป้อนเนื้อหา',
-            minLength: {
-              value: 10,
-              message: 'เนื้อหาควรมีอย่างน้อย 10 ตัวอักษร',
-            },
-          }}
-          render={({ field, fieldState }) => (
-            <TextField
-              {...field}
-              placeholder="ป้อนเนื้อหา"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              multiline
-              rows={3}
-              error={!!fieldState.error}
-              helperText={fieldState.error?.message}
+          rules={{ required: 'โปรดป้อนเนื้อหา' }}
+          render={({ field }) => (
+            <TinyMCEEditor
+              value={field.value}
+              onEditorChange={(content) => field.onChange(content)}
             />
           )}
         />

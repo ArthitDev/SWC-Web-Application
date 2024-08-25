@@ -1,10 +1,10 @@
 import dynamic from 'next/dynamic';
 import React from 'react';
 
-const DynamicHomepage = dynamic(() => import('components/home/Hoempage'));
+const DynamicMainPage = dynamic(() => import('components/app/home/MainPage'));
 
-const Homepage: React.FC = () => {
-  return <DynamicHomepage />;
+const Homeapp: React.FC = () => {
+  return <DynamicMainPage />;
 };
 
-export default Homepage;
+export default Homeapp;

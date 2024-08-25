@@ -2,7 +2,6 @@ import { Delete, Edit } from '@mui/icons-material';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import ReusableAction from 'components/button/ReusableAction';
 import ConfirmDeleteModal from 'components/modal/ConfirmDeleteModal';
-import MultiLoading from 'components/skeleton-loading/MultiLoading';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -11,6 +10,7 @@ import COLORS from 'theme/colors';
 import { DidyouknowData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
 import FetchError from 'utils/FetchError';
+import TrickDidLoading from 'utils/TrickDidLoading';
 
 type DidyouknowCardProps = {
   onEdit: (item: DidyouknowData) => void;
@@ -34,7 +34,12 @@ const DidyouknowCard: React.FC<DidyouknowCardProps> = ({ onEdit }) => {
     },
   });
 
-  if (isFetching) return <MultiLoading />;
+  if (isFetching)
+    return (
+      <Box pt={0}>
+        <TrickDidLoading />
+      </Box>
+    );
   if (error) return <FetchError />;
 
   if (!Array.isArray(data)) {

@@ -41,7 +41,12 @@ const ReusableDrawer: React.FC<ReusableDrawerProps> = ({
 
   return (
     <>
-      <Drawer anchor="right" open={open} onClose={handleClose}>
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={handleClose}
+        disableEnforceFocus={true}
+      >
         <Box
           sx={{
             width: { xs: '100%', sm: '100%', md: 500, lg: 500, xl: 1000 },

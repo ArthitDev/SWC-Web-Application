@@ -1,9 +1,12 @@
+import dynamic from 'next/dynamic';
 import React from 'react';
 
-type articleProps = {};
+const DynamicArticlePage = dynamic(
+  () => import('components/app/article/ArticlePage')
+);
 
-const article: React.FC<articleProps> = () => {
-  return <div>article</div>;
+const ArticlePage: React.FC = () => {
+  return <DynamicArticlePage />;
 };
 
-export default article;
+export default ArticlePage;

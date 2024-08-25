@@ -1,26 +1,61 @@
 import { Box, TextField, Typography } from '@mui/material';
 import CustomButtonSave from 'components/button/CustomButtonSave';
 import ImageUpload from 'components/input/ImageUpload';
-import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useMutation } from 'react-query';
-import { createWound } from 'services/woundService';
+import { createWound, updateWound } from 'services/woundService';
 import COLORS from 'theme/colors';
 import { WoundFormData } from 'types/AdminFormDataPostTypes';
+import { WoundData } from 'types/AdminGetDataTypes';
+
+// Dynamically import TinyMCEEditor with SSR disabled
+const TinyMCEEditor = dynamic(() => import('components/editor/TinyMCEEditor'), {
+  ssr: false, // Disable server-side rendering
+});
 
 type WoundFormProps = {
-  onClose: () => void;
+  onCloseDrawer: () => void;
+  initialData?: WoundData | null;
 };
 
-const WoundForm: React.FC<WoundFormProps> = ({ onClose }) => {
-  const { control, handleSubmit, reset, setValue } = useForm<WoundFormData>();
+const WoundForm: React.FC<WoundFormProps> = ({
+  onCloseDrawer,
+  initialData,
+}) => {
+  const { control, handleSubmit, reset, setValue } = useForm<WoundFormData>({
+    defaultValues: initialData || {
+      wound_name: '',
+      wound_content: '',
+      ref: '',
+    },
+  });
+
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (initialData) {
+      setValue('wound_name', initialData.wound_name);
+      setValue('wound_content', initialData.wound_content);
+      setPreviewImage(
+        `https://drive.google.com/thumbnail?id=${initialData.wound_cover}`
+      );
+    }
+  }, [initialData, setValue]);
+
   const mutation = useMutation(
-    (data: { formData: WoundFormData; image: File }) =>
-      createWound(data.formData, data.image),
+    initialData
+      ? (data: { formData: WoundFormData; image: File | null }) =>
+          updateWound(
+            initialData.id.toString(),
+            data.formData,
+            data.image || undefined
+          )
+      : (data: { formData: WoundFormData; image: File }) =>
+          createWound(data.formData, data.image),
     {
       onMutate: () => {
         setLoading(true);
@@ -28,22 +63,35 @@ const WoundForm: React.FC<WoundFormProps> = ({ onClose }) => {
       },
       onSuccess: () => {
         toast.dismiss();
-        toast.success('ข้อมูลแผลถูกสร้างสำเร็จ!');
+        toast.success(
+          initialData ? 'แก้ไขข้อมูลแผลสำเร็จ!' : 'ข้อมูลแผลถูกสร้างสำเร็จ!'
+        );
         setLoading(false);
         reset();
-        onClose();
+        onCloseDrawer();
       },
-      onError: () => {
+      onError: (error) => {
         toast.dismiss();
         toast.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         setLoading(false);
+        console.log(`Error: ${error}`);
       },
     }
   );
 
-  const handleFormSubmit = async (data: WoundFormData) => {
-    const imageFile = data.wound_cover as unknown as File;
-    mutation.mutate({ formData: data, image: imageFile });
+  const handleFormSubmit = (data: WoundFormData) => {
+    const imageFile = data.wound_cover as unknown as File | null;
+    if (imageFile) {
+      mutation.mutate({ formData: data, image: imageFile });
+    } else {
+      toast.error('โปรดอัพโหลดรูปภาพ');
+      setLoading(false);
+    }
+  };
+
+  const handleClearImage = () => {
+    setPreviewImage(null);
+    setValue('wound_cover', null);
   };
 
   const handleImageUpload = (file: File | null) => {
@@ -54,12 +102,9 @@ const WoundForm: React.FC<WoundFormProps> = ({ onClose }) => {
         setValue('wound_cover', file);
       };
       reader.readAsDataURL(file);
+    } else {
+      handleClearImage();
     }
-  };
-
-  const handleClearImage = () => {
-    setPreviewImage(null);
-    setValue('wound_cover', null);
   };
 
   return (
@@ -105,8 +150,10 @@ const WoundForm: React.FC<WoundFormProps> = ({ onClose }) => {
           onClearImage={handleClearImage}
         />
       </Box>
-      <Box mb={5} mt={2}>
-        <Typography variant="h6">เนื้อหา</Typography>
+      <Box mb={3} mt={3}>
+        <Typography variant="h6" mb={2}>
+          เนื้อหา
+        </Typography>
         <Controller
           name="wound_content"
           control={control}
@@ -118,17 +165,10 @@ const WoundForm: React.FC<WoundFormProps> = ({ onClose }) => {
               message: 'เนื้อหาควรมีอย่างน้อย 10 ตัวอักษร',
             },
           }}
-          render={({ field, fieldState }) => (
-            <TextField
-              {...field}
-              placeholder="ป้อนเนื้อหา"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              multiline
-              rows={3}
-              error={!!fieldState.error}
-              helperText={fieldState.error?.message}
+          render={({ field }) => (
+            <TinyMCEEditor
+              value={field.value}
+              onEditorChange={(content) => field.onChange(content)}
             />
           )}
         />

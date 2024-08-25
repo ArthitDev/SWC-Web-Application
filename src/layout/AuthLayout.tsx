@@ -27,9 +27,11 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             alt="SWC Logo"
             width={170}
             height={70}
+            style={{ width: '100%', height: 'auto' }}
             priority
           />
         </Box>
+
         {children}
         <Typography variant="body2" sx={descriptionStyle}>
           Smart Wound Care (SWC) - เว็บแอปพลิเคชันให้คำแนะนำในการดูแลแผล
