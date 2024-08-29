@@ -58,3 +58,8 @@ export const deleteWound = async (id: string) => {
   const response = await axios.delete(`${API_URL}/api/wounds/${id}`);
   return response.data;
 };
+
+// รับข้อมูลรูปแผล
+export const getWoundImageUrl = (filePath: string) => {
+  return `${API_URL}/api/uploads/${filePath}`;
+};

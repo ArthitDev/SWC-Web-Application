@@ -107,7 +107,7 @@ const DidyouknowCard: React.FC<DidyouknowCardProps> = ({ onEdit }) => {
                 <ReusableAction
                   icon={<Edit />}
                   backgroundColor="#D89030"
-                  onClick={() => onEdit(item)} // เรียกฟังก์ชัน onEdit เมื่อกด Edit
+                  onClick={() => onEdit(item)}
                 />
                 <ReusableAction
                   icon={<Delete />}

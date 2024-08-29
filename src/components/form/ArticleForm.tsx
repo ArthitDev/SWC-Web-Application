@@ -5,8 +5,12 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { useMutation } from 'react-query';
-import { createArticle, updateArticle } from 'services/articleService';
+import { useMutation, useQueryClient } from 'react-query';
+import {
+  createArticle,
+  getArticleImageUrl,
+  updateArticle,
+} from 'services/articleService';
 import COLORS from 'theme/colors';
 import { ArticleFormData } from 'types/AdminFormDataPostTypes';
 import { ArticleData } from 'types/AdminGetDataTypes';
@@ -28,8 +32,12 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
     defaultValues: initialData || {
       article_name: '',
       article_content: '',
+      ref: '',
+      article_cover: null,
     },
   });
+
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -37,9 +45,11 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
     if (initialData) {
       setValue('article_name', initialData.article_name);
       setValue('article_content', initialData.article_content);
-      setPreviewImage(
-        `https://drive.google.com/thumbnail?id=${initialData.article_cover}`
-      );
+      if (initialData.article_cover) {
+        setPreviewImage(getArticleImageUrl(initialData.article_cover));
+      } else {
+        setPreviewImage(null);
+      }
     }
   }, [initialData, setValue]);
 
@@ -65,6 +75,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
             ? 'แก้ไขข้อมูลบทความสำเร็จ!'
             : 'ข้อมูลบทความถูกสร้างสำเร็จ!'
         );
+        queryClient.invalidateQueries('article');
         setLoading(false);
         reset();
         onCloseDrawer();

@@ -5,8 +5,12 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { useMutation } from 'react-query';
-import { createWound, updateWound } from 'services/woundService';
+import { useMutation, useQueryClient } from 'react-query';
+import {
+  createWound,
+  getWoundImageUrl,
+  updateWound,
+} from 'services/woundService';
 import COLORS from 'theme/colors';
 import { WoundFormData } from 'types/AdminFormDataPostTypes';
 import { WoundData } from 'types/AdminGetDataTypes';
@@ -30,9 +34,11 @@ const WoundForm: React.FC<WoundFormProps> = ({
       wound_name: '',
       wound_content: '',
       ref: '',
+      wound_cover: null,
     },
   });
 
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -40,9 +46,11 @@ const WoundForm: React.FC<WoundFormProps> = ({
     if (initialData) {
       setValue('wound_name', initialData.wound_name);
       setValue('wound_content', initialData.wound_content);
-      setPreviewImage(
-        `https://drive.google.com/thumbnail?id=${initialData.wound_cover}`
-      );
+      if (initialData.wound_cover) {
+        setPreviewImage(getWoundImageUrl(initialData.wound_cover)); // Use getImageUrl to get image URL from server
+      } else {
+        setPreviewImage(null);
+      }
     }
   }, [initialData, setValue]);
 
@@ -66,15 +74,15 @@ const WoundForm: React.FC<WoundFormProps> = ({
         toast.success(
           initialData ? 'แก้ไขข้อมูลแผลสำเร็จ!' : 'ข้อมูลแผลถูกสร้างสำเร็จ!'
         );
+        queryClient.invalidateQueries('wound');
         setLoading(false);
         reset();
         onCloseDrawer();
       },
-      onError: (error) => {
+      onError: () => {
         toast.dismiss();
         toast.error('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         setLoading(false);
-        console.log(`Error: ${error}`);
       },
     }
   );

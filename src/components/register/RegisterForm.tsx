@@ -3,8 +3,8 @@ import CustomButton from 'components/button/CustomButton';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { useMutation } from 'react-query';
-import { toast } from 'react-toastify';
 import { registerAdmin } from 'services/register';
 
 type FormInputs = {
@@ -31,13 +31,9 @@ const RegisterForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormInputs> = (formData) => {
     toast.promise(mutation.mutateAsync(formData), {
-      pending: 'กำลังสมัครสมาชิก...',
-      success: 'ลงทะเบียนสำเร็จ',
-      error: {
-        render() {
-          return 'เกิดข้อผิดพลาดในการลงทะเบียน';
-        },
-      },
+      loading: 'กำลังสร้างบัญชี Admin...',
+      success: 'สร้างบัญชี Admin สำเร็จ',
+      error: 'เกิดข้อผิดพลาดในการสร้างบัญชี Admin',
     });
   };
 

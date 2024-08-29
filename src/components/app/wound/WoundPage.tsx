@@ -1,10 +1,19 @@
 import { Box, Typography } from '@mui/material';
+import SearchBoxApp from 'components/search/SearchBoxApp';
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useState } from 'react';
 import COLORS from 'theme/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
+import WoundCardPage from './WoundCardPage';
+
 const WoundPage: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = () => {
+    console.log('Searching for:', searchTerm);
+  };
+
   return (
     <>
       <motion.div
@@ -32,6 +41,16 @@ const WoundPage: React.FC = () => {
               ml: 2.5,
             }}
           />
+        </Box>
+        <SearchBoxApp
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          onSearch={handleSearch}
+          placeholder="ค้นหารแผล..."
+          buttonLabel="ค้นหา"
+        />
+        <Box>
+          <WoundCardPage />
         </Box>
       </motion.div>
     </>

@@ -5,10 +5,15 @@ import ConfirmDeleteModal from 'components/modal/ConfirmDeleteModal';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { deleteWound, getAllWounds } from 'services/woundService';
+import {
+  deleteWound,
+  getAllWounds,
+  getWoundImageUrl,
+} from 'services/woundService';
 import COLORS from 'theme/colors';
 import { WoundData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
+import { extractTextAfterImage } from 'utils/extractTextUtils';
 import FetchError from 'utils/FetchError';
 import WoundArticleLoading from 'utils/WoundArticleLoading';
 
@@ -119,9 +124,12 @@ const WoundCard: React.FC<WoundCardProps> = ({ onEdit }) => {
                   textAlign: 'center',
                 }}
               >
-                {item.wound_content.length > 120
-                  ? `${item.wound_content.substring(0, 120)} . . .`
-                  : item.wound_content}
+                {extractTextAfterImage(item.wound_content).length > 120
+                  ? `${extractTextAfterImage(item.wound_content).substring(
+                      0,
+                      120
+                    )} . . .`
+                  : extractTextAfterImage(item.wound_content)}
               </Typography>
             </Grid>
             <Grid
@@ -131,17 +139,23 @@ const WoundCard: React.FC<WoundCardProps> = ({ onEdit }) => {
               sx={{ textAlign: 'center', mt: { xs: 1, sm: 0 } }}
             >
               <Box display="flex" justifyContent="center">
-                <img
-                  src={`https://drive.google.com/thumbnail?id=${item.wound_cover}`}
-                  alt="Wound Cover"
-                  style={{
-                    width: '80px',
-                    height: '80px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                    margin: '0 auto',
-                  }}
-                />
+                {item.wound_cover ? (
+                  <img
+                    src={getWoundImageUrl(item.wound_cover)}
+                    alt={item.wound_name}
+                    style={{
+                      width: '80px',
+                      height: '80px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      margin: '0 auto',
+                    }}
+                  />
+                ) : (
+                  <Typography sx={{ color: COLORS.gray[3] }}>
+                    No Image Available
+                  </Typography>
+                )}
               </Box>
             </Grid>
             <Grid

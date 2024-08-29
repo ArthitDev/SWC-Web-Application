@@ -22,7 +22,7 @@ const DataNotFound = () => {
             ไม่มีข้อมูลในฐานข้อมูล
           </Typography>
           <Typography pb={1} variant="body1" gutterBottom>
-            ลองเพิ่มข้อมูลและรีโหลดหน้าใหม่อีกครั้ง
+            ลองรีโหลดหน้าใหม่อีกครั้ง
           </Typography>
           <Typography variant="h4">¯\_(ツ)_/¯</Typography>
         </CardContent>

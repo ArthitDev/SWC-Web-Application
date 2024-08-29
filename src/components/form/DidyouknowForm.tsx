@@ -3,7 +3,7 @@ import CustomButtonSave from 'components/button/CustomButtonSave';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { createDidyouknow, updateDidyouknow } from 'services/didyouknowService';
 import { DidyouknowFormData } from 'types/AdminFormDataPostTypes';
 import { DidyouknowData } from 'types/AdminGetDataTypes';
@@ -24,6 +24,8 @@ const DidyouknowForm: React.FC<DidyouknowFormProps> = ({
     },
   });
 
+  const queryClient = useQueryClient();
+
   const mutation = useMutation(
     initialData
       ? (data: DidyouknowFormData) => updateDidyouknow(initialData.id, data)
@@ -38,6 +40,7 @@ const DidyouknowForm: React.FC<DidyouknowFormProps> = ({
           initialData ? 'แก้ไขรู้หรือไม่ สำเร็จ!' : 'รู้หรือไม่ถูกสร้างสำเร็จ!'
         );
         onCloseDrawer();
+        queryClient.invalidateQueries('didyouknow');
       },
       onError: () => {
         toast.dismiss();

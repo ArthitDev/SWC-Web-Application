@@ -1,9 +1,11 @@
 import '../styles/globals.css';
+import '../styles/editor.css';
 
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import axios from 'axios';
 import { AuthProvider } from 'contexts/AuthContext';
+import { WebSocketProvider } from 'contexts/WebSocketProvider';
 import AdminLayout from 'layout/AdminLayout';
 import AuthLayout from 'layout/AuthLayout';
 import LandingLayout from 'layout/LandingLayout';
@@ -63,16 +65,11 @@ export default function MyApp({ Component, pageProps }: MyAppProps) {
         <QueryClientProvider client={queryClient}>
           <div>
             <AuthProvider>
-              <LayoutComponent>
-                <Component {...pageProps} />
-                {/* <LandingPageModal
-                  open={showModal}
-                  title="ยืนยันไปยังหน้าแนะนำ"
-                  description="คุณต้องการไปยังหน้าแนะนำอีกครั้งใช่ไหม ?"
-                  onConfirm={handleConfirm}
-                  onCancel={handleCancel}
-                /> */}
-              </LayoutComponent>
+              <WebSocketProvider>
+                <LayoutComponent>
+                  <Component {...pageProps} />
+                </LayoutComponent>
+              </WebSocketProvider>
             </AuthProvider>
             <Toaster />
           </div>

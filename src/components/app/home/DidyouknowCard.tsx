@@ -22,6 +22,7 @@ const DidyouknowCardHome: React.FC = () => {
         textColor="#EAB308"
       />
     );
+
   if (error)
     return (
       <HomeCardError
@@ -29,6 +30,16 @@ const DidyouknowCardHome: React.FC = () => {
         backgroundColor="#F2F9FC"
         textColor="#EAB308"
         errorMessage="ไม่สามารถโหลดข้อมูลได้"
+      />
+    );
+
+  if (!data || !data.didyouknow_content)
+    return (
+      <HomeCardError
+        borderColor="#EAB308"
+        backgroundColor="#F2F9FC"
+        textColor="#EAB308"
+        errorMessage="ไม่มีข้อมูลในขณะนี้"
       />
     );
 
@@ -82,7 +93,7 @@ const DidyouknowCardHome: React.FC = () => {
             lineHeight: 1.5,
           }}
         >
-          {data?.didyouknow_content}
+          {data.didyouknow_content}
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button

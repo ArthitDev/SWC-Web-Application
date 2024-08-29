@@ -1,7 +1,7 @@
 import { Editor } from '@tinymce/tinymce-react';
+import useImageResizer from 'hooks/useImageResizer';
 import React, { useCallback } from 'react';
 
-// Define the props interface for the TinyMCEEditor component
 interface TinyMCEEditorProps {
   value: string;
   onEditorChange: (content: string) => void;
@@ -11,7 +11,8 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({
   value: editorValue,
   onEditorChange,
 }) => {
-  // Memoize the editor change handler to prevent unnecessary re-renders
+  const { resizeImage } = useImageResizer();
+
   const handleEditorChange = useCallback(
     (content: string) => {
       onEditorChange(content);
@@ -28,6 +29,7 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({
         height: 500,
         menubar: false,
         branding: false,
+        license_key: 'gpl',
         content_style: `
           @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&display=swap');
           body {
@@ -37,20 +39,19 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({
         plugins:
           'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
         toolbar:
-          'undo redo | blocks fontsize | align lineheight bold italic underline checklist numlist bullist indent outdent | link image | removeformat',
+          'undo redo | blocks fontsize | forecolor | align lineheight bold italic underline checklist numlist bullist indent outdent | link image | removeformat',
         automatic_uploads: false,
         paste_data_images: true,
 
         images_upload_handler: (blobInfo) => {
           return new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(blobInfo.blob());
-            reader.onload = () => {
-              resolve(reader.result as string);
-            };
-            reader.onerror = () => {
-              reject(new Error('Failed to convert image to base64.'));
-            };
+            resizeImage(blobInfo.blob(), 800, 600, 0.8) // Resize the image before converting to base64
+              .then((resizedBase64) => {
+                resolve(resizedBase64);
+              })
+              .catch(() => {
+                reject(new Error('Failed to resize image.'));
+              });
           });
         },
 
@@ -62,12 +63,13 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({
             // eslint-disable-next-line func-names
             input.onchange = function () {
               const file = (input.files as FileList)[0];
-              const reader = new FileReader();
-              // eslint-disable-next-line func-names
-              reader.onload = function (e) {
-                callback(e.target?.result as string, { alt: file.name });
-              };
-              reader.readAsDataURL(file);
+              resizeImage(file, 800, 600, 0.8) // Resize the image before converting to base64
+                .then((resizedBase64) => {
+                  callback(resizedBase64, { alt: file.name });
+                })
+                .catch(() => {
+                  //
+                });
             };
             input.click();
           }

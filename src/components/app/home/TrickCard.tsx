@@ -18,6 +18,7 @@ const TrickCardHome: React.FC = () => {
         textColor="#1B8F29"
       />
     );
+
   if (error)
     return (
       <HomeCardError
@@ -25,6 +26,17 @@ const TrickCardHome: React.FC = () => {
         backgroundColor="#F2F9FC"
         textColor="#1B8F29"
         errorMessage="ไม่สามารถโหลดข้อมูลได้"
+      />
+    );
+
+  // Check if data is undefined or null
+  if (!data || !data.trick_content)
+    return (
+      <HomeCardError
+        borderColor="#2ECC71"
+        backgroundColor="#F2F9FC"
+        textColor="#1B8F29"
+        errorMessage="ไม่มีข้อมูลในขณะนี้"
       />
     );
 
@@ -85,7 +97,7 @@ const TrickCardHome: React.FC = () => {
             overflow: 'auto',
           }}
         >
-          {data?.trick_content}
+          {data.trick_content}
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button

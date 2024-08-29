@@ -1,10 +1,19 @@
 import { Box, Typography } from '@mui/material';
+import SearchBoxApp from 'components/search/SearchBoxApp';
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useState } from 'react';
 import COLORS from 'theme/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
+import ArticleCardPage from './ArticleCardPage';
+
 const ArticlePage: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = () => {
+    console.log('Searching for:', searchTerm);
+  };
+
   return (
     <>
       <motion.div
@@ -32,6 +41,16 @@ const ArticlePage: React.FC = () => {
               ml: 2.5,
             }}
           />
+        </Box>
+        <SearchBoxApp
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          onSearch={handleSearch}
+          placeholder="ค้นหารบทความ..."
+          buttonLabel="ค้นหา"
+        />
+        <Box>
+          <ArticleCardPage />
         </Box>
       </motion.div>
     </>

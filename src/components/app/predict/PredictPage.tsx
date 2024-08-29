@@ -3,7 +3,9 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ImageIcon from '@mui/icons-material/Image';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
+import router from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast'; // Import toast
 import { FaRegTrashAlt, FaTimes } from 'react-icons/fa';
 import Webcam from 'react-webcam';
 import COLORS from 'theme/colors';
@@ -29,6 +31,28 @@ const PredictPage: React.FC = () => {
     }
   }, []);
 
+  // Function to check if the device is mobile
+  const isMobileDevice = () => {
+    const userAgent = navigator.userAgent || navigator.vendor;
+    return /android/i.test(userAgent) || /iPhone|iPad|iPod/i.test(userAgent);
+  };
+
+  // Function to check file access permission only on mobile devices
+  const checkFilePermission = async () => {
+    if (isMobileDevice() && navigator.permissions) {
+      try {
+        const result = await navigator.permissions.query({
+          name: 'camera' as PermissionName,
+        });
+        if (result.state !== 'granted') {
+          toast.error('กรุณาให้สิทธ์ในการเข้าถึงไฟล์');
+        }
+      } catch (error) {
+        //
+      }
+    }
+  };
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (isCameraOpen) {
       setIsCameraOpen(false);
@@ -46,8 +70,11 @@ const PredictPage: React.FC = () => {
         } else {
           setObjectFit('contain');
         }
+        toast.success('แนบรูปภาพแล้ว');
         setSelectedImage(imageUrl);
       };
+    } else {
+      toast.error('ไม่พบไ��ล์รูป��า��');
     }
   };
 
@@ -60,18 +87,37 @@ const PredictPage: React.FC = () => {
       const imageSrc = webcamRef.current.getScreenshot();
       if (imageSrc) {
         setSelectedImage(imageSrc);
+        toast.success('ถ่ายรูปภาพแล้ว');
         setIsCameraOpen(false);
+      } else {
+        toast.error('เกิดข้อผิดพลาดในการถ่ายรูปภาพ');
       }
     }
   };
 
-  const handleOpenCamera = () => {
+  const handleOpenCamera = async () => {
     setSelectedImage(null);
-    setIsCameraOpen(true);
+
+    try {
+      await navigator.mediaDevices.getUserMedia({ video: true });
+      setIsCameraOpen(true);
+      toast.success('เปิดกล้องแล้ว');
+    } catch (err) {
+      toast.error('กรุณาให้สิทธ์ในการเข้าถึงกล้อง');
+    }
   };
 
   const handleCloseCamera = () => {
     setIsCameraOpen(false);
+  };
+
+  // Call checkFilePermission before file input is triggered, only on mobile
+  const handleFileInputClick = async () => {
+    await checkFilePermission();
+  };
+
+  const handlePredict = () => {
+    router.push(`/app/predict/result`);
   };
 
   return (
@@ -174,11 +220,20 @@ const PredictPage: React.FC = () => {
         )}
 
         <Box sx={styles.ButtonGroup}>
-          <Button variant="contained" sx={styles.MainButton}>
+          <Button
+            variant="contained"
+            sx={styles.MainButton}
+            onClick={handlePredict}
+          >
             วิเคราะห์ภาพแผล
           </Button>
 
-          <Button variant="contained" sx={styles.IconButton} component="label">
+          <Button
+            variant="contained"
+            sx={styles.IconButton}
+            component="label"
+            onClick={handleFileInputClick}
+          >
             <AddPhotoAlternateIcon />
             <input
               type="file"

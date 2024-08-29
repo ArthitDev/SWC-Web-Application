@@ -22,6 +22,15 @@ export const Divider: SxProps<Theme> = {
   mb: 3,
 };
 
+export const DividerResult: SxProps<Theme> = {
+  height: 8,
+  backgroundColor: '#bfdbfe',
+  borderRadius: 5,
+  mb: 3,
+  maxWidth: 250,
+  margin: 'auto',
+};
+
 export const Description: SxProps<Theme> = {
   textAlign: 'center',
   mb: 2,
@@ -33,6 +42,23 @@ export const ImageContainer: SxProps<Theme> = {
   borderRadius: 4,
   p: 3,
   textAlign: 'center',
+  mb: 2,
+  height: 250,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#f8fafc',
+  overflow: 'hidden',
+};
+
+export const ImageContainerResult: SxProps<Theme> = {
+  position: 'relative',
+  border: '1px solid #e2e8f0',
+  borderRadius: 4,
+  p: 3,
+  textAlign: 'center',
+  mt: 2,
   mb: 2,
   height: 250,
   display: 'flex',

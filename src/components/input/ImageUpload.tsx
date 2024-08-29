@@ -54,6 +54,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 src={previewImage}
                 alt="Preview"
                 style={{
+                  height: '300px',
                   maxWidth: '100%',
                   maxHeight: '100%',
                   objectFit: 'contain',

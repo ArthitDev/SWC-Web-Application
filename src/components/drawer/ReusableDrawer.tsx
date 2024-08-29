@@ -49,7 +49,7 @@ const ReusableDrawer: React.FC<ReusableDrawerProps> = ({
       >
         <Box
           sx={{
-            width: { xs: '100%', sm: '100%', md: 500, lg: 500, xl: 1000 },
+            width: { xs: '100%', sm: '100%', md: 500, lg: 500, xl: 1200 },
             maxWidth: '100%',
             p: { xs: 2, sm: 3 },
             position: 'relative',

@@ -1,8 +1,9 @@
 export type WoundData = {
   id: number;
   wound_name: string;
-  wound_content: string;
   wound_cover: string | null;
+  wound_content: string;
+  ref: string;
 };
 
 export type ArticleData = {

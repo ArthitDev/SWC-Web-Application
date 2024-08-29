@@ -13,6 +13,7 @@ import DidyouknowCardHome from './DidyouknowCard';
 import FeatureBadge from './FeatureBadge';
 import IconCircle from './IconCircle';
 import InfoCard from './InfoCard';
+import TopArticlesCard from './TopArticlesCard';
 import TrickCardHome from './TrickCard';
 
 const MainPage: React.FC = () => {
@@ -87,12 +88,12 @@ const MainPage: React.FC = () => {
               />
               <FeatureBadge
                 text="ใช้งานง่าย"
-                backgroundColor="#D1FAE5"
+                backgroundColor="#DCFCE7"
                 color={COLORS.green[6]}
               />
               <FeatureBadge
                 text="ข้อมูลหลากหลาย"
-                backgroundColor="#FEF3C7"
+                backgroundColor="#FEF9C3"
                 color={COLORS.orange[6]}
               />
             </Box>
@@ -119,6 +120,7 @@ const MainPage: React.FC = () => {
                 textAlign: 'justify',
                 whiteSpace: 'pre-line',
               }}
+              onButtonClick={() => router.push('/app/article/1')}
             />
           </ScrollFadeIn>
 
@@ -129,19 +131,22 @@ const MainPage: React.FC = () => {
           <ScrollFadeIn>
             <DidyouknowCardHome />
           </ScrollFadeIn>
+          <ScrollFadeIn>
+            <Box sx={{ pb: 3, pt: 2 }}>
+              <Typography
+                variant="h5"
+                component="h1"
+                fontWeight={'bold'}
+                sx={{ color: COLORS.blue[6] }}
+              >
+                บทความที่ได้รับความนิยม
+              </Typography>
+            </Box>
+          </ScrollFadeIn>
+          <ScrollFadeIn>
+            <TopArticlesCard />
+          </ScrollFadeIn>
         </Box>
-        <ScrollFadeIn>
-          <Box sx={{ pb: 5 }}>
-            <Typography
-              variant="h5"
-              component="h1"
-              fontWeight={'bold'}
-              sx={{ color: COLORS.blue[6] }}
-            >
-              บทความที่ได้รับความนิยม
-            </Typography>
-          </Box>
-        </ScrollFadeIn>
       </Box>
     </motion.div>
   );

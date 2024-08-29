@@ -5,10 +5,16 @@ import ConfirmDeleteModal from 'components/modal/ConfirmDeleteModal';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { deleteArticle, getAllArticle } from 'services/articleService';
+import {
+  deleteArticle,
+  getAllArticle,
+  getArticleImageUrl,
+} from 'services/articleService';
 import COLORS from 'theme/colors';
 import { ArticleData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
+// นำเข้าฟังก์ชันจาก utils
+import { extractTextAfterImage } from 'utils/extractTextUtils';
 import FetchError from 'utils/FetchError';
 import WoundArticleLoading from 'utils/WoundArticleLoading';
 
@@ -121,9 +127,12 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ onEdit }) => {
                   textAlign: 'center',
                 }}
               >
-                {item.article_content.length > 120
-                  ? `${item.article_content.substring(0, 120)} . . .`
-                  : item.article_content}
+                {extractTextAfterImage(item.article_content).length > 120
+                  ? `${extractTextAfterImage(item.article_content).substring(
+                      0,
+                      120
+                    )} . . .`
+                  : extractTextAfterImage(item.article_content)}
               </Typography>
             </Grid>
             <Grid
@@ -133,17 +142,23 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ onEdit }) => {
               sx={{ textAlign: 'center', mt: { xs: 1, sm: 0 } }}
             >
               <Box display="flex" justifyContent="center">
-                <img
-                  src={`https://drive.google.com/thumbnail?id=${item.article_cover}`}
-                  alt="Article Cover"
-                  style={{
-                    width: '80px',
-                    height: '80px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                    margin: '0 auto',
-                  }}
-                />
+                {item.article_cover ? (
+                  <img
+                    src={getArticleImageUrl(item.article_cover)}
+                    alt="Article Cover"
+                    style={{
+                      width: '80px',
+                      height: '80px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      margin: '0 auto',
+                    }}
+                  />
+                ) : (
+                  <Typography sx={{ color: COLORS.gray[3] }}>
+                    No Image Available
+                  </Typography>
+                )}
               </Box>
             </Grid>
             <Grid

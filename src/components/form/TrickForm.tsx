@@ -3,7 +3,7 @@ import CustomButtonSave from 'components/button/CustomButtonSave';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast, Toaster } from 'react-hot-toast';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { createTrick, updateTrick } from 'services/trickService';
 import { TrickFormData } from 'types/AdminFormDataPostTypes';
 import { TrickData } from 'types/AdminGetDataTypes';
@@ -24,6 +24,8 @@ const TrickForm: React.FC<TrickFormProps> = ({
     },
   });
 
+  const queryClient = useQueryClient();
+
   const mutation = useMutation(
     initialData
       ? (data: TrickFormData) => updateTrick(initialData.id, data)
@@ -38,6 +40,7 @@ const TrickForm: React.FC<TrickFormProps> = ({
           initialData ? 'แก้ไขเคล็ดไม่ลับสำเร็จ!' : 'เคล็ดไม่ลับถูกสร้างสำเร็จ!'
         );
         onCloseDrawer();
+        queryClient.invalidateQueries('trick');
       },
       onError: () => {
         toast.dismiss();
