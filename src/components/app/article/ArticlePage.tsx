@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import SearchBoxApp from 'components/search/SearchBoxApp';
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import COLORS from 'theme/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
@@ -9,10 +9,17 @@ import ArticleCardPage from './ArticleCardPage';
 
 const ArticlePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState(''); // เก็บค่าที่จะใช้ในการค้นหาจริง ๆ
 
   const handleSearch = () => {
-    console.log('Searching for:', searchTerm);
+    setAppliedSearchTerm(searchTerm); // อัปเดตค่าที่จะใช้ในการค้นหาจริง ๆ
   };
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      setAppliedSearchTerm('');
+    }
+  }, [searchTerm]);
 
   return (
     <>
@@ -50,8 +57,7 @@ const ArticlePage: React.FC = () => {
           buttonLabel="ค้นหา"
         />
         <Box>
-          <ArticleCardPage searchTerm={searchTerm} />
-          {/* ส่ง searchTerm เป็น prop */}
+          <ArticleCardPage searchTerm={appliedSearchTerm} />
         </Box>
       </motion.div>
     </>
