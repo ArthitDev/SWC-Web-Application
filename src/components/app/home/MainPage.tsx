@@ -139,7 +139,7 @@ const MainPage: React.FC = () => {
                 fontWeight={'bold'}
                 sx={{ color: COLORS.blue[6] }}
               >
-                บทความที่ได้รับความนิยม
+                บทความยอดนิยมสูงสุด 5 อันดับ
               </Typography>
             </Box>
           </ScrollFadeIn>

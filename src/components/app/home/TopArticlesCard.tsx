@@ -25,7 +25,7 @@ const TopArticlesCard: React.FC = () => {
         flexDirection: 'column',
         alignItems: 'center',
         width: '100%',
-        pb: 5,
+        pb: 2,
       }}
     >
       {data?.map((article) => (

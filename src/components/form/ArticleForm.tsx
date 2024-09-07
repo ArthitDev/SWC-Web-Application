@@ -1,10 +1,20 @@
-import { Box, TextField, Typography } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import {
+  Box,
+  Button,
+  FormControl,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from '@mui/material';
 import CustomButtonSave from 'components/button/CustomButtonSave';
 import ImageUpload from 'components/input/ImageUpload';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import { useMutation, useQueryClient } from 'react-query';
 import {
   createArticle,
@@ -32,9 +42,16 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
     defaultValues: initialData || {
       article_name: '',
       article_content: '',
-      ref: '',
+      article_note: '',
+      ref: [{ value: '' }],
       article_cover: null,
+      category: '',
     },
+  });
+
+  const { fields, append, remove } = useFieldArray<ArticleFormData>({
+    control,
+    name: 'ref',
   });
 
   const queryClient = useQueryClient();
@@ -45,11 +62,19 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
     if (initialData) {
       setValue('article_name', initialData.article_name);
       setValue('article_content', initialData.article_content);
+      setValue('category', initialData.category || '');
       if (initialData.article_cover) {
         setPreviewImage(getArticleImageUrl(initialData.article_cover));
       } else {
         setPreviewImage(null);
       }
+
+      setValue(
+        'ref',
+        initialData.ref?.map((refItem) => ({ value: refItem.value })) || [
+          { value: '' },
+        ]
+      );
     }
   }, [initialData, setValue]);
 
@@ -75,7 +100,8 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
             ? 'แก้ไขข้อมูลบทความสำเร็จ!'
             : 'ข้อมูลบทความถูกสร้างสำเร็จ!'
         );
-        queryClient.invalidateQueries('article');
+        queryClient.invalidateQueries('articles');
+        queryClient.refetchQueries('articles');
         setLoading(false);
         reset();
         onCloseDrawer();
@@ -176,32 +202,138 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
         />
       </Box>
       <Box>
-        <Typography variant="h6">แหล่งอ้างอิง</Typography>
+        <Typography variant="h6">สรุปเนื้อหา</Typography>
         <Controller
-          name="ref"
+          name="article_note"
           control={control}
           defaultValue=""
           rules={{
-            required: 'โปรดป้อนแหล่งอ้างอิง',
+            required: 'โปรดป้อนสรุปเนื้อหา',
             minLength: {
               value: 10,
-              message: 'เนื้อหาควรมีอย่างน้อย 10 ตัวอักษร',
+              message: 'สรุปเนื้อหาควรมีอย่างน้อย 10 ตัวอักษร',
             },
           }}
           render={({ field, fieldState }) => (
             <TextField
               {...field}
               fullWidth
-              margin="normal"
-              placeholder="ป้อนแหล่งอ้างอิง"
               multiline
-              rows={3}
+              rows={4}
+              margin="normal"
+              placeholder="ป้อนสรุปเนื้อหา"
               error={!!fieldState.error}
               helperText={fieldState.error?.message}
             />
           )}
         />
       </Box>
+
+      <Box mb={2} mt={3}>
+        <Typography variant="h6">หมวดหมู่</Typography>
+        <FormControl fullWidth margin="normal" sx={{ maxWidth: 200 }}>
+          <Controller
+            name="category"
+            control={control}
+            rules={{ required: 'โปรดเลือกหมวดหมู่' }}
+            render={({ field, fieldState }) => (
+              <>
+                <Select
+                  {...field}
+                  displayEmpty
+                  inputProps={{ 'aria-label': 'หมวดหมู่' }}
+                  sx={{
+                    height: 40,
+                    '.MuiSelect-select': {
+                      paddingTop: '8px',
+                      paddingBottom: '8px',
+                    },
+                    borderColor: fieldState.invalid ? 'error.main' : 'default',
+                  }}
+                  error={fieldState.invalid}
+                >
+                  <MenuItem value="" disabled>
+                    เลือกหมวดหมู่
+                  </MenuItem>
+                  <MenuItem value="การแพทย์">การแพทย์</MenuItem>
+                  <MenuItem value="เทคโนโลยี">เทคโนโลยี</MenuItem>
+                  <MenuItem value="ทั่วไป">ทั่วไป</MenuItem>
+                </Select>
+                {fieldState.error && (
+                  <Typography variant="caption" color="error">
+                    {fieldState.error.message}
+                  </Typography>
+                )}
+              </>
+            )}
+          />
+        </FormControl>
+      </Box>
+
+      <Box>
+        <Typography variant="h6" mb={2}>
+          แหล่งอ้างอิง
+        </Typography>
+        {fields.map((item, index) => (
+          <Box key={index} display="flex" alignItems="center" mb={2}>
+            <Controller
+              name={`ref.${index}.value`}
+              control={control}
+              defaultValue={item.value}
+              rules={{
+                required: 'โปรดป้อนแหล่งอ้างอิง',
+                pattern: {
+                  value: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i,
+                  message: 'โปรดป้อนรูปแบบลิงก์หรือ URL ที่ถูกต้อง',
+                },
+              }}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  size="small"
+                  placeholder="ป้อนแหล่งอ้างอิง"
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                />
+              )}
+            />
+            <Button
+              onClick={() => remove(index)}
+              disabled={fields.length === 1}
+              sx={{
+                minWidth: 'auto',
+                p: 1,
+                ml: 1,
+                color: 'error.main',
+                bgcolor: 'transparent',
+                border: 'none',
+                '&:hover': {
+                  bgcolor: 'transparent',
+                },
+              }}
+            >
+              <FaRegTrashAlt />
+            </Button>
+          </Box>
+        ))}
+        <Box display="flex" alignItems="center">
+          <Button
+            startIcon={<AddIcon />}
+            onClick={() => append({ value: '' })}
+            sx={{
+              bgcolor: COLORS.blue[6],
+              color: 'white',
+              '&:hover': {
+                bgcolor: COLORS.blue[6],
+              },
+            }}
+          >
+            เพิ่มแหล่งอ้างอิง
+          </Button>
+        </Box>
+      </Box>
+
       <Box mt={10} display="flex" justifyContent="flex-end">
         <CustomButtonSave variant="contained" color="primary" loading={loading}>
           บันทึก

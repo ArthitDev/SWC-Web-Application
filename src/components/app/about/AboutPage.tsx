@@ -7,23 +7,73 @@ import {
   Typography,
 } from '@mui/material';
 import TermsDialog from 'components/landing/TermsDialog';
+import ConfirmDeleteModal from 'components/modal/ConfirmDeleteModal';
 import { motion } from 'framer-motion';
-import { InfoIcon } from 'lucide-react';
+import { History, InfoIcon } from 'lucide-react';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useRef, useState } from 'react';
 import COLORS from 'theme/colors';
 import BackButtonPage from 'utils/BackButtonPage';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
 const AboutPage: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [showCountdown, setShowCountdown] = useState(false);
+  const [isCountingDown, setIsCountingDown] = useState(false); // สถานะนับถอยหลัง
+  const router = useRouter();
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null); // ใช้ในการ track interval
+
   const handleOpenModal = () => {
     setOpenModal(true);
   };
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
+  const handleOpenModalReset = () => {
+    setIsModalOpen(true);
+    setCountdown(null);
+    setShowCountdown(false);
+    setIsCountingDown(false);
   };
+
+  const handleConfirmReset = () => {
+    if (isCountingDown) {
+      // ถ้านับถอยหลังอยู่ ให้ route ไปหน้า / ทันที
+      clearInterval(countdownIntervalRef.current as NodeJS.Timeout);
+      localStorage.removeItem('hasVisitedLandingPage');
+      router.push('/');
+      return;
+    }
+
+    setIsCountingDown(true);
+    setShowCountdown(true);
+    let countdownValue = 5;
+    setCountdown(countdownValue);
+
+    countdownIntervalRef.current = setInterval(() => {
+      countdownValue--;
+      setCountdown(countdownValue);
+
+      if (countdownValue === 0) {
+        clearInterval(countdownIntervalRef.current as NodeJS.Timeout);
+        localStorage.removeItem('hasVisitedLandingPage');
+        router.push('/');
+      }
+    }, 1000);
+  };
+
+  const handleCloseModal = () => {
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current); // ล้าง interval ที่ทำงานอยู่
+    }
+    setIsModalOpen(false);
+    setShowCountdown(false); // ซ่อนการแสดงผลการนับถอยหลัง
+    setCountdown(null);
+    setIsCountingDown(false); // รีเซ็ตสถานะการนับถอยหลัง
+    localStorage.setItem('hasVisitedLandingPage', 'true'); // ตั้งค่าใหม่ใน local storage
+  };
+
   return (
     <motion.div
       initial="initial"
@@ -129,19 +179,60 @@ const AboutPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Button
-          variant="contained"
+        <Box
           sx={{
-            backgroundColor: COLORS.blue[6],
-            color: 'white',
-            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             mt: 2,
           }}
-          startIcon={<InfoIcon />}
-          onClick={handleOpenModal}
         >
-          อ่านเงื่อนไขการใช้งาน
-        </Button>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: COLORS.blue[6],
+              color: 'white',
+              width: '80%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '8px 16px',
+            }}
+            startIcon={<InfoIcon />}
+            onClick={handleOpenModal}
+          >
+            อ่านเงื่อนไขการใช้งาน
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mt: 2,
+          }}
+        >
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: COLORS.red[5],
+              color: 'white',
+              width: '80%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '8px 16px',
+              '&:hover': {
+                backgroundColor: COLORS.red[4],
+              },
+            }}
+            startIcon={<History />}
+            onClick={handleOpenModalReset}
+          >
+            ลบข้อมูลการจดจำผู้ใช้
+          </Button>
+        </Box>
+
         <Typography
           variant="body2"
           sx={{ textAlign: 'center', mt: 2, color: COLORS.gray[3], pb: 5 }}
@@ -150,6 +241,19 @@ const AboutPage: React.FC = () => {
         </Typography>
       </Container>
       <TermsDialog open={openModal} onClose={handleCloseModal} />
+      <ConfirmDeleteModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmReset}
+        title="ยืนยันการลบข้อมูล"
+        description={
+          showCountdown && countdown !== null
+            ? `คุณจะกลับไปยังหน้าเริ่มต้นใช้งาน ใน ${countdown} . . .`
+            : 'แน่ใจว่าต้องการลบข้อมูลการใช้งาน ?'
+        }
+        confirmText="ยืนยันการลบ"
+        cancelText="ยกเลิก"
+      />
     </motion.div>
   );
 };

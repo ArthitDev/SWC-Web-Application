@@ -46,11 +46,12 @@ const ArticlePage: React.FC = () => {
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           onSearch={handleSearch}
-          placeholder="ค้นหารบทความ..."
+          placeholder="ค้นหาบทความ..."
           buttonLabel="ค้นหา"
         />
         <Box>
-          <ArticleCardPage />
+          <ArticleCardPage searchTerm={searchTerm} />
+          {/* ส่ง searchTerm เป็น prop */}
         </Box>
       </motion.div>
     </>

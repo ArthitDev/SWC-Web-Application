@@ -9,10 +9,31 @@ export const createTrick = async (data: TrickFormData) => {
   return response.data;
 };
 
+// อ่านข้อมูลแผลทั้งหมดพร้อม pagination
+export const getTricksWithPagination = async (
+  page: number = 1,
+  limit: number = 10,
+  search: string = ''
+) => {
+  const response = await axios.get(`${API_URL}/api/tricks`, {
+    params: {
+      page,
+      limit,
+      search,
+    },
+  });
+  return response.data;
+};
+
 // ดึงข้อมูลทั้งหมด
 export const getAllTricks = async () => {
-  const response = await axios.get(`${API_URL}/api/tricks`);
-  return response.data;
+  const response = await axios.get(`${API_URL}/api/tricks`, {
+    params: {
+      page: 1,
+      limit: 20,
+    },
+  });
+  return response.data.data;
 };
 
 // ดึงข้อมูลตาม ID

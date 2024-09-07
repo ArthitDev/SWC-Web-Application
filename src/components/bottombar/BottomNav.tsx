@@ -94,11 +94,18 @@ const BottomNav: React.FC = () => {
                   transform: 'none',
                 },
               },
+              '&:hover': {
+                color: 'primary.main',
+                '& .MuiSvgIcon-root': {
+                  transform: 'scale(1.2)',
+                },
+              },
               '& .MuiBottomNavigationAction-label': {
                 fontSize: '14px',
               },
               '& .MuiSvgIcon-root': {
                 fontSize: '26px',
+                transition: 'transform 0.3s ease',
               },
             },
           }}

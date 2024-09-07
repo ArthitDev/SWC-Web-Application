@@ -1,21 +1,41 @@
-import { Box, Card, Typography } from '@mui/material';
+import { Box, Card, CircularProgress, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { getAllDidyouknow } from 'services/didyouknowService';
+import { getDidyouknowWithPagination } from 'services/didyouknowService';
 import { DidyouknowData } from 'types/AdminGetDataTypes';
 import BackButtonPage from 'utils/BackButtonPage';
 import DataNotFound from 'utils/DataNotFound';
-import HomeCardError from 'utils/HomeCardError';
-import HomeCardLoading from 'utils/HomeCardLoading';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
+import ReusePagination from 'utils/ReusePagination';
+
+// กำหนดประเภทของข้อมูล Didyouknow และ Response
+interface DidyouknowResponse {
+  data: DidyouknowData[];
+  totalPages: number;
+}
 
 const DidyouknowPage: React.FC = () => {
-  // Specify the error type here (Error, string, or any other type you expect)
-  const { data, isLoading, error } = useQuery<DidyouknowData[], Error>(
-    'didyouknow',
-    getAllDidyouknow
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
+
+  // ใช้ useQuery พร้อมกับการกำหนดประเภทข้อมูลของ data และ error
+  const { data, isLoading, error } = useQuery<DidyouknowResponse, Error>(
+    ['didyouknow', currentPage],
+    async () => {
+      const response = await getDidyouknowWithPagination(currentPage, limit);
+      setTotalPages(response.totalPages);
+      return response;
+    },
+    {
+      keepPreviousData: true,
+    }
   );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <>
@@ -29,105 +49,120 @@ const DidyouknowPage: React.FC = () => {
         <BackButtonPage label="รู้หรือไม่ ?" />
 
         {isLoading && (
-          <HomeCardLoading
-            borderColor="#EAB308"
-            backgroundColor="#F2F9FC"
-            progressColor="#EAB308"
-            textColor="#EAB308"
-          />
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            height="70vh"
+          >
+            <CircularProgress />
+            <Typography sx={{ marginTop: 2 }}>กำลังโหลดข้อมูล...</Typography>
+          </Box>
         )}
 
         {error && (
-          <HomeCardError
-            borderColor="#EAB308"
-            backgroundColor="#F2F9FC"
-            textColor="#EAB308"
-            errorMessage={error.message || 'ไม่สามารถโหลดข้อมูลได้'}
-          />
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="70vh"
+          >
+            <Typography color="error">ไม่สามารถโหลดข้อมูลได้</Typography>
+          </Box>
         )}
 
-        {!isLoading && !error && !Array.isArray(data) && <DataNotFound />}
+        {!isLoading && !error && data && data.data.length === 0 && (
+          <DataNotFound />
+        )}
 
-        {!isLoading && !error && Array.isArray(data) && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: 2,
-              gap: 2,
-              pb: 5,
-            }}
-          >
-            {data.map((didyouknow) => (
-              <Card
-                key={didyouknow.id}
-                sx={{
-                  display: 'flex',
-                  backgroundColor: '#F2F9FC',
-                  borderRadius: '16px',
-                  padding: 0,
-                  width: '100%',
-                  maxWidth: 500,
-                  maxHeight: 300,
-                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-                  overflow: 'hidden',
-                }}
-              >
-                <Box
+        {!isLoading && !error && data && data.data.length > 0 && (
+          <>
+            <ReusePagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: 2,
+                gap: 2,
+                pb: 5,
+              }}
+            >
+              {data.data.map((didyouknow) => (
+                <Card
+                  key={didyouknow.id}
                   sx={{
-                    backgroundColor: '#EAB308',
-                    width: '8px',
-                  }}
-                />
-                <Box
-                  sx={{
-                    padding: 2,
+                    display: 'flex',
+                    backgroundColor: '#F2F9FC',
+                    borderRadius: '16px',
+                    padding: 0,
                     width: '100%',
+                    maxWidth: 500,
+                    maxHeight: 300,
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                    overflow: 'hidden',
                   }}
                 >
                   <Box
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginBottom: 1,
+                      backgroundColor: '#EAB308',
+                      width: '8px',
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      padding: 2,
+                      width: '100%',
                     }}
                   >
-                    <Typography
-                      variant="body1"
+                    <Box
                       sx={{
-                        fontWeight: 'bold',
-                        color: '#CA8A42',
                         display: 'flex',
                         alignItems: 'center',
+                        marginBottom: 1,
                       }}
                     >
-                      <span
-                        role="img"
-                        aria-label="lightbulb"
-                        style={{ marginRight: 8 }}
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontWeight: 'bold',
+                          color: '#CA8A42',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
                       >
-                        📖
-                      </span>
-                      {didyouknow.didyouknow_name}
+                        <span
+                          role="img"
+                          aria-label="lightbulb"
+                          style={{ marginRight: 8 }}
+                        >
+                          📖
+                        </span>
+                        {didyouknow.didyouknow_name}
+                      </Typography>
+                    </Box>
+                    <Typography
+                      sx={{
+                        fontSize: '1rem',
+                        marginBottom: 2,
+                        color: '#000000',
+                        lineHeight: 1.5,
+                        maxHeight: 200,
+                        overflow: 'auto',
+                      }}
+                    >
+                      {didyouknow.didyouknow_content}
                     </Typography>
                   </Box>
-                  <Typography
-                    sx={{
-                      fontSize: '1rem',
-                      marginBottom: 2,
-                      color: '#000000',
-                      lineHeight: 1.5,
-                      maxHeight: 200,
-                      overflow: 'auto',
-                    }}
-                  >
-                    {didyouknow.didyouknow_content}
-                  </Typography>
-                </Box>
-              </Card>
-            ))}
-          </Box>
+                </Card>
+              ))}
+            </Box>
+          </>
         )}
       </motion.div>
     </>

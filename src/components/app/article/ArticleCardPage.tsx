@@ -3,36 +3,54 @@ import {
   Card,
   CardContent,
   CircularProgress,
+  SelectChangeEvent,
   Typography,
 } from '@mui/material';
 import ReadMoreButton from 'components/button/ReadMoreButton';
-import useRefetchWebSocket from 'hooks/useRefetchWebSocket'; // นำเข้า useRefetchWebSocket
+import usePagination from 'hooks/usePagination';
+import useRefetchWebSocket from 'hooks/useRefetchWebSocket';
 import router from 'next/router';
-import React from 'react';
-import { useMutation, useQuery } from 'react-query'; // นำเข้า useMutation
+import React, { useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import {
-  getAllArticle,
   getArticleImageUrl,
+  getArticlesWithPagination,
   trackArticleClick,
-} from 'services/articleService'; // นำเข้า trackArticleClick
+} from 'services/articleService';
 import { ArticleData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
+import ReusePagination from 'utils/ReusePagination';
 
-const ArticleCardPage = () => {
+import CategoryDropdown from './CategoryDropdown';
+
+type ArticleCardPageProps = {
+  searchTerm: string; // เพิ่ม prop นี้เพื่อรับค่าการค้นหา
+};
+
+const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
   useRefetchWebSocket('articles', 'UPDATE_ARTICLES');
 
-  // Fetch ข้อมูล articles
+  const { page, limit, totalPages, setPage, setTotalPages } = usePagination();
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+
+  const handleCategoryChange = (event: SelectChangeEvent<string>) => {
+    setSelectedCategory(event.target.value as string);
+    setPage(1);
+  };
+
   const {
-    data: articles,
+    data: articlesData,
     isLoading,
     error,
-  } = useQuery<ArticleData[], Error>('articles', getAllArticle, {
-    staleTime: 1000 * 60 * 5,
-    cacheTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: true,
-    refetchInterval: 1000 * 60 * 5,
-  });
+  } = useQuery(
+    ['articles', selectedCategory, page, limit, searchTerm], // รวม searchTerm ใน dependency array
+    () => getArticlesWithPagination(selectedCategory, searchTerm, page, limit),
+    {
+      onSuccess: (data) => {
+        setTotalPages(data.totalPages);
+      },
+    }
+  );
 
   const mutation = useMutation(
     (articleData: { articleId: number; clickCount: number }) =>
@@ -42,10 +60,10 @@ const ArticleCardPage = () => {
       ),
     {
       onSuccess: () => {
-        // เมื่อสำเร็จ รีเซ็ตการนับคลิกใน Local Storage
+        // Reset click count in local storage on success
       },
       onError: () => {
-        // จัดการข้อผิดพลาดตามต้องการ
+        // Handle error as needed
       },
     }
   );
@@ -56,7 +74,6 @@ const ArticleCardPage = () => {
     return tmp.textContent || tmp.innerText || '';
   };
 
-  // ฟังก์ชันช่วยเหลือสำหรับจัดการ Local Storage
   const getClicksFromStorage = (articleId: number) => {
     const clicks = JSON.parse(localStorage.getItem('articleClicks') || '{}');
     return clicks[articleId] || 0;
@@ -73,9 +90,8 @@ const ArticleCardPage = () => {
     setClicksToStorage(articleId, clickCount);
 
     if (clickCount >= 5) {
-      // เรียกใช้งาน mutation เพื่อส่งข้อมูลไปยัง backend
       mutation.mutate({ articleId, clickCount });
-      setClicksToStorage(articleId, 0); // รีเซ็ตการนับเมื่อส่งข้อมูลสำเร็จ
+      setClicksToStorage(articleId, 0);
     }
 
     router.push(`/app/article/${articleId}`);
@@ -85,11 +101,13 @@ const ArticleCardPage = () => {
     return (
       <Box
         display="flex"
+        flexDirection="column"
         justifyContent="center"
         alignItems="center"
-        height="100vh"
+        height="50vh"
       >
         <CircularProgress />
+        <Typography sx={{ marginTop: 2 }}>กำลังโหลดข้อมูล...</Typography>
       </Box>
     );
   }
@@ -100,9 +118,9 @@ const ArticleCardPage = () => {
         display="flex"
         justifyContent="center"
         alignItems="center"
-        height="100vh"
+        height="50vh"
       >
-        <Typography color="error">Error: {error.message}</Typography>
+        <Typography color="error">ไม่สามารถโหลดข้อมูลได้</Typography>
       </Box>
     );
   }
@@ -117,8 +135,21 @@ const ArticleCardPage = () => {
         width: '100%',
       }}
     >
-      {Array.isArray(articles) && articles.length > 0 ? (
-        articles.map((article) => (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          width: '100%',
+          pb: 2,
+        }}
+      >
+        <CategoryDropdown
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
+        />
+      </Box>
+      {articlesData && articlesData.data && articlesData.data.length > 0 ? (
+        articlesData.data.map((article: ArticleData) => (
           <Card
             key={article.id}
             elevation={1}
@@ -133,13 +164,20 @@ const ArticleCardPage = () => {
             }}
           >
             {article.article_cover && (
-              <Box sx={{ position: 'relative' }}>
+              <Box
+                sx={{
+                  position: 'relative',
+                  cursor: 'pointer',
+                  width: '100%',
+                  height: '250px',
+                }}
+              >
                 <img
                   src={getArticleImageUrl(article.article_cover)}
                   alt={article.article_name}
                   style={{
                     width: '100%',
-                    height: '250px',
+                    height: '100%',
                     objectFit: 'cover',
                   }}
                 />
@@ -163,12 +201,10 @@ const ArticleCardPage = () => {
               </Typography>
               <Box>
                 <ReadMoreButton
-                  onClick={() => handleReadMoreClick(article.id)} // เรียกใช้ฟังก์ชันที่เราสร้าง
+                  onClick={() => handleReadMoreClick(article.id)}
                   fullWidth
                   text="อ่านเพิ่มเติม"
-                  sx={{
-                    mt: 3,
-                  }}
+                  sx={{ mt: 3 }}
                 />
               </Box>
             </CardContent>
@@ -177,6 +213,12 @@ const ArticleCardPage = () => {
       ) : (
         <DataNotFound />
       )}
+
+      <ReusePagination
+        totalPages={totalPages}
+        currentPage={page}
+        onPageChange={setPage}
+      />
     </Box>
   );
 };

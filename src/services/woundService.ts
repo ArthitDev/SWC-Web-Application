@@ -8,7 +8,8 @@ export const createWound = async (data: WoundFormData, image: File) => {
   const formData = new FormData();
   formData.append('wound_name', data.wound_name);
   formData.append('wound_content', data.wound_content);
-  formData.append('ref', data.ref);
+  formData.append('wound_note', data.wound_note);
+  formData.append('ref', JSON.stringify(data.ref));
   formData.append('image', image);
 
   const response = await axios.post(`${API_URL}/api/wounds`, formData, {
@@ -19,9 +20,29 @@ export const createWound = async (data: WoundFormData, image: File) => {
   return response.data;
 };
 
-// อ่านข้อมูลแผลทั้งหมด
-export const getAllWounds = async () => {
-  const response = await axios.get(`${API_URL}/api/wounds`);
+// อ่านข้อมูลแผลทั้งหมดพร้อม pagination และ search functionality
+export const getWoundsWithPagination = async (
+  page: number = 1,
+  limit: number = 10,
+  search: string = ''
+) => {
+  const response = await axios.get(`${API_URL}/api/wounds`, {
+    params: {
+      page,
+      limit,
+      search,
+    },
+  });
+  return response.data;
+};
+
+// อ่านข้อมูลแผลทั้งหมด (แบบไม่แบ่งหน้า) พร้อม search functionality
+export const getAllWounds = async (search: string = '') => {
+  const response = await axios.get(`${API_URL}/api/wounds`, {
+    params: {
+      search,
+    },
+  });
   return response.data;
 };
 
@@ -40,7 +61,8 @@ export const updateWound = async (
   const formData = new FormData();
   formData.append('wound_name', data.wound_name);
   formData.append('wound_content', data.wound_content);
-  formData.append('ref', data.ref);
+  formData.append('wound_note', data.wound_note);
+  formData.append('ref', JSON.stringify(data.ref));
   if (image) {
     formData.append('image', image); // แนบรูปภาพใน FormData ถ้ามี
   }

@@ -3,7 +3,7 @@ import React from 'react';
 import { IoWarning } from 'react-icons/io5';
 import COLORS from 'theme/colors';
 
-interface ConfirmDeleteModalProps {
+interface CustomModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -13,7 +13,7 @@ interface ConfirmDeleteModalProps {
   cancelText: string;
 }
 
-const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
+const CustomModal: React.FC<CustomModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -35,12 +35,12 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: { xs: '90%', sm: '400px', md: '500px' }, // ทำให้ responsive ตามขนาดหน้าจอ
-          maxWidth: '100%', // จำกัดขนาดสูงสุดของ card ไม่ให้เกินขอบหน้าจอ
+          width: { xs: '90%', sm: '400px', md: '500px' },
+          maxWidth: '100%',
           bgcolor: 'background.paper',
           borderRadius: 2,
           boxShadow: 24,
-          p: { xs: 2, sm: 4 }, // เพิ่ม padding ตามขนาดหน้าจอ
+          p: { xs: 2, sm: 4 },
         }}
       >
         <Box display="flex" alignItems="center" mb={2}>
@@ -84,4 +84,4 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
   );
 };
 
-export default ConfirmDeleteModal;
+export default CustomModal;

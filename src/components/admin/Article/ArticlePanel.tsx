@@ -3,7 +3,7 @@ import CustomButtonAdd from 'components/button/CustomButtonAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
 import ArticleForm from 'components/form/ArticleForm';
 import SearchBox from 'components/search/SearchBox';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
 import { ArticleData } from 'types/AdminGetDataTypes';
@@ -19,8 +19,9 @@ const ArticlePanel: React.FC<ArticlePanelProps> = () => {
   const [editingArticle, setEditingArticle] = useState<ArticleData | null>(
     null
   );
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState(''); // เก็บค่าที่จะใช้ในการค้นหาจริง ๆ
   const handleSearch = () => {
-    console.log('Searching for:', searchTerm);
+    setAppliedSearchTerm(searchTerm); // อัปเดตค่าที่จะใช้ในการค้นหาจริง ๆ
   };
 
   const toggleDrawer = (open: boolean) => () => {
@@ -33,6 +34,18 @@ const ArticlePanel: React.FC<ArticlePanelProps> = () => {
     setIsDrawerOpen(true);
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      setAppliedSearchTerm('');
+    }
+  }, [searchTerm]);
+
   return (
     <Box>
       <Box mt={3} display="flex" justifyContent="center">
@@ -41,6 +54,7 @@ const ArticlePanel: React.FC<ArticlePanelProps> = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
+            onKeyPress={handleKeyPress}
             placeholder="ค้นหาบทความ..."
             buttonLabel="ค้นหา"
           />
@@ -52,7 +66,7 @@ const ArticlePanel: React.FC<ArticlePanelProps> = () => {
             <Grid container alignItems="center" justifyContent="space-between">
               <Grid item>
                 <Typography variant="h5" sx={{ fontWeight: 'Medium' }}>
-                  จัดการข้อมูลบทความได้ที่นี่
+                  จัดการข้อมูลบทความ
                 </Typography>
               </Grid>
               <Grid item>
@@ -97,7 +111,10 @@ const ArticlePanel: React.FC<ArticlePanelProps> = () => {
               </Grid>
             </Grid>
           </Box>
-          <ArticleCard onEdit={handleEditArticle} />
+          <ArticleCard
+            onEdit={handleEditArticle}
+            searchTerm={appliedSearchTerm}
+          />
         </Paper>
       </Box>
 

@@ -3,11 +3,14 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ImageIcon from '@mui/icons-material/Image';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
+import useMobilePermissions from 'hooks/useMobilePermissions'; // Import the custom hook
 import router from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast'; // Import toast
 import { FaRegTrashAlt, FaTimes } from 'react-icons/fa';
+import { useMutation } from 'react-query';
 import Webcam from 'react-webcam';
+import { predictImage } from 'services/predictService'; // Import predictImage service
 import COLORS from 'theme/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
@@ -15,15 +18,16 @@ import * as styles from './PredictPage.style';
 import PrivacyNoticeCard from './PrivacyNoticeCard';
 
 const PredictPage: React.FC = () => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [objectFit, setObjectFit] = useState<'cover' | 'contain'>('cover');
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
   const webcamRef = useRef<Webcam>(null);
+  const { checkFilePermission } = useMobilePermissions();
 
   useEffect(() => {
     const userAgent = navigator.userAgent || navigator.vendor;
-
     if (/android/i.test(userAgent) || /iPhone|iPad|iPod/i.test(userAgent)) {
       setFacingMode('environment');
     } else {
@@ -31,26 +35,8 @@ const PredictPage: React.FC = () => {
     }
   }, []);
 
-  // Function to check if the device is mobile
-  const isMobileDevice = () => {
-    const userAgent = navigator.userAgent || navigator.vendor;
-    return /android/i.test(userAgent) || /iPhone|iPad|iPod/i.test(userAgent);
-  };
-
-  // Function to check file access permission only on mobile devices
-  const checkFilePermission = async () => {
-    if (isMobileDevice() && navigator.permissions) {
-      try {
-        const result = await navigator.permissions.query({
-          name: 'camera' as PermissionName,
-        });
-        if (result.state !== 'granted') {
-          toast.error('กรุณาให้สิทธ์ในการเข้าถึงไฟล์');
-        }
-      } catch (error) {
-        //
-      }
-    }
+  const handleFileInputClick = async () => {
+    await checkFilePermission();
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,33 +46,60 @@ const PredictPage: React.FC = () => {
 
     const file = event.target.files?.[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('ขนาดของรูปภาพไม่ควรเกิน 5MB');
+        return;
+      }
+
+      setSelectedImage(file); // Store the File object
       const imageUrl = URL.createObjectURL(file);
+      setImagePreview(imageUrl);
+
       const img = new Image();
       img.src = imageUrl;
       img.onload = () => {
         const aspectRatio = img.width / img.height;
-        if (aspectRatio > 1) {
-          setObjectFit('cover');
-        } else {
-          setObjectFit('contain');
-        }
+        setObjectFit(aspectRatio > 1 ? 'cover' : 'contain');
         toast.success('แนบรูปภาพแล้ว');
-        setSelectedImage(imageUrl);
       };
+
+      // รีเซ็ตค่า input ของไฟล์หลังจากที่รูปภาพถูกอัปโหลด
+      const fileInput = event.target;
+      fileInput.value = '';
     } else {
-      toast.error('ไม่พบไ��ล์รูป��า��');
+      toast.error('ไม่พบรูปภาพที่แนบ');
     }
   };
 
   const handleRemoveImage = () => {
     setSelectedImage(null);
+    setImagePreview(null);
+
+    // รีเซ็ตค่า input ของไฟล์
+    const fileInput = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   };
 
   const handleTakePhoto = () => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot();
       if (imageSrc) {
-        setSelectedImage(imageSrc);
+        // Convert base64 to file
+        const byteString = atob(imageSrc.split(',')[1]);
+        const mimeString = imageSrc.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        const blob = new Blob([ab], { type: mimeString });
+        const file = new File([blob], 'photo.jpg', { type: mimeString });
+        setSelectedImage(file);
+        setImagePreview(imageSrc);
         toast.success('ถ่ายรูปภาพแล้ว');
         setIsCameraOpen(false);
       } else {
@@ -97,6 +110,7 @@ const PredictPage: React.FC = () => {
 
   const handleOpenCamera = async () => {
     setSelectedImage(null);
+    setImagePreview(null); // Clear image preview
 
     try {
       await navigator.mediaDevices.getUserMedia({ video: true });
@@ -111,13 +125,44 @@ const PredictPage: React.FC = () => {
     setIsCameraOpen(false);
   };
 
-  // Call checkFilePermission before file input is triggered, only on mobile
-  const handleFileInputClick = async () => {
-    await checkFilePermission();
-  };
+  const mutation = useMutation(
+    (imageData: FormData) => {
+      return predictImage(imageData);
+    },
+    {
+      onMutate: () => {
+        toast.loading('กำลังวิเคราะห์ภาพ...', { id: 'loading' });
+      },
+      onSuccess: (data) => {
+        toast.dismiss('loading');
+        toast.success('การพยากรณ์เสร็จสิ้น');
+
+        // ส่งข้อมูลผ่าน query parameters รวมถึง URL ของรูปภาพ
+        router.push({
+          pathname: '/app/predict/result',
+          query: {
+            predictions: JSON.stringify(data.predictions),
+            image_url: data.image_url,
+          },
+        });
+      },
+      onError: () => {
+        toast.dismiss('loading');
+        toast.error('เกิดข้อผิดพลาดในการวิเคราะห์ภาพ');
+      },
+    }
+  );
 
   const handlePredict = () => {
-    router.push(`/app/predict/result`);
+    if (!selectedImage) {
+      toast.error('กรุณาแนบหรือถ่ายรูปภาพก่อนวิเคราะห์');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedImage);
+
+    mutation.mutate(formData);
   };
 
   return (
@@ -140,11 +185,11 @@ const PredictPage: React.FC = () => {
         </Typography>
 
         <Box sx={styles.ImageContainer}>
-          {selectedImage ? (
+          {imagePreview ? (
             <>
               <Box
                 component="img"
-                src={selectedImage}
+                src={imagePreview}
                 alt="Preview"
                 sx={{
                   position: 'absolute',
@@ -224,8 +269,9 @@ const PredictPage: React.FC = () => {
             variant="contained"
             sx={styles.MainButton}
             onClick={handlePredict}
+            disabled={mutation.isLoading}
           >
-            วิเคราะห์ภาพแผล
+            {mutation.isLoading ? 'กำลังวิเคราะห์...' : 'วิเคราะห์ภาพแผล'}
           </Button>
 
           <Button
@@ -242,7 +288,6 @@ const PredictPage: React.FC = () => {
               onChange={handleImageUpload}
             />
           </Button>
-
           <Button
             variant="contained"
             sx={styles.IconButton}

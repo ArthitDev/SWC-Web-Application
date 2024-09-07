@@ -26,6 +26,7 @@ interface SearchBoxProps {
   onSearch: () => void;
   placeholder?: string;
   buttonLabel?: string;
+  onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const SearchBox: React.FC<SearchBoxProps> = ({
@@ -35,13 +36,26 @@ const SearchBox: React.FC<SearchBoxProps> = ({
   placeholder = 'Search...',
   buttonLabel = 'Search',
 }) => {
+  const handleSearch = () => {
+    onSearch();
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <Container>
       <CustomTextField
         variant="outlined"
         placeholder={placeholder}
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setSearchTerm(e.target.value)
+        }
+        onKeyPress={handleKeyPress}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -52,7 +66,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
         fullWidth
         size="small"
       />
-      <CustomSearchButton label={buttonLabel} onClick={onSearch} />
+      <CustomSearchButton label={buttonLabel} onClick={handleSearch} />
     </Container>
   );
 };

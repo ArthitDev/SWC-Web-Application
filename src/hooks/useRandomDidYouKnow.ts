@@ -9,15 +9,18 @@ const useRandomDidYouKnow = () => {
   return useQuery(
     'didYouKnow',
     async () => {
-      const data = await getAllDidyouknow();
-      return data[Math.floor(Math.random() * data.length)];
+      const didyouknows = await getAllDidyouknow(); // เรียกข้อมูลโดยใช้ pagination
+      if (didyouknows.length === 0) {
+        throw new Error('No DidYouKnow available');
+      }
+      return didyouknows[Math.floor(Math.random() * didyouknows.length)]; // สุ่มเลือก DidYouKnow หนึ่งตัว
     },
     {
-      staleTime: 1000 * 60 * 5,
-      cacheTime: 1000 * 60 * 10,
+      staleTime: 1000 * 60 * 5, // 5 นาที
+      cacheTime: 1000 * 60 * 10, // 10 นาที
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
-      refetchInterval: 1000 * 60 * 5,
+      refetchInterval: 1000 * 60 * 5, // 5 นาที
     }
   );
 };

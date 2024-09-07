@@ -71,6 +71,6 @@ export const TypographyLogoStyles = {
 export const TypographyListItemText = {
   typography: 'subtitle2',
   fontFamily: 'Prompt, sans-serif',
-  fontSize: '23px',
-  fontWeight: 'bold',
+  fontSize: '22px',
+  color: 'red',
 };

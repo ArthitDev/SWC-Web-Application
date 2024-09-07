@@ -1,5 +1,5 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, useMediaQuery } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -15,6 +15,7 @@ const BackButtonPage: React.FC<BackButtonPageProps> = ({
   customRoute,
 }) => {
   const router = useRouter();
+  const isSmallScreen = useMediaQuery('(max-width:600px)'); // เช็คขนาดหน้าจอ
 
   const handleBackClick = () => {
     if (customRoute) {
@@ -24,6 +25,13 @@ const BackButtonPage: React.FC<BackButtonPageProps> = ({
     } else {
       router.back();
     }
+  };
+
+  const getTruncatedLabel = (text: string, maxLength: number) => {
+    if (text.length > maxLength) {
+      return `${text.slice(0, maxLength)}...`;
+    }
+    return text;
   };
 
   return (
@@ -52,9 +60,12 @@ const BackButtonPage: React.FC<BackButtonPageProps> = ({
         <ArrowBackIcon sx={{ fontSize: '1.7rem' }} />
         <Typography
           variant="body1"
-          sx={{ fontSize: '1.5rem', fontWeight: '500' }}
+          sx={{
+            fontSize: '1.5rem',
+            fontWeight: '500',
+          }}
         >
-          {label}
+          {isSmallScreen ? getTruncatedLabel(label, 28) : label}
         </Typography>
       </Button>
     </Box>

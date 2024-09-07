@@ -1,7 +1,10 @@
-import { Box, Typography } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { Box, IconButton, Switch, Typography } from '@mui/material';
+import CustomModal from 'components/modal/CustomModal';
 import SearchBoxApp from 'components/search/SearchBoxApp';
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import COLORS from 'theme/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
@@ -9,10 +12,36 @@ import WoundCardPage from './WoundCardPage';
 
 const WoundPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState(''); // เก็บค่าที่จะใช้ในการค้นหาจริง ๆ
+  const [filterEnabled, setFilterEnabled] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
 
   const handleSearch = () => {
-    console.log('Searching for:', searchTerm);
+    setAppliedSearchTerm(searchTerm); // อัปเดตค่าที่จะใช้ในการค้นหาจริง ๆ
   };
+
+  const handleToggleFilter = () => {
+    if (filterEnabled) {
+      setOpenModal(true);
+    } else {
+      setFilterEnabled(!filterEnabled);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleConfirmDisableFilter = () => {
+    setFilterEnabled(false);
+    setOpenModal(false);
+  };
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      setAppliedSearchTerm('');
+    }
+  }, [searchTerm]);
 
   return (
     <>
@@ -46,13 +75,43 @@ const WoundPage: React.FC = () => {
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           onSearch={handleSearch}
-          placeholder="ค้นหารแผล..."
+          placeholder="ค้นหาแผล..."
           buttonLabel="ค้นหา"
         />
+        <Box
+          display="flex"
+          justifyContent="flex-end"
+          alignItems="center"
+          sx={{ mt: 2, pr: 3 }}
+        >
+          <Typography variant="body1" sx={{ mr: 1 }}>
+            {filterEnabled ? 'ปิดฟิลเตอร์แผล' : 'เปิดฟิลเตอร์แผล'}
+          </Typography>
+          <Switch
+            checked={filterEnabled}
+            onChange={handleToggleFilter}
+            color="primary"
+          />
+          <IconButton color="primary" onClick={handleToggleFilter}>
+            {filterEnabled ? <VisibilityOffIcon /> : <VisibilityIcon />}
+          </IconButton>
+        </Box>
         <Box>
-          <WoundCardPage />
+          <WoundCardPage
+            filterEnabled={filterEnabled}
+            searchTerm={appliedSearchTerm}
+          />
         </Box>
       </motion.div>
+      <CustomModal
+        isOpen={openModal}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDisableFilter}
+        title="ยืนยันการปิดฟิลเตอร์"
+        description="ภาพที่แสดงอาจมีความรุนแรงและน่าสยดสยอง คุณต้องการปิดฟิลเตอร์เพื่อแสดงภาพเหล่านี้หรือไม่?"
+        confirmText="ยืนยัน"
+        cancelText="ยกเลิก"
+      />
     </>
   );
 };

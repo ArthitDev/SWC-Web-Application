@@ -3,7 +3,7 @@ import CustomButtonAdd from 'components/button/CustomButtonAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
 import WoundForm from 'components/form/WoundForm';
 import SearchBox from 'components/search/SearchBox';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
 import { WoundData } from 'types/AdminGetDataTypes';
@@ -17,9 +17,10 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [editingWound, setEditingWound] = useState<WoundData | null>(null); // สถานะแก้ไข
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState(''); // เก็บค่าที่จะใช้ในการค้นหาจริง ๆ
 
   const handleSearch = () => {
-    console.log('Searching for:', searchTerm);
+    setAppliedSearchTerm(searchTerm); // อัปเดตค่าที่จะใช้ในการค้นหาจริง ๆ
   };
 
   const toggleDrawer = (open: boolean) => () => {
@@ -32,6 +33,18 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
     setIsDrawerOpen(true);
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      setAppliedSearchTerm('');
+    }
+  }, [searchTerm]);
+
   return (
     <Box>
       <Box mt={3} display="flex" justifyContent="center">
@@ -40,6 +53,7 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
+            onKeyPress={handleKeyPress}
             placeholder="ค้นหาแผล..."
             buttonLabel="ค้นหา"
           />
@@ -51,7 +65,7 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
             <Grid container alignItems="center" justifyContent="space-between">
               <Grid item>
                 <Typography variant="h5" sx={{ fontWeight: 'Medium' }}>
-                  จัดการข้อมูลแผลได้ที่นี่
+                  จัดการข้อมูลแผล
                 </Typography>
               </Grid>
               <Grid item>
@@ -98,7 +112,7 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
             </Grid>
           </Box>
           {/* เรียกใช้ WoundCard */}
-          <WoundCard onEdit={handleEditWound} />
+          <WoundCard onEdit={handleEditWound} searchTerm={appliedSearchTerm} />
         </Paper>
       </Box>
 

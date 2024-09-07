@@ -49,7 +49,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout }) => {
       >
         <MenuItem disabled>{user.username}</MenuItem>
         <MenuItem disabled>{user.email}</MenuItem>
-        <MenuItem onClick={onLogout}>Logout</MenuItem>
+        <MenuItem onClick={onLogout}>ออกจากระบบ</MenuItem>
       </Menu>
     </Box>
   );

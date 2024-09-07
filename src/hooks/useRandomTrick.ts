@@ -9,15 +9,18 @@ const useRandomTrick = () => {
   return useQuery(
     'trick',
     async () => {
-      const data = await getAllTricks();
-      return data[Math.floor(Math.random() * data.length)];
+      const tricks = await getAllTricks();
+      if (tricks.length === 0) {
+        throw new Error('No tricks available');
+      }
+      return tricks[Math.floor(Math.random() * tricks.length)];
     },
     {
-      staleTime: 1000 * 60 * 5,
-      cacheTime: 1000 * 60 * 10,
+      staleTime: 1000 * 60 * 5, // 5 นาที
+      cacheTime: 1000 * 60 * 10, // 10 นาที
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
-      refetchInterval: 1000 * 60 * 5,
+      refetchInterval: 1000 * 60 * 5, // 5 นาที
     }
   );
 };

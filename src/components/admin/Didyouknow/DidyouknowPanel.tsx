@@ -3,7 +3,7 @@ import CustomButtonAdd from 'components/button/CustomButtonAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
 import DidyouknowForm from 'components/form/DidyouknowForm';
 import SearchBox from 'components/search/SearchBox';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
 import { DidyouknowData } from 'types/AdminGetDataTypes'; // import ประเภทข้อมูล
@@ -16,13 +16,13 @@ const DidyouknowPanel: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [editingDidyouknow, setEditingDidyouknow] =
     useState<DidyouknowData | null>(null); // สถานะแก้ไข
-
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState(''); // เก็บค่าที่จะใช้ในการค้นหาจริง ๆ
   const isSmallScreen = useMediaQuery((theme: any) =>
     theme.breakpoints.down('sm')
   );
 
   const handleSearch = () => {
-    console.log('Searching for:', searchTerm);
+    setAppliedSearchTerm(searchTerm); // อัปเดตค่าที่จะใช้ในการค้นหาจริง ๆ
   };
 
   const toggleDrawer = (open: boolean) => () => {
@@ -35,6 +35,18 @@ const DidyouknowPanel: React.FC = () => {
     setIsDrawerOpen(true);
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      setAppliedSearchTerm('');
+    }
+  }, [searchTerm]);
+
   return (
     <Box>
       <Box mt={3} display="flex" justifyContent="center">
@@ -43,6 +55,7 @@ const DidyouknowPanel: React.FC = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
+            onKeyPress={handleKeyPress}
             placeholder="ค้นหารู้หรือไม่..."
             buttonLabel="ค้นหา"
           />
@@ -58,7 +71,7 @@ const DidyouknowPanel: React.FC = () => {
                   pb={isSmallScreen ? 2 : 0}
                   sx={{ fontWeight: 'Medium' }}
                 >
-                  จัดการข้อมูลรู้หรือไม่ได้ที่นี่
+                  จัดการข้อมูลรู้หรือไม่
                 </Typography>
               </Grid>
               <Grid item>
@@ -97,7 +110,10 @@ const DidyouknowPanel: React.FC = () => {
               </Grid>
             </Grid>
           </Box>
-          <DidyouknowCard onEdit={handleEditClick} />
+          <DidyouknowCard
+            onEdit={handleEditClick}
+            searchTerm={appliedSearchTerm}
+          />
         </Paper>
       </Box>
       <ReusableDrawer

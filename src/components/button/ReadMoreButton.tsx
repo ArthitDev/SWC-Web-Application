@@ -3,6 +3,7 @@ import {
   ButtonProps as MuiButtonProps,
 } from '@mui/material';
 import React from 'react';
+import COLORS from 'theme/colors';
 
 type ReadMoreButtonProps = {
   variant?: 'contained' | 'outlined';
@@ -16,9 +17,9 @@ type ReadMoreButtonProps = {
 
 const ReadMoreButton: React.FC<ReadMoreButtonProps> = ({
   variant = 'contained',
-  color = '#3A9CFD',
-  hoverColor = '#3A9CFD',
-  activeColor = '#3A9CFD',
+  color = COLORS.blue[6],
+  hoverColor = COLORS.blue[7],
+  activeColor = COLORS.blue[7],
   height = '45px',
   width = '50%',
   text,

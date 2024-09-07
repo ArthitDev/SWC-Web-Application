@@ -1,18 +1,21 @@
 export type WoundData = {
   id: number;
   wound_name: string;
+  wound_name_en: string;
   wound_cover: string | null;
   wound_content: string;
-  ref: string;
+  wound_note: string;
+  ref: { value: string }[];
 };
 
 export type ArticleData = {
   id: number;
   article_name: string;
-  author_name: string;
   article_cover: string | null;
   article_content: string;
-  ref: string;
+  article_note: string;
+  ref: { value: string }[];
+  category: string;
 };
 
 export type TrickData = {

@@ -19,7 +19,7 @@ const CustomSearchButton: React.FC<CustomSearchButtonProps> = ({
         minWidth: '150px',
         backgroundColor: COLORS.blue[6],
         '&:hover': {
-          backgroundColor: COLORS.blue[6],
+          backgroundColor: COLORS.blue[7],
         },
       }}
       {...props}

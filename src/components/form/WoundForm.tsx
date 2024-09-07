@@ -1,10 +1,12 @@
-import { Box, TextField, Typography } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import CustomButtonSave from 'components/button/CustomButtonSave';
 import ImageUpload from 'components/input/ImageUpload';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import { useMutation, useQueryClient } from 'react-query';
 import {
   createWound,
@@ -32,10 +34,17 @@ const WoundForm: React.FC<WoundFormProps> = ({
   const { control, handleSubmit, reset, setValue } = useForm<WoundFormData>({
     defaultValues: initialData || {
       wound_name: '',
+      wound_name_en: '',
       wound_content: '',
-      ref: '',
+      wound_note: '',
+      ref: [{ value: '' }],
       wound_cover: null,
     },
+  });
+
+  const { fields, append, remove } = useFieldArray<WoundFormData>({
+    control,
+    name: 'ref',
   });
 
   const queryClient = useQueryClient();
@@ -51,6 +60,13 @@ const WoundForm: React.FC<WoundFormProps> = ({
       } else {
         setPreviewImage(null);
       }
+
+      setValue(
+        'ref',
+        initialData.ref?.map((refItem) => ({ value: refItem.value })) || [
+          { value: '' },
+        ]
+      );
     }
   }, [initialData, setValue]);
 
@@ -74,7 +90,8 @@ const WoundForm: React.FC<WoundFormProps> = ({
         toast.success(
           initialData ? 'แก้ไขข้อมูลแผลสำเร็จ!' : 'ข้อมูลแผลถูกสร้างสำเร็จ!'
         );
-        queryClient.invalidateQueries('wound');
+        queryClient.invalidateQueries('wounds');
+        queryClient.refetchQueries('wounds');
         setLoading(false);
         reset();
         onCloseDrawer();
@@ -182,31 +199,94 @@ const WoundForm: React.FC<WoundFormProps> = ({
         />
       </Box>
       <Box>
-        <Typography variant="h6">แหล่งอ้างอิง</Typography>
+        <Typography variant="h6">สรุปเนื้อหา</Typography>
         <Controller
-          name="ref"
+          name="wound_note"
           control={control}
           defaultValue=""
           rules={{
-            required: 'โปรดป้อนแหล่งอ้างอิง',
+            required: 'โปรดป้อนสรุปเนื้อหา',
             minLength: {
               value: 10,
-              message: 'เนื้อหาควรมีอย่างน้อย 10 ตัวอักษร',
+              message: 'สรุปเนื้อหาควรมีอย่างน้อย 10 ตัวอักษร',
             },
           }}
           render={({ field, fieldState }) => (
             <TextField
               {...field}
               fullWidth
-              margin="normal"
-              placeholder="ป้อนแหล่งอ้างอิง"
               multiline
-              rows={3}
+              rows={4}
+              margin="normal"
+              placeholder="ป้อนสรุปเนื้อหา"
               error={!!fieldState.error}
               helperText={fieldState.error?.message}
             />
           )}
         />
+      </Box>
+      <Box>
+        <Typography variant="h6" mb={2}>
+          แหล่งอ้างอิง
+        </Typography>
+        {fields.map((item, index) => (
+          <Box key={index} display="flex" alignItems="center" mb={2}>
+            <Controller
+              name={`ref.${index}.value`}
+              control={control}
+              defaultValue={item.value}
+              rules={{
+                required: 'โปรดป้อนแหล่งอ้างอิง',
+                pattern: {
+                  value: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i,
+                  message: 'โปรดป้อนรูปแบบลิงก์หรือ URL ที่ถูกต้อง',
+                },
+              }}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  size="small"
+                  placeholder="ป้อนแหล่งอ้างอิง"
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                />
+              )}
+            />
+            <Button
+              onClick={() => remove(index)}
+              disabled={fields.length === 1}
+              sx={{
+                minWidth: 'auto',
+                p: 1,
+                ml: 1,
+                color: 'error.main',
+                bgcolor: 'transparent',
+                border: 'none',
+                '&:hover': {
+                  bgcolor: 'transparent',
+                },
+              }}
+            >
+              <FaRegTrashAlt />
+            </Button>
+          </Box>
+        ))}
+        <Box display="flex" alignItems="center">
+          <Button
+            startIcon={<AddIcon />}
+            onClick={() => append({ value: '' })}
+            sx={{
+              bgcolor: COLORS.blue[6],
+              color: 'white',
+              '&:hover': {
+                bgcolor: COLORS.blue[6],
+              },
+            }}
+          >
+            เพิ่มแหล่งอ้างอิง
+          </Button>
+        </Box>
       </Box>
       <Box mt={10} display="flex" justifyContent="flex-end">
         <CustomButtonSave variant="contained" color="primary" loading={loading}>

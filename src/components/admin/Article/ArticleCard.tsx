@@ -2,49 +2,69 @@ import { Delete, Edit } from '@mui/icons-material';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import ReusableAction from 'components/button/ReusableAction';
 import ConfirmDeleteModal from 'components/modal/ConfirmDeleteModal';
+import usePagination from 'hooks/usePagination';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
   deleteArticle,
-  getAllArticle,
   getArticleImageUrl,
+  getArticlesWithPagination,
 } from 'services/articleService';
 import COLORS from 'theme/colors';
 import { ArticleData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
-// นำเข้าฟังก์ชันจาก utils
 import { extractTextAfterImage } from 'utils/extractTextUtils';
 import FetchError from 'utils/FetchError';
+import ReusePagination from 'utils/ReusePagination';
 import WoundArticleLoading from 'utils/WoundArticleLoading';
 
 type ArticleCardProps = {
   onEdit: (item: ArticleData) => void;
+  searchTerm: string;
 };
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ onEdit }) => {
+const ArticleCard: React.FC<ArticleCardProps> = ({ onEdit, searchTerm }) => {
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedArticleId, setSelectedArticleId] = useState<number | null>(
     null
   );
 
+  // ใช้ custom hook สำหรับ pagination
+  const { page, limit, totalPages, setPage, setTotalPages } = usePagination();
+  const [selectedCategory] = useState<string>('');
+
   const {
-    data,
+    data: articlesData,
     isLoading: isFetching,
     error,
-  } = useQuery('article', getAllArticle);
+    refetch,
+  } = useQuery(
+    ['articles', selectedCategory, page, limit, searchTerm], // เพิ่ม searchTerm ใน dependency array
+    () => getArticlesWithPagination(selectedCategory, searchTerm, page, limit), // ส่ง searchTerm ไปยังฟังก์ชัน service
+    {
+      onSuccess: (data) => {
+        setTotalPages(data.totalPages);
+      },
+    }
+  );
 
   const mutation = useMutation(deleteArticle, {
     onSuccess: () => {
-      queryClient.invalidateQueries('article');
+      if (articlesData && articlesData.data.length === 1 && page > 1) {
+        setPage(page - 1);
+      } else {
+        refetch();
+      }
+      queryClient.invalidateQueries('articles');
     },
   });
 
   if (isFetching) return <WoundArticleLoading />;
   if (error) return <FetchError />;
 
-  if (!Array.isArray(data)) {
+  if (!articlesData || !articlesData.data || articlesData.data.length === 0) {
     return <DataNotFound />;
   }
 
@@ -69,9 +89,13 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ onEdit }) => {
     }
   };
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
   return (
     <Box sx={{ width: 'calc(100% - 30px)', margin: '0 auto' }}>
-      {data.map((item: ArticleData, index: number) => (
+      {articlesData.data.map((item: ArticleData, index: number) => (
         <Paper
           key={item.id}
           elevation={0}
@@ -92,7 +116,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ onEdit }) => {
             }}
           >
             <Grid item xs={12} sm={2} sx={{ textAlign: 'center' }}>
-              <Typography>{index + 1}</Typography>
+              <Typography>{index + 1 + (page - 1) * limit}</Typography>
             </Grid>
             <Grid
               item
@@ -183,6 +207,12 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ onEdit }) => {
           </Grid>
         </Paper>
       ))}
+
+      <ReusePagination
+        totalPages={totalPages}
+        currentPage={page}
+        onPageChange={handlePageChange}
+      />
 
       <ConfirmDeleteModal
         isOpen={isModalOpen}

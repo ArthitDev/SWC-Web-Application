@@ -3,7 +3,7 @@ import CustomButtonAdd from 'components/button/CustomButtonAdd';
 import ReusableDrawer from 'components/drawer/ReusableDrawer';
 import TrickForm from 'components/form/TrickForm';
 import SearchBox from 'components/search/SearchBox';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import COLORS from 'theme/colors';
 import { TrickData } from 'types/AdminGetDataTypes';
@@ -15,6 +15,7 @@ const TrickPanel: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [editingTrick, setEditingTrick] = useState<TrickData | null>(null); // สถานะแก้ไข
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState(''); // เก็บค่าที่จะใช้ในการค้นหาจริง ๆ
 
   // เพิ่ม useMediaQuery เพื่อปรับ pt ตามขนาดหน้าจอ
   const isSmallScreen = useMediaQuery((theme: any) =>
@@ -22,7 +23,7 @@ const TrickPanel: React.FC = () => {
   );
 
   const handleSearch = () => {
-    console.log('Searching for:', searchTerm);
+    setAppliedSearchTerm(searchTerm); // อัปเดตค่าที่จะใช้ในการค้นหาจริง ๆ
   };
 
   const toggleDrawer = (open: boolean) => () => {
@@ -35,6 +36,18 @@ const TrickPanel: React.FC = () => {
     setIsDrawerOpen(true);
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      setAppliedSearchTerm('');
+    }
+  }, [searchTerm]);
+
   return (
     <Box>
       <Box mt={3} display="flex" justifyContent="center">
@@ -43,6 +56,7 @@ const TrickPanel: React.FC = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
+            onKeyPress={handleKeyPress}
             placeholder="ค้นหารเคล็ดไม่ลับ..."
             buttonLabel="ค้นหา"
           />
@@ -58,7 +72,7 @@ const TrickPanel: React.FC = () => {
                   pb={isSmallScreen ? 2 : 0}
                   sx={{ fontWeight: 'Medium' }}
                 >
-                  จัดการข้อมูลเคล็ดไม่ลับได้ที่นี่
+                  จัดการข้อมูลเคล็ดไม่ลับ
                 </Typography>
               </Grid>
               <Grid item>
@@ -97,7 +111,7 @@ const TrickPanel: React.FC = () => {
               </Grid>
             </Grid>
           </Box>
-          <TrickCard onEdit={handleEditClick} />
+          <TrickCard onEdit={handleEditClick} searchTerm={appliedSearchTerm} />
         </Paper>
       </Box>
       <ReusableDrawer

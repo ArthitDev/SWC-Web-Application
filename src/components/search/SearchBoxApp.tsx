@@ -11,7 +11,7 @@ import {
 import { styled } from '@mui/system';
 import CustomSearchButton from 'components/button/CustomSearchButton';
 import React, { useRef, useState } from 'react';
-import { toast } from 'react-hot-toast'; // Import react-hot-toast
+import { toast } from 'react-hot-toast';
 import COLORS from 'theme/colors';
 
 import ListeningSnackbar from './ListeningSnackbar';
@@ -79,8 +79,8 @@ const SearchBoxApp: React.FC<SearchBoxAppProps> = ({
         window.SpeechRecognition || window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.lang = language;
-      recognitionRef.current.continuous = true; // Enable continuous listening
-      recognitionRef.current.interimResults = true; // Enable interim results for faster feedback
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
 
       // eslint-disable-next-line no-undef
       recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
@@ -96,12 +96,10 @@ const SearchBoxApp: React.FC<SearchBoxAppProps> = ({
           }
         }
 
-        // Set interim results first for quick feedback
         if (interimTranscript) {
           setSearchTerm(interimTranscript);
         }
 
-        // Set final results once available
         if (finalTranscript) {
           setSearchTerm(finalTranscript);
         }
@@ -153,6 +151,11 @@ const SearchBoxApp: React.FC<SearchBoxAppProps> = ({
     }
   };
 
+  const handleSearch = () => {
+    stopListening();
+    onSearch();
+  };
+
   return (
     <Container>
       <CustomTextField
@@ -199,13 +202,13 @@ const SearchBoxApp: React.FC<SearchBoxAppProps> = ({
       </Menu>
       <CustomSearchButton
         label={buttonLabel}
-        onClick={onSearch}
+        onClick={handleSearch}
         startIcon={<SearchIcon />}
       />
       <ListeningSnackbar
         open={snackbarOpen}
         onClose={() => setSnackbarOpen(false)}
-        onStopListening={stopListening} // Pass stopListening function
+        onStopListening={stopListening}
       />
     </Container>
   );

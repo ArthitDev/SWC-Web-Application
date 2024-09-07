@@ -135,7 +135,7 @@ const NavBar: React.FC = () => {
             <ListItem button onClick={handleLogout}>
               <ListItemText
                 primaryTypographyProps={TypographyListItemText}
-                primary="Logout"
+                primary="ออกจากระบบ"
               />
             </ListItem>
           )}
