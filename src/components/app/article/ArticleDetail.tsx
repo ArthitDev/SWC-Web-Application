@@ -9,6 +9,7 @@ import { getArticleById, getArticleImageUrl } from 'services/articleService';
 import COLORS from 'theme/colors';
 import BackButtonPage from 'utils/BackButtonPage';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
+import ScrollToTop from 'utils/ScrollToTop';
 
 interface ArticleDetailProps {
   id: string;
@@ -205,6 +206,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ id }) => {
           </Box>
         </Box>
       )}
+      <ScrollToTop />
     </motion.div>
   );
 };

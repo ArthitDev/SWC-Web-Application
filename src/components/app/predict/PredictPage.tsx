@@ -2,6 +2,7 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import ImageIcon from '@mui/icons-material/Image';
 import { Box, Button, IconButton, Typography } from '@mui/material';
+import { usePredict } from 'contexts/PredictContext';
 import { motion } from 'framer-motion';
 import useMobilePermissions from 'hooks/useMobilePermissions'; // Import the custom hook
 import router from 'next/router';
@@ -25,6 +26,8 @@ const PredictPage: React.FC = () => {
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
   const webcamRef = useRef<Webcam>(null);
   const { checkFilePermission } = useMobilePermissions();
+
+  const { setResult } = usePredict(); // Use the Context to store result
 
   useEffect(() => {
     const userAgent = navigator.userAgent || navigator.vendor;
@@ -126,9 +129,7 @@ const PredictPage: React.FC = () => {
   };
 
   const mutation = useMutation(
-    (imageData: FormData) => {
-      return predictImage(imageData);
-    },
+    (imageData: FormData) => predictImage(imageData),
     {
       onMutate: () => {
         toast.loading('กำลังวิเคราะห์ภาพ...', { id: 'loading' });
@@ -137,14 +138,11 @@ const PredictPage: React.FC = () => {
         toast.dismiss('loading');
         toast.success('การพยากรณ์เสร็จสิ้น');
 
-        // ส่งข้อมูลผ่าน query parameters รวมถึง URL ของรูปภาพ
-        router.push({
-          pathname: '/app/predict/result',
-          query: {
-            predictions: JSON.stringify(data.predictions),
-            image_url: data.image_url,
-          },
-        });
+        // Save the result to Context instead of using query parameters
+        setResult(data);
+
+        // Navigate to result page
+        router.push('/app/predict/result');
       },
       onError: () => {
         toast.dismiss('loading');
@@ -158,10 +156,10 @@ const PredictPage: React.FC = () => {
       toast.error('กรุณาแนบหรือถ่ายรูปภาพก่อนวิเคราะห์');
       return;
     }
+    setResult(null);
 
     const formData = new FormData();
     formData.append('file', selectedImage);
-
     mutation.mutate(formData);
   };
 

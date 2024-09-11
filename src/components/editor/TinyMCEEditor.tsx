@@ -26,7 +26,7 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({
       value={editorValue}
       onEditorChange={handleEditorChange}
       init={{
-        height: 500,
+        height: 700,
         menubar: false,
         branding: false,
         license_key: 'gpl',

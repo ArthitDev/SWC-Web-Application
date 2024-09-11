@@ -8,6 +8,7 @@ import BackButtonPage from 'utils/BackButtonPage';
 import DataNotFound from 'utils/DataNotFound';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import ReusePagination from 'utils/ReusePagination';
+import ScrollFadeIn from 'utils/ScrollFadeIn';
 
 // กำหนดประเภทของข้อมูล Didyouknow และ Response
 interface DidyouknowResponse {
@@ -94,72 +95,95 @@ const DidyouknowPage: React.FC = () => {
               }}
             >
               {data.data.map((didyouknow) => (
-                <Card
-                  key={didyouknow.id}
-                  sx={{
-                    display: 'flex',
-                    backgroundColor: '#F2F9FC',
-                    borderRadius: '16px',
-                    padding: 0,
-                    width: '100%',
-                    maxWidth: 500,
-                    maxHeight: 300,
-                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <Box
+                <ScrollFadeIn key={didyouknow.id}>
+                  <Card
                     sx={{
-                      backgroundColor: '#EAB308',
-                      width: '8px',
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      padding: 2,
+                      display: 'flex',
+                      backgroundColor: '#F2F9FC',
+                      borderRadius: '16px',
+                      padding: 0,
                       width: '100%',
+                      maxWidth: 500,
+                      maxHeight: 300,
+                      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                      overflow: 'hidden',
+                      position: 'relative', // เพื่อให้จัดตำแหน่งมุมขวาล่างได้ง่ายขึ้น
                     }}
                   >
                     <Box
                       sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginBottom: 1,
+                        backgroundColor: '#EAB308',
+                        width: '8px',
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        padding: 2,
+                        width: '100%',
                       }}
                     >
-                      <Typography
-                        variant="body1"
+                      <Box
                         sx={{
-                          fontWeight: 'bold',
-                          color: '#CA8A42',
                           display: 'flex',
                           alignItems: 'center',
+                          marginBottom: 1,
                         }}
                       >
-                        <span
-                          role="img"
-                          aria-label="lightbulb"
-                          style={{ marginRight: 8 }}
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: 'bold',
+                            color: '#CA8A42',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
                         >
-                          📖
-                        </span>
-                        {didyouknow.didyouknow_name}
+                          <span
+                            role="img"
+                            aria-label="book"
+                            style={{ marginRight: 8 }}
+                          >
+                            📖
+                          </span>
+                          {didyouknow.didyouknow_name}
+                        </Typography>
+                      </Box>
+                      <Typography
+                        sx={{
+                          fontSize: '1rem',
+                          marginBottom: 2,
+                          color: '#000000',
+                          lineHeight: 1.5,
+                          maxHeight: 200,
+                          overflow: 'auto',
+                        }}
+                      >
+                        {didyouknow.didyouknow_content}
+                      </Typography>
+
+                      {/* แสดงข้อมูล updated_at ที่มุมขวาล่าง */}
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          position: 'absolute',
+                          right: 16,
+                          bottom: 16,
+                          color: '#888888',
+                        }}
+                      >
+                        {new Date(didyouknow.updated_at).toLocaleString(
+                          'th-TH',
+                          {
+                            timeZone: 'UTC',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          }
+                        )}
                       </Typography>
                     </Box>
-                    <Typography
-                      sx={{
-                        fontSize: '1rem',
-                        marginBottom: 2,
-                        color: '#000000',
-                        lineHeight: 1.5,
-                        maxHeight: 200,
-                        overflow: 'auto',
-                      }}
-                    >
-                      {didyouknow.didyouknow_content}
-                    </Typography>
-                  </Box>
-                </Card>
+                  </Card>
+                </ScrollFadeIn>
               ))}
             </Box>
           </>

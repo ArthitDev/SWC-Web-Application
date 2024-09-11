@@ -5,6 +5,7 @@ import { CacheProvider, EmotionCache } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import axios from 'axios';
 import { AuthProvider } from 'contexts/AuthContext';
+import { PredictProvider } from 'contexts/PredictContext';
 import { WebSocketProvider } from 'contexts/WebSocketProvider';
 import AdminLayout from 'layout/AdminLayout';
 import AuthLayout from 'layout/AuthLayout';
@@ -66,9 +67,11 @@ export default function MyApp({ Component, pageProps }: MyAppProps) {
           <div>
             <AuthProvider>
               <WebSocketProvider>
-                <LayoutComponent>
-                  <Component {...pageProps} />
-                </LayoutComponent>
+                <PredictProvider>
+                  <LayoutComponent>
+                    <Component {...pageProps} />
+                  </LayoutComponent>
+                </PredictProvider>
               </WebSocketProvider>
             </AuthProvider>
             <Toaster />

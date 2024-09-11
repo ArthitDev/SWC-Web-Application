@@ -1,4 +1,5 @@
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'; // เพิ่มการนำเข้าไอคอน
+/* eslint-disable camelcase */
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CloseIcon from '@mui/icons-material/Close';
 import ImageIcon from '@mui/icons-material/Image';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
@@ -12,12 +13,15 @@ import {
   Typography,
 } from '@mui/material';
 import CustomModal from 'components/modal/CustomModal';
+import { usePredict } from 'contexts/PredictContext';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { getWoundImageUrl } from 'services/woundService'; // นำเข้า service สำหรับดึงรูป
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import { getWoundImageUrl, trackWoundClick } from 'services/woundService';
 import COLORS from 'theme/colors';
 import BackButtonPage from 'utils/BackButtonPage';
+import NoPredictFound from 'utils/NoPredictFound';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
 import * as styles from './PredictPage.style';
@@ -25,44 +29,19 @@ import WarningCard from './WarningCard';
 
 type PredictResultProps = {};
 
-const API_URL = process.env.NEXT_PUBLIC_API_IMAGE_PREDICT_URL;
-
 const PredictResult: React.FC<PredictResultProps> = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImageOverlayOpen, setIsImageOverlayOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [predictions, setPredictions] = useState<
-    Array<{
-      wound_type: string;
-      confidence: number;
-      additional_data?: { id: string; wound_cover: string };
-    }>
-  >([]);
-
   const router = useRouter();
 
-  useEffect(() => {
-    if (router.query.predictions && router.query.image_url) {
-      // Parse predictions (ซึ่งเป็น JSON string ที่ส่งผ่าน URL)
-      const parsedPredictions = JSON.parse(router.query.predictions as string);
-      // Sort predictions by confidence in descending order (highest first)
-      const sortedPredictions = parsedPredictions.sort(
-        (a: { confidence: number }, b: { confidence: number }) =>
-          b.confidence - a.confidence
-      );
-      setPredictions(sortedPredictions);
-
-      // Set the image URL
-      const fullImageUrl = `${API_URL}${router.query.image_url}`;
-      setImageUrl(fullImageUrl);
-    }
-  }, [router.query]);
+  const { result, setResult } = usePredict();
 
   const handleBackClick = () => {
     setIsModalOpen(true);
   };
 
   const handleConfirmExit = () => {
+    setResult(null);
     setIsModalOpen(false);
     router.push('/app/predict');
   };
@@ -78,6 +57,17 @@ const PredictResult: React.FC<PredictResultProps> = () => {
   const handleCloseImageOverlay = () => {
     setIsImageOverlayOpen(false);
   };
+
+  if (!result) {
+    return <NoPredictFound />;
+  }
+
+  const { predictions, image_url } = result;
+
+  // เรียงลำดับ predictions ตามค่า confidence จากมากไปน้อย
+  const sortedPredictions = predictions.sort(
+    (a, b) => b.confidence - a.confidence
+  );
 
   return (
     <>
@@ -95,11 +85,11 @@ const PredictResult: React.FC<PredictResultProps> = () => {
           </Typography>
           <Box sx={styles.DividerResult} />
           <Box sx={styles.ImageContainerResult}>
-            {imageUrl ? (
+            {image_url ? (
               <>
                 <Box
                   component="img"
-                  src={imageUrl}
+                  src={image_url}
                   alt="Preview"
                   sx={{
                     position: 'absolute',
@@ -131,8 +121,8 @@ const PredictResult: React.FC<PredictResultProps> = () => {
           </Box>
           <WarningCard />
 
-          {predictions.length > 0 &&
-            predictions.map((prediction, index) => (
+          {sortedPredictions.length > 0 &&
+            sortedPredictions.map((prediction, index) => (
               <Card
                 key={index}
                 sx={{
@@ -142,42 +132,56 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                 }}
               >
                 <CardContent>
-                  <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
-                    {prediction.wound_type}
-                  </Typography>
-                  <Box
+                  <Typography
+                    variant="h6"
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
+                      fontWeight: 'bold',
+                      mb: 1,
+                      textAlign:
+                        prediction.wound_type === 'ไม่พบแผล'
+                          ? 'center'
+                          : 'left',
+                      marginTop:
+                        prediction.wound_type === 'ไม่พบแผล' ? '15px' : '0px',
                     }}
                   >
+                    {prediction.wound_type}
+                  </Typography>
+
+                  {prediction.wound_type !== 'ไม่พบแผล' && (
                     <Box
                       sx={{
-                        width: '80%',
-                        bgcolor: '#E0E0E0',
-                        height: '8px',
-                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
                       }}
                     >
                       <Box
                         sx={{
-                          width: `${prediction.confidence}%`,
-                          bgcolor: COLORS.blue[6],
-                          height: '100%',
+                          width: '80%',
+                          bgcolor: '#E0E0E0',
+                          height: '8px',
                           borderRadius: '4px',
                         }}
-                      />
+                      >
+                        <Box
+                          sx={{
+                            width: `${prediction.confidence}%`,
+                            bgcolor: COLORS.blue[6],
+                            height: '100%',
+                            borderRadius: '4px',
+                          }}
+                        />
+                      </Box>
+                      <Typography
+                        variant="body1"
+                        sx={{ fontWeight: 'bold', color: COLORS.blue[6] }}
+                      >
+                        {prediction.confidence.toFixed(1)}%
+                      </Typography>
                     </Box>
-                    <Typography
-                      variant="body1"
-                      sx={{ fontWeight: 'bold', color: COLORS.blue[6] }}
-                    >
-                      {prediction.confidence.toFixed(1)}%
-                    </Typography>
-                  </Box>
+                  )}
 
-                  {/* เพิ่มการแสดงผลรูปแผลจาก wound_cover */}
                   {prediction.additional_data?.wound_cover && (
                     <Box sx={{ mt: 2, textAlign: 'center' }}>
                       <Box
@@ -196,8 +200,8 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                     </Box>
                   )}
 
-                  {/* ซ่อนปุ่มดูเพิ่มเติมหาก wound_type คือ "ไม่ใช่แผล" */}
-                  {prediction.wound_type !== 'ไม่ใช่แผล' && (
+                  {/* ซ่อนปุ่มดูเพิ่มเติมหาก wound_type คือ "ไม่พบแผล" */}
+                  {prediction.wound_type !== 'ไม่พบแผล' && (
                     <Box
                       sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
                     >
@@ -210,11 +214,15 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                           display: 'flex',
                           alignItems: 'center',
                         }}
-                        onClick={() =>
-                          router.push(
-                            `/app/wound/${prediction.additional_data?.id}`
-                          )
-                        }
+                        onClick={async () => {
+                          const woundId = prediction.additional_data?.id;
+                          if (woundId) {
+                            await trackWoundClick(woundId, 1);
+                            router.push(`/app/wound/${woundId}`);
+                          } else {
+                            toast.error('ขออภัย : เซิฟเวอร์เกิดปัญหา');
+                          }
+                        }}
                         endIcon={
                           <ChevronRightIcon
                             sx={{
@@ -257,7 +265,7 @@ const PredictResult: React.FC<PredictResultProps> = () => {
         >
           <Box
             component="img"
-            src={imageUrl || ''}
+            src={image_url || ''}
             alt="Enlarged Preview"
             sx={{
               width: '100%',

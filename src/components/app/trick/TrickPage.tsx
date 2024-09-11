@@ -3,20 +3,17 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { getTricksWithPagination } from 'services/trickService';
+import { TrickData } from 'types/AdminGetDataTypes';
 import BackButtonPage from 'utils/BackButtonPage';
 import DataNotFound from 'utils/DataNotFound';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import ReusePagination from 'utils/ReusePagination';
+import ScrollFadeIn from 'utils/ScrollFadeIn'; // นำเข้า ScrollFadeIn
 
 // กำหนดประเภทของข้อมูล Trick และ Response
-interface Trick {
-  id: number;
-  trick_name: string;
-  trick_content: string;
-}
 
 interface TricksResponse {
-  data: Trick[];
+  data: TrickData[];
   totalPages: number;
 }
 
@@ -98,72 +95,92 @@ const TrickPage: React.FC = () => {
               }}
             >
               {data.data.map((trick) => (
-                <Card
-                  key={trick.id}
-                  sx={{
-                    display: 'flex',
-                    backgroundColor: '#F2F9FC',
-                    borderRadius: '16px',
-                    padding: 0,
-                    width: '100%',
-                    maxWidth: 500,
-                    maxHeight: 300,
-                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <Box
+                <ScrollFadeIn key={trick.id}>
+                  {' '}
+                  {/* ครอบ ScrollFadeIn รอบ Card */}
+                  <Card
                     sx={{
-                      backgroundColor: '#2ECC71',
-                      width: '8px',
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      padding: 2,
+                      display: 'flex',
+                      backgroundColor: '#F2F9FC',
+                      borderRadius: '16px',
+                      padding: 0,
                       width: '100%',
+                      maxWidth: 500,
+                      maxHeight: 300,
+                      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                      overflow: 'hidden',
+                      position: 'relative', // เพื่อให้จัดตำแหน่งมุมขวาล่างได้ง่ายขึ้น
                     }}
                   >
                     <Box
                       sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginBottom: 1,
+                        backgroundColor: '#2ECC71',
+                        width: '8px',
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        padding: 2,
+                        width: '100%',
                       }}
                     >
-                      <Typography
-                        variant="body1"
+                      <Box
                         sx={{
-                          fontWeight: 'bold',
-                          color: '#1B8F29',
                           display: 'flex',
                           alignItems: 'center',
+                          marginBottom: 1,
                         }}
                       >
-                        <span
-                          role="img"
-                          aria-label="lightbulb"
-                          style={{ marginRight: 8 }}
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: 'bold',
+                            color: '#1B8F29',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
                         >
-                          💡
-                        </span>
-                        {trick.trick_name}
+                          <span
+                            role="img"
+                            aria-label="lightbulb"
+                            style={{ marginRight: 8 }}
+                          >
+                            💡
+                          </span>
+                          {trick.trick_name}
+                        </Typography>
+                      </Box>
+                      <Typography
+                        sx={{
+                          fontSize: '1rem',
+                          marginBottom: 2,
+                          color: '#000000',
+                          lineHeight: 1.5,
+                          maxHeight: 200,
+                          overflow: 'auto',
+                        }}
+                      >
+                        {trick.trick_content}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          position: 'absolute',
+                          right: 16,
+                          bottom: 16,
+                          color: '#888888',
+                        }}
+                      >
+                        {new Date(trick.updated_at).toLocaleString('th-TH', {
+                          timeZone: 'UTC',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
                       </Typography>
                     </Box>
-                    <Typography
-                      sx={{
-                        fontSize: '1rem',
-                        marginBottom: 2,
-                        color: '#000000',
-                        lineHeight: 1.5,
-                        maxHeight: 200,
-                        overflow: 'auto',
-                      }}
-                    >
-                      {trick.trick_content}
-                    </Typography>
-                  </Box>
-                </Card>
+                  </Card>
+                </ScrollFadeIn>
               ))}
             </Box>
           </>

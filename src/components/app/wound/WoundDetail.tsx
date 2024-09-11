@@ -10,6 +10,7 @@ import { getWoundById, getWoundImageUrl } from 'services/woundService';
 import COLORS from 'theme/colors';
 import BackButtonPage from 'utils/BackButtonPage';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
+import ScrollToTop from 'utils/ScrollToTop';
 
 interface WoundDetailProps {
   id: string;
@@ -63,7 +64,6 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
       transition={fadeInTransition}
     >
       <BackButtonPage label={wound?.wound_name || 'Back'} />
-
       {isLoading && (
         <Box
           display="flex"
@@ -74,7 +74,6 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
           <CircularProgress />
         </Box>
       )}
-
       {!isLoading && error && (
         <Box
           display="flex"
@@ -88,7 +87,6 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
           </Typography>
         </Box>
       )}
-
       {!isLoading && !error && wound && (
         <Box
           sx={{
@@ -121,14 +119,14 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
           </Box>
           {wound.wound_cover && (
             <Box
-              onClick={toggleBlur} // เพิ่ม onClick เพื่อให้กดได้ทั้งภาพ
+              onClick={toggleBlur}
               sx={{
                 position: 'relative',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 marginBottom: 2,
-                cursor: 'pointer', // เปลี่ยน cursor เมื่อ hover เพื่อบอกว่าคลิกได้
+                cursor: 'pointer',
               }}
             >
               <img
@@ -139,16 +137,16 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
                   maxHeight: '300px',
                   objectFit: 'cover',
                   borderRadius: '8px',
-                  filter: isBlurred ? 'blur(10px)' : 'none', // การเบลอตามสถานะ
-                  transition: 'filter 0.3s ease', // การเปลี่ยนแปลงความเร็ว
+                  filter: isBlurred ? 'blur(10px)' : 'none',
+                  transition: 'filter 0.3s ease',
                 }}
               />
-              {isBlurred && ( // แสดงไอคอน VisibilityOffIcon เฉพาะเมื่อภาพเบลอ
+              {isBlurred && (
                 <VisibilityOffIcon
                   sx={{
                     position: 'absolute',
                     color: 'white',
-                    fontSize: '2rem', // ขนาดไอคอน
+                    fontSize: '2rem',
                   }}
                 />
               )}
@@ -225,6 +223,7 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
           </Box>
         </Box>
       )}
+      <ScrollToTop />
     </motion.div>
   );
 };

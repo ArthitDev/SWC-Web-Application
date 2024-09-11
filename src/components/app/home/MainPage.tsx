@@ -78,7 +78,6 @@ const MainPage: React.FC = () => {
               </Box>
             </Box>
           </ScrollFadeIn>
-
           <ScrollFadeIn>
             <Box sx={{ display: 'flex', gap: 2, marginBottom: 4 }}>
               <FeatureBadge
@@ -98,36 +97,28 @@ const MainPage: React.FC = () => {
               />
             </Box>
           </ScrollFadeIn>
-
-          <ScrollFadeIn>
-            <InfoCard
-              title="วิเคราะห์ภาพแผลทันที"
-              description="รับการวินิจฉัยแผลโดยการอัปโหลดรูปภาพแผล"
-              buttonText="ถ่ายรูปภาพแผล"
-              buttonIcon={<CameraAltIcon />}
-              onButtonClick={() => router.push('/app/predict')}
-            />
-          </ScrollFadeIn>
-
-          <ScrollFadeIn>
-            <InfoCard
-              title="แผลคืออะไร ?"
-              description="แผล คือ การบาดเจ็บหรือความเสียหายที่เกิดขึ้นกับเนื้อเยื่อของร่างกายสามารถเกิดขึ้นมาได้
+          <InfoCard
+            title="วิเคราะห์ภาพแผลทันที"
+            description="รับการวินิจฉัยแผลโดยการอัปโหลดรูปภาพแผล"
+            buttonText="ถ่ายรูปภาพแผล"
+            buttonIcon={<CameraAltIcon />}
+            onButtonClick={() => router.push('/app/predict')}
+          />
+          <InfoCard
+            title="แผลคืออะไร ?"
+            description="แผล คือ การบาดเจ็บหรือความเสียหายที่เกิดขึ้นกับเนื้อเยื่อของร่างกายสามารถเกิดขึ้นมาได้
             จากหลายสาเหตุแผลสามารถแบ่งออกเป็นหลายประเภทตามสาเหตุและลักษณะของแผล"
-              buttonText="อ่านบทความฉบับเต็ม"
-              sxDescription={{
-                textIndent: '2rem',
-                textAlign: 'justify',
-                whiteSpace: 'pre-line',
-              }}
-              onButtonClick={() => router.push('/app/article/1')}
-            />
-          </ScrollFadeIn>
-
+            buttonText="อ่านบทความฉบับเต็ม"
+            sxDescription={{
+              textIndent: '2rem',
+              textAlign: 'justify',
+              whiteSpace: 'pre-line',
+            }}
+            onButtonClick={() => router.push('/app/article/1')}
+          />
           <ScrollFadeIn>
             <TrickCardHome />
           </ScrollFadeIn>
-
           <ScrollFadeIn>
             <DidyouknowCardHome />
           </ScrollFadeIn>
@@ -143,9 +134,7 @@ const MainPage: React.FC = () => {
               </Typography>
             </Box>
           </ScrollFadeIn>
-          <ScrollFadeIn>
-            <TopArticlesCard />
-          </ScrollFadeIn>
+          <TopArticlesCard />
         </Box>
       </Box>
     </motion.div>

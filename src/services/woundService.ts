@@ -85,3 +85,10 @@ export const deleteWound = async (id: string) => {
 export const getWoundImageUrl = (filePath: string) => {
   return `${API_URL}/api/uploads/${filePath}`;
 };
+
+export const trackWoundClick = async (woundId: string, clickCount: number) => {
+  const response = await axios.post(`${API_URL}/api/wounds/${woundId}/click`, {
+    click_count: clickCount,
+  });
+  return response.data;
+};

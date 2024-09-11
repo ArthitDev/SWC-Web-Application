@@ -20,6 +20,7 @@ import {
 import { ArticleData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
 import ReusePagination from 'utils/ReusePagination';
+import ScrollFadeIn from 'utils/ScrollFadeIn'; // นำเข้า ScrollFadeIn
 
 import CategoryDropdown from './CategoryDropdown';
 
@@ -150,65 +151,68 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
       </Box>
       {articlesData && articlesData.data && articlesData.data.length > 0 ? (
         articlesData.data.map((article: ArticleData) => (
-          <Card
-            key={article.id}
-            elevation={1}
-            sx={{
-              width: '100%',
-              maxWidth: '400px',
-              marginBottom: 3,
-              display: 'flex',
-              flexDirection: 'column',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
-            {article.article_cover && (
-              <Box
-                sx={{
-                  position: 'relative',
-                  cursor: 'pointer',
-                  width: '100%',
-                  height: '250px',
-                }}
-              >
-                <img
-                  src={getArticleImageUrl(article.article_cover)}
-                  alt={article.article_name}
-                  style={{
+          <ScrollFadeIn key={article.id}>
+            {' '}
+            {/* ครอบ ScrollFadeIn รอบ Card */}
+            <Card
+              elevation={1}
+              sx={{
+                width: '100%',
+                maxWidth: '400px',
+                marginBottom: 3,
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              {article.article_cover && (
+                <Box
+                  sx={{
+                    position: 'relative',
+                    cursor: 'pointer',
                     width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
+                    height: '250px',
                   }}
-                />
-              </Box>
-            )}
-            <CardContent sx={{ flexGrow: 1 }}>
-              <Typography
-                gutterBottom
-                variant="h5"
-                component="div"
-                fontWeight="bold"
-              >
-                {article.article_name}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                textAlign="start"
-              >
-                {stripHtmlTags(article.article_content).substring(0, 100)}...
-              </Typography>
-              <Box>
-                <ReadMoreButton
-                  onClick={() => handleReadMoreClick(article.id)}
-                  fullWidth
-                  text="อ่านเพิ่มเติม"
-                  sx={{ mt: 3 }}
-                />
-              </Box>
-            </CardContent>
-          </Card>
+                >
+                  <img
+                    src={getArticleImageUrl(article.article_cover)}
+                    alt={article.article_name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
+                </Box>
+              )}
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  fontWeight="bold"
+                >
+                  {article.article_name}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  textAlign="start"
+                >
+                  {stripHtmlTags(article.article_content).substring(0, 100)}...
+                </Typography>
+                <Box>
+                  <ReadMoreButton
+                    onClick={() => handleReadMoreClick(article.id)}
+                    fullWidth
+                    text="อ่านเพิ่มเติม"
+                    sx={{ mt: 3 }}
+                  />
+                </Box>
+              </CardContent>
+            </Card>
+          </ScrollFadeIn>
         ))
       ) : (
         <DataNotFound />
