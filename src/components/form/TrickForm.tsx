@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { createTrick, updateTrick } from 'services/trickService';
 import { TrickFormData } from 'types/AdminFormDataPostTypes';
 import { TrickData } from 'types/AdminGetDataTypes';
+import { showValidationError } from 'utils/ErrorFormToast';
 
 type TrickFormProps = {
   onCloseDrawer: () => void;
@@ -60,8 +61,12 @@ const TrickForm: React.FC<TrickFormProps> = ({
     mutation.mutate(data);
   };
 
+  const handleFormError = (errors: any) => {
+    showValidationError(errors); // เรียกฟังก์ชันเพื่อแสดง error
+  };
+
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
+    <form onSubmit={handleSubmit(handleFormSubmit, handleFormError)}>
       <Toaster />
       <Box>
         <Typography variant="h6">ชื่อเคล็ดไม่ลับ</Typography>

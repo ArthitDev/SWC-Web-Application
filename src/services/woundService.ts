@@ -3,10 +3,12 @@ import { WoundFormData } from 'types/AdminFormDataPostTypes';
 
 const API_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL;
 
-// สร้างข้อมูลแผลใหม่พร้อมกับรูปภาพ
+// สร้างข้อมูลแผลใหม่พร้อมกับรูปภาพและชื่อภาษาไทย-อังกฤษ
 export const createWound = async (data: WoundFormData, image: File) => {
   const formData = new FormData();
   formData.append('wound_name', data.wound_name);
+  formData.append('wound_name_th', data.wound_name); // ใช้ wound_name เป็น wound_name_th (ภาษาไทย)
+  formData.append('wound_name_en', data.wound_name_en); // ใช้ wound_name_en
   formData.append('wound_content', data.wound_content);
   formData.append('wound_note', data.wound_note);
   formData.append('ref', JSON.stringify(data.ref));
@@ -52,7 +54,7 @@ export const getWoundById = async (id: string) => {
   return response.data;
 };
 
-// อัปเดตข้อมูลแผลพร้อมกับรูปภาพ (ถ้ามีการอัปโหลดใหม่)
+// อัปเดตข้อมูลแผลพร้อมกับรูปภาพ (ถ้ามีการอัปโหลดใหม่) และชื่อภาษาไทย-อังกฤษ
 export const updateWound = async (
   id: string,
   data: WoundFormData,
@@ -60,6 +62,8 @@ export const updateWound = async (
 ) => {
   const formData = new FormData();
   formData.append('wound_name', data.wound_name);
+  formData.append('wound_name_th', data.wound_name); // ใช้ wound_name เป็น wound_name_th (ภาษาไทย)
+  formData.append('wound_name_en', data.wound_name_en); // ใช้ wound_name_en
   formData.append('wound_content', data.wound_content);
   formData.append('wound_note', data.wound_note);
   formData.append('ref', JSON.stringify(data.ref));
@@ -86,6 +90,7 @@ export const getWoundImageUrl = (filePath: string) => {
   return `${API_URL}/api/uploads/${filePath}`;
 };
 
+// ติดตามการคลิกที่แผล
 export const trackWoundClick = async (woundId: string, clickCount: number) => {
   const response = await axios.post(`${API_URL}/api/wounds/${woundId}/click`, {
     click_count: clickCount,

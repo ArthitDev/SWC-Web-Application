@@ -16,6 +16,7 @@ import {
 import COLORS from 'theme/colors';
 import { WoundFormData } from 'types/AdminFormDataPostTypes';
 import { WoundData } from 'types/AdminGetDataTypes';
+import { showValidationError } from 'utils/ErrorFormToast';
 
 // Dynamically import TinyMCEEditor with SSR disabled
 const TinyMCEEditor = dynamic(() => import('components/editor/TinyMCEEditor'), {
@@ -34,7 +35,7 @@ const WoundForm: React.FC<WoundFormProps> = ({
   const { control, handleSubmit, reset, setValue } = useForm<WoundFormData>({
     defaultValues: initialData || {
       wound_name: '',
-      wound_name_en: '',
+      wound_name_en: '', // เพิ่มค่า wound_name_en
       wound_content: '',
       wound_note: '',
       ref: [{ value: '' }],
@@ -54,9 +55,10 @@ const WoundForm: React.FC<WoundFormProps> = ({
   useEffect(() => {
     if (initialData) {
       setValue('wound_name', initialData.wound_name);
+      setValue('wound_name_en', initialData.wound_name_en); // เซ็ตค่า wound_name_en
       setValue('wound_content', initialData.wound_content);
       if (initialData.wound_cover) {
-        setPreviewImage(getWoundImageUrl(initialData.wound_cover)); // Use getImageUrl to get image URL from server
+        setPreviewImage(getWoundImageUrl(initialData.wound_cover));
       } else {
         setPreviewImage(null);
       }
@@ -105,13 +107,23 @@ const WoundForm: React.FC<WoundFormProps> = ({
   );
 
   const handleFormSubmit = (data: WoundFormData) => {
-    const imageFile = data.wound_cover as unknown as File | null;
+    // ใช้ wound_name เป็น wound_name_th
+    const woundFormData = {
+      ...data,
+      wound_name_th: data.wound_name, // ตั้งค่า wound_name_th ให้เท่ากับ wound_name
+    };
+
+    const imageFile = woundFormData.wound_cover as unknown as File | null;
     if (imageFile) {
-      mutation.mutate({ formData: data, image: imageFile });
+      mutation.mutate({ formData: woundFormData, image: imageFile });
     } else {
       toast.error('โปรดอัพโหลดรูปภาพ');
       setLoading(false);
     }
+  };
+
+  const handleFormError = (errors: any) => {
+    showValidationError(errors); // เรียกฟังก์ชันเพื่อแสดง error
   };
 
   const handleClearImage = () => {
@@ -121,6 +133,13 @@ const WoundForm: React.FC<WoundFormProps> = ({
 
   const handleImageUpload = (file: File | null) => {
     if (file) {
+      // ตรวจสอบขนาดไฟล์
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 15) {
+        toast.error('ขนาดรูปปกไม่ควรเกิน 15MB');
+        return; // ไม่ดำเนินการอัปโหลดรูปภาพต่อ
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result as string);
@@ -133,7 +152,7 @@ const WoundForm: React.FC<WoundFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
+    <form onSubmit={handleSubmit(handleFormSubmit, handleFormError)}>
       <Box mb={2}>
         <Typography variant="h6">ชื่อแผล</Typography>
         <Controller
@@ -167,6 +186,47 @@ const WoundForm: React.FC<WoundFormProps> = ({
           )}
         />
       </Box>
+
+      {/* ชื่อแผลภาษาอังกฤษ */}
+      <Box mb={2}>
+        <Typography variant="h6">ชื่อแผล (ภาษาอังกฤษ)</Typography>
+        <Controller
+          name="wound_name_en"
+          control={control}
+          defaultValue=""
+          rules={{
+            required: 'โปรดป้อนชื่อแผลภาษาอังกฤษ',
+            pattern: {
+              value: /^[A-Za-z\s]+$/, // อนุญาตเฉพาะตัวอักษร A-Z และช่องว่าง
+              message: 'โปรดป้อนเฉพาะอักษรภาษาอังกฤษ',
+            },
+          }}
+          render={({ field, fieldState }) => (
+            <TextField
+              {...field}
+              fullWidth
+              margin="normal"
+              placeholder="ป้อนชื่อแผลภาษาอังกฤษ"
+              error={!!fieldState.error}
+              helperText={fieldState.error?.message}
+              InputProps={{
+                sx: {
+                  marginBottom: 0,
+                  height: 48,
+                  borderColor: COLORS.gray[1],
+                  borderRadius: 1,
+                  '&.Mui-focused fieldset': {
+                    border: '1px solid',
+                    borderColor: 'primary.main',
+                  },
+                },
+              }}
+            />
+          )}
+        />
+      </Box>
+
+      {/* รูปปก */}
       <Box>
         <Typography variant="h6">รูปปก</Typography>
         <ImageUpload
@@ -175,6 +235,8 @@ const WoundForm: React.FC<WoundFormProps> = ({
           onClearImage={handleClearImage}
         />
       </Box>
+
+      {/* เนื้อหา */}
       <Box mb={3} mt={3}>
         <Typography variant="h6" mb={2}>
           เนื้อหา
@@ -198,6 +260,8 @@ const WoundForm: React.FC<WoundFormProps> = ({
           )}
         />
       </Box>
+
+      {/* สรุปเนื้อหา */}
       <Box>
         <Typography variant="h6">สรุปเนื้อหา</Typography>
         <Controller
@@ -225,6 +289,8 @@ const WoundForm: React.FC<WoundFormProps> = ({
           )}
         />
       </Box>
+
+      {/* แหล่งอ้างอิง */}
       <Box>
         <Typography variant="h6" mb={2}>
           แหล่งอ้างอิง
@@ -288,6 +354,8 @@ const WoundForm: React.FC<WoundFormProps> = ({
           </Button>
         </Box>
       </Box>
+
+      {/* ปุ่มบันทึก */}
       <Box mt={10} display="flex" justifyContent="flex-end">
         <CustomButtonSave variant="contained" color="primary" loading={loading}>
           บันทึก

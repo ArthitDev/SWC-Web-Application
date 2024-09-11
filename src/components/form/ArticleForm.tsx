@@ -24,6 +24,7 @@ import {
 import COLORS from 'theme/colors';
 import { ArticleFormData } from 'types/AdminFormDataPostTypes';
 import { ArticleData } from 'types/AdminGetDataTypes';
+import { showValidationError } from 'utils/ErrorFormToast';
 
 const TinyMCEEditor = dynamic(() => import('components/editor/TinyMCEEditor'), {
   ssr: false,
@@ -124,6 +125,10 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
     }
   };
 
+  const handleFormError = (errors: any) => {
+    showValidationError(errors); // เรียกฟังก์ชันเพื่อแสดง error
+  };
+
   const handleClearImage = () => {
     setPreviewImage(null);
     setValue('article_cover', null);
@@ -131,6 +136,12 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
 
   const handleImageUpload = (file: File | null) => {
     if (file) {
+      // ตรวจสอบขนาดไฟล์
+      const fileSizeMB = file.size / (1024 * 1024);
+      if (fileSizeMB > 15) {
+        toast.error('ขนาดรูปปกไม่ควรเกิน 15MB');
+        return; // ไม่ดำเนินการอัปโหลดรูปภาพต่อ
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result as string);
@@ -143,7 +154,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
+    <form onSubmit={handleSubmit(handleFormSubmit, handleFormError)}>
       <Box mb={2}>
         <Typography variant="h6">ชื่อบทความ</Typography>
         <Controller

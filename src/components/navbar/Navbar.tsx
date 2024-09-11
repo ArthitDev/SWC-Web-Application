@@ -17,6 +17,7 @@ import NavList from './NavList';
 import UserProfile from './UserProfile';
 
 const pages = [
+  { label: 'หน้าผู้ใช้', path: '/app' },
   { label: 'หน้าหลัก', path: '/admin' },
   { label: 'แผล', path: '/admin/wound' },
   { label: 'บทความ', path: '/admin/articles' },

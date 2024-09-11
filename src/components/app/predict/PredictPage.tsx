@@ -49,12 +49,15 @@ const PredictPage: React.FC = () => {
 
     const file = event.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('ขนาดของรูปภาพไม่ควรเกิน 5MB');
+      if (file.size > 15 * 1024 * 1024) {
+        // Create a new variable to hold input value
+        const inputElement = event.target as HTMLInputElement;
+        inputElement.value = ''; // Reset input without modifying the event parameter directly
+        toast.error('ขนาดของรูปภาพไม่ควรเกิน 15MB');
         return;
       }
 
-      setSelectedImage(file); // Store the File object
+      setSelectedImage(file);
       const imageUrl = URL.createObjectURL(file);
       setImagePreview(imageUrl);
 
@@ -65,10 +68,6 @@ const PredictPage: React.FC = () => {
         setObjectFit(aspectRatio > 1 ? 'cover' : 'contain');
         toast.success('แนบรูปภาพแล้ว');
       };
-
-      // รีเซ็ตค่า input ของไฟล์หลังจากที่รูปภาพถูกอัปโหลด
-      const fileInput = event.target;
-      fileInput.value = '';
     } else {
       toast.error('ไม่พบรูปภาพที่แนบ');
     }

@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { createDidyouknow, updateDidyouknow } from 'services/didyouknowService';
 import { DidyouknowFormData } from 'types/AdminFormDataPostTypes';
 import { DidyouknowData } from 'types/AdminGetDataTypes';
+import { showValidationError } from 'utils/ErrorFormToast';
 
 type DidyouknowFormProps = {
   onCloseDrawer: () => void;
@@ -60,8 +61,12 @@ const DidyouknowForm: React.FC<DidyouknowFormProps> = ({
     mutation.mutate(data);
   };
 
+  const handleFormError = (errors: any) => {
+    showValidationError(errors); // เรียกฟังก์ชันเพื่อแสดง error
+  };
+
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
+    <form onSubmit={handleSubmit(handleFormSubmit, handleFormError)}>
       <Box>
         <Typography variant="h6">ชื่อรู้หรือไม่</Typography>
         <Controller
