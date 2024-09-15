@@ -2,8 +2,8 @@ import { Delete, Edit } from '@mui/icons-material';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import ReusableAction from 'components/button/ReusableAction';
 import ConfirmDeleteModal from 'components/modal/ConfirmDeleteModal';
-import usePagination from 'hooks/usePagination'; // import the custom hook
-import React, { useState } from 'react';
+import usePagination from 'hooks/usePagination'; // ใช้ custom hook ของ pagination
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
@@ -29,9 +29,10 @@ const WoundCard: React.FC<WoundCardProps> = ({ onEdit, searchTerm }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedWoundId, setSelectedWoundId] = useState<number | null>(null);
 
-  // ใช้ custom hook สำหรับ pagination
+  // ใช้ custom hook สำหรับจัดการ pagination
   const { page, limit, totalPages, setPage, setTotalPages } = usePagination();
 
+  // Query ดึงข้อมูลแผล พร้อมใช้ searchTerm, page, limit
   const {
     data: woundsData,
     isLoading: isFetching,
@@ -42,28 +43,26 @@ const WoundCard: React.FC<WoundCardProps> = ({ onEdit, searchTerm }) => {
     () => getWoundsWithPagination(page, limit, searchTerm),
     {
       onSuccess: (data) => {
-        setTotalPages(data.totalPages); // อัพเดทจำนวนหน้าทั้งหมดเมื่อดึงข้อมูลสำเร็จ
+        setTotalPages(data.totalPages); // ตั้งค่าจำนวนหน้าทั้งหมดจากข้อมูลที่ดึงมา
       },
     }
   );
 
+  useEffect(() => {
+    setPage(1); // เมื่อมีการค้นหาใหม่ จะกลับไปที่หน้า 1
+  }, [searchTerm, setPage]);
+
   const mutation = useMutation(deleteWound, {
     onSuccess: () => {
+      // เมื่อข้อมูลถูกลบสำเร็จ
       if (woundsData && woundsData.data.length === 1 && page > 1) {
-        setPage(page - 1);
+        setPage(page - 1); // ถ้าหน้านี้เหลือรายการเดียว จะย้อนกลับไปหน้าที่แล้ว
       } else {
-        refetch();
+        refetch(); // ดึงข้อมูลใหม่
       }
       queryClient.invalidateQueries('wounds');
     },
   });
-
-  if (isFetching) return <WoundArticleLoading />;
-  if (error) return <FetchError />;
-
-  if (!woundsData || !woundsData.data || woundsData.data.length === 0) {
-    return <DataNotFound />;
-  }
 
   const handleOpenModal = (id: number) => {
     setSelectedWoundId(id);
@@ -79,7 +78,7 @@ const WoundCard: React.FC<WoundCardProps> = ({ onEdit, searchTerm }) => {
     if (selectedWoundId !== null) {
       toast.promise(mutation.mutateAsync(String(selectedWoundId)), {
         loading: 'กำลังลบรายการ...',
-        success: 'รายการถูกลบเรียบร้อยแล้ว!',
+        success: 'ลบรายการเรียบร้อยแล้ว!',
         error: 'เกิดข้อผิดพลาดในการลบรายการ',
       });
       handleCloseModal();
@@ -87,8 +86,12 @@ const WoundCard: React.FC<WoundCardProps> = ({ onEdit, searchTerm }) => {
   };
 
   const handlePageChange = (newPage: number) => {
-    setPage(newPage);
+    setPage(newPage); // เปลี่ยนหน้า pagination
   };
+
+  if (isFetching) return <WoundArticleLoading />;
+  if (error) return <FetchError />;
+  if (!woundsData || woundsData.data.length === 0) return <DataNotFound />;
 
   return (
     <Box sx={{ width: 'calc(100% - 30px)', margin: '0 auto' }}>
@@ -127,7 +130,6 @@ const WoundCard: React.FC<WoundCardProps> = ({ onEdit, searchTerm }) => {
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   maxWidth: '100%',
-                  textAlign: 'center',
                 }}
               >
                 {item.wound_name}
@@ -206,9 +208,9 @@ const WoundCard: React.FC<WoundCardProps> = ({ onEdit, searchTerm }) => {
       ))}
 
       <ReusePagination
-        totalPages={totalPages}
-        currentPage={page}
-        onPageChange={handlePageChange}
+        totalPages={totalPages} // ส่งจำนวนหน้าทั้งหมด
+        currentPage={page} // ส่งหน้าปัจจุบัน
+        onPageChange={handlePageChange} // ฟังก์ชันเปลี่ยนหน้า
       />
 
       <ConfirmDeleteModal

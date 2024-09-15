@@ -76,7 +76,6 @@ const WoundPage: React.FC = () => {
           setSearchTerm={setSearchTerm}
           onSearch={handleSearch}
           placeholder="ค้นหาแผล..."
-          buttonLabel="ค้นหา"
         />
         <Box
           display="flex"

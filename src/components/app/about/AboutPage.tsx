@@ -6,6 +6,7 @@ import {
   Container,
   Typography,
 } from '@mui/material';
+import BackButtonPage from 'components/button/BackButtonPage';
 import TermsDialog from 'components/landing/TermsDialog';
 import ConfirmDeleteModal from 'components/modal/ConfirmDeleteModal';
 import { motion } from 'framer-motion';
@@ -14,7 +15,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useRef, useState } from 'react';
 import COLORS from 'theme/colors';
-import BackButtonPage from 'utils/BackButtonPage';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
 const AboutPage: React.FC = () => {
@@ -64,6 +64,7 @@ const AboutPage: React.FC = () => {
   };
 
   const handleCloseModal = () => {
+    setOpenModal(false);
     if (countdownIntervalRef.current) {
       clearInterval(countdownIntervalRef.current); // ล้าง interval ที่ทำงานอยู่
     }

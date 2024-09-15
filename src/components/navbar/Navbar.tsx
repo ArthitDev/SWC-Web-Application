@@ -114,7 +114,7 @@ const NavBar: React.FC = () => {
           sx={{ width: 250 }}
           role="presentation"
           onClick={handleDrawerClose}
-          onKeyDown={handleDrawerClose}
+          onKeyUp={handleDrawerClose}
         >
           <Box sx={{ padding: 2, backgroundColor: '#235ADB', color: 'white' }}>
             {user && (

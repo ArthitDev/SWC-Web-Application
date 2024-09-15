@@ -7,8 +7,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL;
 export const createWound = async (data: WoundFormData, image: File) => {
   const formData = new FormData();
   formData.append('wound_name', data.wound_name);
-  formData.append('wound_name_th', data.wound_name); // ใช้ wound_name เป็น wound_name_th (ภาษาไทย)
-  formData.append('wound_name_en', data.wound_name_en); // ใช้ wound_name_en
+  formData.append('wound_name_th', data.wound_name);
+  formData.append('wound_name_en', data.wound_name_en);
   formData.append('wound_content', data.wound_content);
   formData.append('wound_note', data.wound_note);
   formData.append('ref', JSON.stringify(data.ref));

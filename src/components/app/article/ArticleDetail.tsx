@@ -1,4 +1,5 @@
 import { Box, CircularProgress, Link, Typography } from '@mui/material';
+import BackButtonPage from 'components/button/BackButtonPage';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
 import useRefetchWebSocket from 'hooks/useRefetchWebSocket';
@@ -7,7 +8,6 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { getArticleById, getArticleImageUrl } from 'services/articleService';
 import COLORS from 'theme/colors';
-import BackButtonPage from 'utils/BackButtonPage';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import ScrollToTop from 'utils/ScrollToTop';
 
@@ -104,7 +104,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ id }) => {
               </Typography>
             )}
             <Typography
-              variant="h6"
+              variant="h5"
               component="h1"
               gutterBottom
               fontWeight="bold"

@@ -53,7 +53,7 @@ const WoundPanel: React.FC<WoundPanelProps> = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
-            onKeyPress={handleKeyPress}
+            onKeyUp={handleKeyPress}
             placeholder="ค้นหาแผล..."
             buttonLabel="ค้นหา"
           />

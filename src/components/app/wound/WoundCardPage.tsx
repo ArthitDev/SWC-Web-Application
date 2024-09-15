@@ -56,6 +56,10 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
     }
   );
 
+  useEffect(() => {
+    setPage(1); // เมื่อมีการค้นหาใหม่ จะกลับไปที่หน้า 1
+  }, [searchTerm, setPage]);
+
   const mutation = useMutation(
     (woundData: { woundId: number; clickCount: number }) =>
       trackWoundClick(woundData.woundId.toString(), woundData.clickCount),

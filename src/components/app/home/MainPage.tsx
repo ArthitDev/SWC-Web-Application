@@ -11,6 +11,7 @@ import ScrollFadeIn from 'utils/ScrollFadeIn';
 
 import DidyouknowCardHome from './DidyouknowCard';
 import FeatureBadge from './FeatureBadge';
+import HeaderIconRight from './HeaderIconRight';
 import IconCircle from './IconCircle';
 import InfoCard from './InfoCard';
 import TopArticlesCard from './TopArticlesCard';
@@ -36,17 +37,10 @@ const MainPage: React.FC = () => {
             position: 'relative',
           }}
         >
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 16,
-              right: 16,
-              cursor: 'pointer',
-            }}
+          <HeaderIconRight
+            icon={<InfoIcon color={COLORS.blue[6]} />}
             onClick={() => router.push('/app/about')}
-          >
-            <InfoIcon color={COLORS.blue[6]} />
-          </Box>
+          />
 
           <ScrollFadeIn>
             <Box sx={{ textAlign: 'center', marginBottom: 2 }}>

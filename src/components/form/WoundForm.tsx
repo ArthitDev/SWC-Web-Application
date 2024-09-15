@@ -161,6 +161,10 @@ const WoundForm: React.FC<WoundFormProps> = ({
           defaultValue=""
           rules={{
             required: 'โปรดป้อนชื่อแผล',
+            pattern: {
+              value: /^[\u0E00-\u0E7F\s]+$/,
+              message: 'โปรดป้อนเฉพาะอักษรภาษาไทย',
+            },
           }}
           render={({ field, fieldState }) => (
             <TextField

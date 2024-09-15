@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { getDidyouknowWithPagination } from 'services/didyouknowService';
 import { DidyouknowData } from 'types/AdminGetDataTypes';
-import BackButtonPage from 'utils/BackButtonPage';
+import BackButtonPage from 'components/button/BackButtonPage';
 import DataNotFound from 'utils/DataNotFound';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import ReusePagination from 'utils/ReusePagination';
@@ -151,7 +151,7 @@ const DidyouknowPage: React.FC = () => {
                       <Typography
                         sx={{
                           fontSize: '1rem',
-                          marginBottom: 2,
+                          marginBottom: 5,
                           color: '#000000',
                           lineHeight: 1.5,
                           maxHeight: 200,

@@ -26,7 +26,7 @@ interface SearchBoxProps {
   onSearch: () => void;
   placeholder?: string;
   buttonLabel?: string;
-  onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyUp?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const SearchBox: React.FC<SearchBoxProps> = ({
@@ -53,9 +53,9 @@ const SearchBox: React.FC<SearchBoxProps> = ({
         placeholder={placeholder}
         value={searchTerm}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setSearchTerm(e.target.value)
+          setSearchTerm(e.target.value.trim())
         }
-        onKeyPress={handleKeyPress}
+        onKeyUp={handleKeyPress}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

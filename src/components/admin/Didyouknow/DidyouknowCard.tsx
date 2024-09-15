@@ -3,7 +3,7 @@ import { Box, Grid, Paper, Typography } from '@mui/material';
 import ReusableAction from 'components/button/ReusableAction';
 import ConfirmDeleteModal from 'components/modal/ConfirmDeleteModal';
 import usePagination from 'hooks/usePagination';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
@@ -49,6 +49,10 @@ const DidyouknowCard: React.FC<DidyouknowCardProps> = ({
       },
     }
   );
+
+  useEffect(() => {
+    setPage(1); // เมื่อมีการค้นหาใหม่ จะกลับไปที่หน้า 1
+  }, [searchTerm, setPage]);
 
   const mutation = useMutation(deleteDidyouknow, {
     onSuccess: () => {

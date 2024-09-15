@@ -56,7 +56,7 @@ const TrickPanel: React.FC = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
-            onKeyPress={handleKeyPress}
+            onKeyUp={handleKeyPress}
             placeholder="ค้นหารเคล็ดไม่ลับ..."
             buttonLabel="ค้นหา"
           />
@@ -117,7 +117,7 @@ const TrickPanel: React.FC = () => {
       <ReusableDrawer
         open={isDrawerOpen}
         onClose={toggleDrawer(false)}
-        title={editingTrick ? 'แก้ไขรู้หรือไม่' : 'เพิ่มเคล็ดไม่ลับใหม่'}
+        title={editingTrick ? 'แก้ไขเคล็ดไม่ลับ' : 'เพิ่มเคล็ดไม่ลับใหม่'}
       >
         <TrickForm
           onCloseDrawer={toggleDrawer(false)}

@@ -10,7 +10,7 @@ import ReadMoreButton from 'components/button/ReadMoreButton';
 import usePagination from 'hooks/usePagination';
 import useRefetchWebSocket from 'hooks/useRefetchWebSocket';
 import router from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import {
   getArticleImageUrl,
@@ -52,6 +52,10 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
       },
     }
   );
+
+  useEffect(() => {
+    setPage(1); // เมื่อมีการค้นหาใหม่ จะกลับไปที่หน้า 1
+  }, [searchTerm, setPage]);
 
   const mutation = useMutation(
     (articleData: { articleId: number; clickCount: number }) =>

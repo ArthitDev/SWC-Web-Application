@@ -1,5 +1,7 @@
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import { Box, CircularProgress, Link, Typography } from '@mui/material';
+import BackButtonPage from 'components/button/BackButtonPage';
 import DOMPurify from 'dompurify';
 import { motion } from 'framer-motion';
 import useRefetchWebSocket from 'hooks/useRefetchWebSocket';
@@ -8,7 +10,6 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { getWoundById, getWoundImageUrl } from 'services/woundService';
 import COLORS from 'theme/colors';
-import BackButtonPage from 'utils/BackButtonPage';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import ScrollToTop from 'utils/ScrollToTop';
 
@@ -109,7 +110,7 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
             )}
 
             <Typography
-              variant="h6"
+              variant="h5"
               component="h1"
               gutterBottom
               fontWeight="bold"
@@ -155,6 +156,7 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
           {wound.wound_content && (
             <Box className="wound-content">{parse(safeContent)}</Box>
           )}
+
           <Box pt={2}>
             {wound.wound_note && (
               <Box
@@ -179,6 +181,26 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
                 </Typography>
               </Box>
             )}
+          </Box>
+          <Box pt={1}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: 2,
+                marginTop: 2,
+              }}
+            >
+              <WarningRoundedIcon
+                sx={{ marginRight: 1, color: COLORS.yellow[3], fontSize: 32 }}
+              />
+              <Typography variant="body2" color="text.secondary">
+                <Typography variant="body1" color="text.primary">
+                  โปรดทราบ
+                </Typography>
+                รูปภาพวิธีการดูแลรักษาเป็นเพียงภาพประกอบไม่ใช่ภาพจากขั้นตอนการรักษาจริง
+              </Typography>
+            </Box>
           </Box>
           <Box pt={2}>
             {parsedRefs.length > 0 && (

@@ -55,7 +55,7 @@ const DidyouknowPanel: React.FC = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
-            onKeyPress={handleKeyPress}
+            onKeyUp={handleKeyPress}
             placeholder="ค้นหารู้หรือไม่..."
             buttonLabel="ค้นหา"
           />

@@ -12,6 +12,7 @@ import {
   Modal,
   Typography,
 } from '@mui/material';
+import BackButtonPage from 'components/button/BackButtonPage';
 import CustomModal from 'components/modal/CustomModal';
 import { usePredict } from 'contexts/PredictContext';
 import { motion } from 'framer-motion';
@@ -20,7 +21,6 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { getWoundImageUrl, trackWoundClick } from 'services/woundService';
 import COLORS from 'theme/colors';
-import BackButtonPage from 'utils/BackButtonPage';
 import NoPredictFound from 'utils/NoPredictFound';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
