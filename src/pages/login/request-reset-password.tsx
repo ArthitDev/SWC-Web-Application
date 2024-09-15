@@ -1,4 +1,4 @@
-import RequestResetPassword from 'components/form/RequestResetPasswordForm';
+import RequestResetPassword from 'components/login/RequestResetPasswordForm';
 
 const RequestResetPasswordPage = () => {
   return <RequestResetPassword />;

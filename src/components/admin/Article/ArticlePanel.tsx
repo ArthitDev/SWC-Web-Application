@@ -54,7 +54,7 @@ const ArticlePanel: React.FC<ArticlePanelProps> = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             onSearch={handleSearch}
-            onKeyPress={handleKeyPress}
+            onKeyUp={handleKeyPress}
             placeholder="ค้นหาบทความ..."
             buttonLabel="ค้นหา"
           />

@@ -1,10 +1,10 @@
 import { Box, Card, CircularProgress, Typography } from '@mui/material';
+import BackButtonPage from 'components/button/BackButtonPage';
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { getTricksWithPagination } from 'services/trickService';
 import { TrickData } from 'types/AdminGetDataTypes';
-import BackButtonPage from 'components/button/BackButtonPage';
 import DataNotFound from 'utils/DataNotFound';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import ReusePagination from 'utils/ReusePagination';
