@@ -14,7 +14,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   onCategoryChange,
 }) => {
   return (
-    <FormControl fullWidth sx={{ maxWidth: 200 }}>
+    <FormControl fullWidth sx={{ maxWidth: 150 }}>
       <Select
         value={selectedCategory}
         onChange={onCategoryChange}

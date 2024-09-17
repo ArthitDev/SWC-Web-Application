@@ -22,16 +22,20 @@ import {
 import { WoundData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
 import ReusePagination from 'utils/ReusePagination';
-import ScrollFadeIn from 'utils/ScrollFadeIn'; // นำเข้า ScrollFadeIn
+import ScrollFadeIn from 'utils/ScrollFadeIn';
 
 type WoundCardPageProps = {
   filterEnabled: boolean;
   searchTerm: string;
+  setWoundCount: (count: number) => void;
+  setTotalWoundCount: (count: number) => void;
 };
 
 const WoundCardPage: React.FC<WoundCardPageProps> = ({
   filterEnabled,
   searchTerm,
+  setWoundCount,
+  setTotalWoundCount,
 }) => {
   const router = useRouter();
   const [blurredWounds, setBlurredWounds] = useState<{
@@ -40,7 +44,7 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
 
   useRefetchWebSocket('wounds', 'UPDATE_WOUNDS');
 
-  const { page, limit, totalPages, setPage, setTotalPages } = usePagination(); // setup pagination states
+  const { page, limit, totalPages, setPage, setTotalPages } = usePagination();
 
   const {
     data: woundsData,
@@ -51,7 +55,11 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
     () => getWoundsWithPagination(page, limit, searchTerm),
     {
       onSuccess: (data) => {
-        setTotalPages(data.totalPages);
+        if (data) {
+          setTotalPages(data.totalPages || 0);
+          setWoundCount(data.data?.length || 0);
+          setTotalWoundCount(data.totalItems || 0);
+        }
       },
     }
   );

@@ -12,12 +12,14 @@ import WoundCardPage from './WoundCardPage';
 
 const WoundPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [appliedSearchTerm, setAppliedSearchTerm] = useState(''); // เก็บค่าที่จะใช้ในการค้นหาจริง ๆ
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState('');
   const [filterEnabled, setFilterEnabled] = useState(true);
   const [openModal, setOpenModal] = useState(false);
+  const [woundCount, setWoundCount] = useState(0);
+  const [totalWoundCount, setTotalWoundCount] = useState(0);
 
   const handleSearch = () => {
-    setAppliedSearchTerm(searchTerm); // อัปเดตค่าที่จะใช้ในการค้นหาจริง ๆ
+    setAppliedSearchTerm(searchTerm);
   };
 
   const handleToggleFilter = () => {
@@ -79,26 +81,35 @@ const WoundPage: React.FC = () => {
         />
         <Box
           display="flex"
-          justifyContent="flex-end"
+          justifyContent="space-between"
           alignItems="center"
           sx={{ mt: 2, pr: 3 }}
         >
-          <Typography variant="body1" sx={{ mr: 1 }}>
-            {filterEnabled ? 'ปิดฟิลเตอร์แผล' : 'เปิดฟิลเตอร์แผล'}
-          </Typography>
-          <Switch
-            checked={filterEnabled}
-            onChange={handleToggleFilter}
-            color="primary"
-          />
-          <IconButton color="primary" onClick={handleToggleFilter}>
-            {filterEnabled ? <VisibilityOffIcon /> : <VisibilityIcon />}
-          </IconButton>
+          <Box sx={{ ml: 3 }}>
+            <Typography variant="body1">จำนวนแผล : {woundCount}</Typography>
+            <Typography variant="body1">ทั้งหมด : {totalWoundCount}</Typography>
+          </Box>
+
+          <Box display="flex" alignItems="center">
+            <Typography variant="body1" sx={{ mr: 1 }}>
+              {filterEnabled ? 'ปิดฟิลเตอร์' : 'เปิดฟิลเตอร์'}
+            </Typography>
+            <Switch
+              checked={filterEnabled}
+              onChange={handleToggleFilter}
+              color="primary"
+            />
+            <IconButton color="primary" onClick={handleToggleFilter}>
+              {filterEnabled ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            </IconButton>
+          </Box>
         </Box>
         <Box>
           <WoundCardPage
             filterEnabled={filterEnabled}
             searchTerm={appliedSearchTerm}
+            setWoundCount={setWoundCount}
+            setTotalWoundCount={setTotalWoundCount}
           />
         </Box>
       </motion.div>

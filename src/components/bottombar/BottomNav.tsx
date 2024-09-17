@@ -113,7 +113,7 @@ const BottomNav: React.FC = () => {
           <BottomNavigationAction label="หน้าหลัก" icon={<Home />} />
           <BottomNavigationAction label="แผล" icon={<Healing />} />
           <BottomNavigationAction label="บทความ" icon={<Book />} />
-          <BottomNavigationAction label="ถ่ายรูปแผล" icon={<Camera />} />
+          <BottomNavigationAction label="วิเคราะห์แผล" icon={<Camera />} />
         </BottomNavigation>
       </Paper>
     </>

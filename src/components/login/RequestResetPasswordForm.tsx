@@ -35,8 +35,9 @@ const RequestResetPassword: React.FC = () => {
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     toast.promise(mutation.mutateAsync(data), {
       loading: 'กำลังส่งคำขอรีเซ็ตรหัสผ่าน...',
-      success: 'ส่งคำขอรีเซ็ตรหัสผ่านสำเร็จ กรุณาตรวจสอบอีเมลของคุณ',
-      error: 'การส่งคำขอรีเซ็ตรหัสผ่านล้มเหลว กรุณาลองใหม่อีกครั้ง',
+      success: 'ส่งคำขอรีเซ็ตรหัสผ่านสำเร็จ กรุณาตรวจสอบกล่องอีเมลของคุณ',
+      error:
+        'ส่งคำขอรีเซ็ตรหัสผ่านล้มเหลว กรุณาตรวจสอบอีเมลของคุณ และ ลองใหม่อีกครั้ง',
     });
   };
 
@@ -52,7 +53,7 @@ const RequestResetPassword: React.FC = () => {
           }}
         >
           <Typography component="h2" variant="h6">
-            ขอรีเซ็ตรหัสผ่าน
+            ขอรีเซ็ตรหัสผ่านและส่งชื่อผู้ใช้
           </Typography>
           <Box
             component="form"

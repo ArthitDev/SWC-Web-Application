@@ -33,6 +33,8 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
 
   const { page, limit, totalPages, setPage, setTotalPages } = usePagination();
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [artcleCount, setArtcleCount] = useState(0);
+  const [totalArticleCount, setTotalArticleCount] = useState(0);
 
   const handleCategoryChange = (event: SelectChangeEvent<string>) => {
     setSelectedCategory(event.target.value as string);
@@ -48,7 +50,11 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
     () => getArticlesWithPagination(selectedCategory, searchTerm, page, limit),
     {
       onSuccess: (data) => {
-        setTotalPages(data.totalPages);
+        if (data) {
+          setTotalPages(data.totalPages || 0);
+          setArtcleCount(data.data?.length || 0);
+          setTotalArticleCount(data.totalItems || 0);
+        }
       },
     }
   );
@@ -143,11 +149,15 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'space-between',
           width: '100%',
           pb: 2,
         }}
       >
+        <Box>
+          <Typography variant="body1">จำนวนบทความ : {artcleCount}</Typography>
+          <Typography variant="body1">ทั้งหมด : {totalArticleCount}</Typography>
+        </Box>
         <CategoryDropdown
           selectedCategory={selectedCategory}
           onCategoryChange={handleCategoryChange}
@@ -156,8 +166,6 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
       {articlesData && articlesData.data && articlesData.data.length > 0 ? (
         articlesData.data.map((article: ArticleData) => (
           <ScrollFadeIn key={article.id}>
-            {' '}
-            {/* ครอบ ScrollFadeIn รอบ Card */}
             <Card
               elevation={1}
               sx={{

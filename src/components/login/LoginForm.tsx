@@ -39,7 +39,7 @@ const LoginForm: React.FC = () => {
     toast.promise(mutation.mutateAsync(data), {
       loading: 'กำลังเข้าสู่ระบบ...',
       success: 'เข้าสู่ระบบสำเร็จ',
-      error: 'เข้าสู่ระบบล้มเหลว กรุณาตรวจสอบข้อมูลอีกครั้ง',
+      error: 'เข้าสู่ระบบล้มเหลว กรุณาตรวจสอบข้อมูล',
     });
   };
 
@@ -98,7 +98,7 @@ const LoginForm: React.FC = () => {
           </Tooltip>
 
           <Link href="/login/request-reset-password" variant="body2">
-            {'ลืมรหัสผ่าน ?'}
+            {'ลืมชื่อผู้ใช้หรือรหัสผ่าน ?'}
           </Link>
         </Box>
         <Box

@@ -23,6 +23,7 @@ export const StyledListItemText = styled(ListItemText)({
   '& .MuiTypography-root': {
     fontFamily: 'Prompt, sans-serif',
     fontSize: '20px',
+    cursor: 'pointer',
   },
 });
 

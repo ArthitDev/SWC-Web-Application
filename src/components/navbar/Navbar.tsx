@@ -1,4 +1,6 @@
+import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { Avatar, ListItem, ListItemText, Typography } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -47,7 +49,6 @@ const NavBar: React.FC = () => {
     logout();
     handleDrawerClose();
   };
-
   return (
     <>
       <AppBar
@@ -123,6 +124,20 @@ const NavBar: React.FC = () => {
                 <Box>
                   <Typography variant="body1">{user.username}</Typography>
                   <Typography variant="body2">{user.email}</Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      router.push('/admin/setting');
+                      handleDrawerClose();
+                    }}
+                  >
+                    <SettingsIcon sx={{ marginRight: 1 }} />
+                    <Typography variant="body2">{'ตั้งค่าบัญชี'}</Typography>
+                  </Box>
                 </Box>
               </Box>
             )}
@@ -133,12 +148,31 @@ const NavBar: React.FC = () => {
             onCloseDrawer={handleDrawerClose}
           />
           {user && (
-            <ListItem button onClick={handleLogout}>
-              <ListItemText
-                primaryTypographyProps={TypographyListItemText}
-                primary="ออกจากระบบ"
-              />
-            </ListItem>
+            <Box p={3}>
+              <ListItem
+                button
+                onClick={handleLogout}
+                sx={{
+                  backgroundColor: 'red',
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: 'darkred',
+                  },
+                  borderRadius: 1,
+                  width: '200px',
+                  textAlign: 'center',
+                }}
+              >
+                <LogoutIcon sx={{ marginRight: 1 }} /> {/* เพิ่มไอคอน logout */}
+                <ListItemText
+                  primaryTypographyProps={{
+                    ...TypographyListItemText,
+                    sx: { color: 'white', textAlign: 'center' },
+                  }}
+                  primary="ออกจากระบบ"
+                />
+              </ListItem>
+            </Box>
           )}
         </Box>
       </Drawer>

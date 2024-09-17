@@ -90,17 +90,17 @@ const AboutPage: React.FC = () => {
             variant="h4"
             component="h1"
             fontWeight={'bold'}
-            sx={{ mt: 4, mb: 1, textAlign: 'center', color: COLORS.blue[6] }}
+            sx={{ mt: 2, textAlign: 'center', color: COLORS.blue[6] }}
           >
             เกี่ยวกับเรา
           </Typography>
           <Box
             sx={{
               width: '200px',
-              height: '10px',
+              height: '7px',
               backgroundColor: '#BFDBFE',
               borderRadius: '10px',
-              margin: '10px auto',
+              margin: '5px auto',
             }}
           />
           <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2, mt: 2 }}>
@@ -131,8 +131,8 @@ const AboutPage: React.FC = () => {
           sx={{
             backgroundColor: 'white',
             borderRadius: '16px',
-            mt: 2,
-            mb: 2,
+            mt: 1,
+            mb: 1,
           }}
         >
           <CardContent
@@ -210,7 +210,7 @@ const AboutPage: React.FC = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            mt: 2,
+            mt: 1,
           }}
         >
           <Button
@@ -236,7 +236,7 @@ const AboutPage: React.FC = () => {
 
         <Typography
           variant="body2"
-          sx={{ textAlign: 'center', mt: 2, color: COLORS.gray[3], pb: 5 }}
+          sx={{ textAlign: 'center', mt: 2, color: COLORS.gray[3], pb: 0 }}
         >
           เวอร์ชัน 1.0.0
         </Typography>
