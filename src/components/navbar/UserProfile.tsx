@@ -5,10 +5,11 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useRouter } from 'next/router'; // นำเข้า useRouter จาก next/router
 import React, { useState } from 'react';
+import { getProfileImageUrl } from 'services/profileSettingService'; // Import the function to get full image URL
 import COLORS from 'theme/colors';
 
 interface UserProfileProps {
-  user: { username: string; email: string };
+  user: { username: string; email: string; profileImage: string };
   onLogout: () => void;
 }
 
@@ -29,6 +30,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout }) => {
     handleMenuClose();
   };
 
+  // Use getProfileImageUrl to get the full URL of the profile image
+  const profileImageUrl = user.profileImage
+    ? getProfileImageUrl(user.profileImage)
+    : null;
+
   return (
     <Box
       sx={{
@@ -40,13 +46,14 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout }) => {
     >
       <IconButton onClick={handleMenuOpen} color="inherit">
         <Avatar
+          src={profileImageUrl || undefined}
           sx={{
             color: COLORS.blue[6],
             backgroundColor: 'white',
             fontWeight: 500,
           }}
         >
-          {user.username[0]}
+          {!profileImageUrl && user.username[0]}
         </Avatar>
       </IconButton>
       <Menu

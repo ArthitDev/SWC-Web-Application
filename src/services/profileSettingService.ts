@@ -14,15 +14,19 @@ export const getProfile = async () => {
   }
 };
 
-// ฟังก์ชันสำหรับการอัพเดตโปรไฟล์
-export const updateProfile = async (data: {
-  username?: string;
-  email?: string;
-}) => {
+// ฟังก์ชันสำหรับการอัพเดตโปรไฟล์ พร้อมกับรูปภาพ
+export const updateProfile = async (id: number, data: FormData) => {
   try {
-    const response = await axios.patch(`${API_URL}/api/update-profile`, data, {
-      withCredentials: true, // ใช้สำหรับส่งคุกกี้พร้อมกับคำขอ
-    });
+    const response = await axios.patch(
+      `${API_URL}/api/profile-setting/${id}`,
+      data,
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     throw new Error('Failed to update profile');
@@ -40,7 +44,7 @@ export const changePassword = async (data: {
     });
     return response.data;
   } catch (error) {
-    throw new Error('Failed to change password');
+    throw new Error(error.response.data.message);
   }
 };
 
@@ -58,4 +62,8 @@ export const deactivateAccount = async () => {
   } catch (error) {
     throw new Error('Failed to deactivate account');
   }
+};
+
+export const getProfileImageUrl = (filePath: string) => {
+  return `${API_URL}/api/uploads/${filePath}`;
 };

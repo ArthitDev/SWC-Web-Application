@@ -67,6 +67,7 @@ export const TypographyLogoStyles = {
   fontWeight: 'bold',
   fontFamily: 'Prompt, sans-serif',
   fontSize: '25px',
+  cursor: 'pointer',
 };
 
 export const TypographyListItemText = {

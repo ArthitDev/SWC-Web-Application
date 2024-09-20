@@ -1,20 +1,25 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Avatar, ListItem, ListItemText, Typography } from '@mui/material';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Container,
+  Drawer,
+  IconButton,
+  ListItem,
+  ListItemText,
+  Toolbar,
+  Typography,
+} from '@mui/material';
+import CustomModal from 'components/modal/CustomModal';
 import { useUserProfile } from 'hooks/useUserProfile';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import { logout } from 'services/logout';
-import { NavButton, TypographyListItemText } from 'styles/Navbar.style';
+import { NavButton, TypographyLogoStyles } from 'styles/Navbar.style';
 
-import Logo from './Logo';
 import NavList from './NavList';
 import UserProfile from './UserProfile';
 
@@ -28,7 +33,8 @@ const pages = [
 ];
 
 const NavBar: React.FC = () => {
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
   const { data: user } = useUserProfile();
   const router = useRouter();
 
@@ -45,10 +51,20 @@ const NavBar: React.FC = () => {
     handleDrawerClose();
   };
 
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleLogoutConfirm = () => {
     logout();
+    setIsModalOpen(false);
     handleDrawerClose();
   };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <AppBar
@@ -61,7 +77,15 @@ const NavBar: React.FC = () => {
             sx={{ justifyContent: 'space-between', Height: 20 }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Logo />
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={TypographyLogoStyles}
+                onClick={() => handleNavigate('/admin/')}
+              >
+                SWC Management
+              </Typography>
             </Box>
             <Box
               sx={{
@@ -88,7 +112,8 @@ const NavBar: React.FC = () => {
                 alignItems: 'center',
               }}
             >
-              {user && <UserProfile user={user} onLogout={handleLogout} />}
+              {user && <UserProfile user={user} onLogout={handleLogoutClick} />}{' '}
+              {/* Trigger modal instead of direct logout */}
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
               <IconButton
@@ -103,13 +128,12 @@ const NavBar: React.FC = () => {
           </Toolbar>
         </Container>
       </AppBar>
+
       <Drawer
         anchor="right"
         open={drawerOpen}
         onClose={handleDrawerClose}
-        PaperProps={{
-          sx: { backgroundColor: 'white' },
-        }}
+        PaperProps={{ sx: { backgroundColor: 'white' } }}
       >
         <Box
           sx={{ width: 250 }}
@@ -130,13 +154,10 @@ const NavBar: React.FC = () => {
                       alignItems: 'center',
                       cursor: 'pointer',
                     }}
-                    onClick={() => {
-                      router.push('/admin/setting');
-                      handleDrawerClose();
-                    }}
+                    onClick={() => handleNavigate('/admin/setting')}
                   >
                     <SettingsIcon sx={{ marginRight: 1 }} />
-                    <Typography variant="body2">{'ตั้งค่าบัญชี'}</Typography>
+                    <Typography variant="body2">ตั้งค่าบัญชี</Typography>
                   </Box>
                 </Box>
               </Box>
@@ -151,7 +172,7 @@ const NavBar: React.FC = () => {
             <Box p={3}>
               <ListItem
                 button
-                onClick={handleLogout}
+                onClick={handleLogoutClick} // Trigger modal instead of direct logout
                 sx={{
                   backgroundColor: 'red',
                   color: 'white',
@@ -163,10 +184,9 @@ const NavBar: React.FC = () => {
                   textAlign: 'center',
                 }}
               >
-                <LogoutIcon sx={{ marginRight: 1 }} /> {/* เพิ่มไอคอน logout */}
+                <LogoutIcon sx={{ marginRight: 1 }} />
                 <ListItemText
                   primaryTypographyProps={{
-                    ...TypographyListItemText,
                     sx: { color: 'white', textAlign: 'center' },
                   }}
                   primary="ออกจากระบบ"
@@ -176,6 +196,17 @@ const NavBar: React.FC = () => {
           )}
         </Box>
       </Drawer>
+
+      {/* Custom modal for logout confirmation */}
+      <CustomModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onConfirm={handleLogoutConfirm}
+        title="ยืนยันการออกจากระบบ"
+        description="คุณแน่ใจหรือว่าต้องการออกจากระบบ?"
+        confirmText="ออกจากระบบ"
+        cancelText="ยกเลิก"
+      />
     </>
   );
 };
