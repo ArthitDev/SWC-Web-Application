@@ -14,6 +14,7 @@ import {
 import CustomButtonCancel from 'components/button/CustomButtonCancel';
 import CustomButtonSave from 'components/button/CustomButtonSave';
 import CustomModal from 'components/modal/CustomModal';
+import useRefetchWebSocket from 'hooks/useRefetchWebSocket';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -70,6 +71,8 @@ const ProfileSettingForm: React.FC<ProfileSettingFormProps> = ({
   });
 
   const newPassword = watch('newPassword'); // Watch for newPassword value
+
+  useRefetchWebSocket('profile', 'UPDATE_PROFILE');
 
   useEffect(() => {
     // Reset form values when initialProfile changes

@@ -14,6 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import CustomModal from 'components/modal/CustomModal';
+import useRefetchWebSocket from 'hooks/useRefetchWebSocket';
 import { useUserProfile } from 'hooks/useUserProfile';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -25,7 +26,7 @@ import UserProfile from './UserProfile';
 
 const pages = [
   { label: 'หน้าผู้ใช้', path: '/app' },
-  { label: 'หน้าหลัก', path: '/admin' },
+  { label: 'แผงควาบคุม', path: '/admin' },
   { label: 'แผล', path: '/admin/wound' },
   { label: 'บทความ', path: '/admin/articles' },
   { label: 'เคล็ดไม่ลับ', path: '/admin/trick' },
@@ -37,6 +38,8 @@ const NavBar: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
   const { data: user } = useUserProfile();
   const router = useRouter();
+
+  useRefetchWebSocket('userProfile', 'UPDATE_PROFILE');
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
@@ -171,8 +174,7 @@ const NavBar: React.FC = () => {
           {user && (
             <Box p={3}>
               <ListItem
-                button
-                onClick={handleLogoutClick} // Trigger modal instead of direct logout
+                onClick={handleLogoutClick}
                 sx={{
                   backgroundColor: 'red',
                   color: 'white',
@@ -187,7 +189,11 @@ const NavBar: React.FC = () => {
                 <LogoutIcon sx={{ marginRight: 1 }} />
                 <ListItemText
                   primaryTypographyProps={{
-                    sx: { color: 'white', textAlign: 'center' },
+                    sx: {
+                      color: 'white',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                    },
                   }}
                   primary="ออกจากระบบ"
                 />

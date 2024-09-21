@@ -24,6 +24,7 @@ export const StyledListItemText = styled(ListItemText)({
     fontFamily: 'Prompt, sans-serif',
     fontSize: '20px',
     cursor: 'pointer',
+    borderColor: 'none',
   },
 });
 

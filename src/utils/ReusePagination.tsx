@@ -58,7 +58,7 @@ const ReusePagination: React.FC<ReusePaginationProps> = ({
               color: page === currentPage ? 'white' : 'gray',
               border: page === currentPage ? 'none' : '1px solid lightgray',
               borderRadius: '8px',
-              ':hover': { backgroundColor: COLORS.blue[7], color: 'white' },
+              ':hover': { backgroundColor: COLORS.blue[6], color: 'white' },
             }}
           >
             {page}

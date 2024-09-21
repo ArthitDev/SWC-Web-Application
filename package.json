@@ -15,11 +15,11 @@
   },
   "dependencies": {
     "@emotion/cache": "^11.11.5",
-    "@emotion/react": "^11.13.0",
+    "@emotion/react": "^11.13.3",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.6",
-    "@mui/material": "^5.16.6",
+    "@mui/material": "^6.1.1",
     "@tinymce/tinymce-react": "^4.2.0",
     "@types/dom-speech-recognition": "^0.0.4",
     "@types/dompurify": "^3.0.5",
