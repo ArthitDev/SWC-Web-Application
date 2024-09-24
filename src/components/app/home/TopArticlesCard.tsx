@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useQuery } from 'react-query';
 import { getTopArticle } from 'services/articleService';
+import COLORS from 'theme/colors';
 import ScrollFadeIn from 'utils/ScrollFadeIn';
 
 interface TopArticle {
@@ -37,8 +38,17 @@ const TopArticlesCard: React.FC = () => {
       <LocalFireDepartmentIcon
         sx={{
           color: colors[index],
-          fontSize: getFontSize(index), // Use the helper function
+          fontSize: getFontSize(index),
           filter: `drop-shadow(0 0 3px ${colors[index]})`,
+          animation: 'fireBounce 1.5s infinite',
+          '@keyframes fireBounce': {
+            '0%, 100%': {
+              transform: 'scale(1)',
+            },
+            '50%': {
+              transform: 'scale(1.2)',
+            },
+          },
         }}
       />
     );
@@ -105,20 +115,24 @@ const TopArticlesCard: React.FC = () => {
                   </Typography>
                 </Box>
               </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '48px',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    backgroundColor: '#e3f2fd',
-                  },
-                }}
-                onClick={() => handleIconClick(article.id)}
-              >
-                <ArrowForwardIcon sx={{ color: '#1976d2' }} />
+              <Box pt={0.5}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '48px',
+                    height: '48px',
+                    cursor: 'pointer',
+                    borderRadius: '50px',
+                    '&:hover': {
+                      backgroundColor: '#e3f2fd',
+                    },
+                  }}
+                  onClick={() => handleIconClick(article.id)}
+                >
+                  <ArrowForwardIcon sx={{ color: COLORS.blue[6] }} />
+                </Box>
               </Box>
             </Box>
           </Card>

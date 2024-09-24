@@ -14,6 +14,7 @@ import ScrollFadeIn from 'utils/ScrollFadeIn';
 interface DidyouknowResponse {
   data: DidyouknowData[];
   totalPages: number;
+  totalItems: number;
 }
 
 const DidyouknowPage: React.FC = () => {
@@ -79,11 +80,28 @@ const DidyouknowPage: React.FC = () => {
 
         {!isLoading && !error && data && data.data.length > 0 && (
           <>
-            <ReusePagination
-              totalPages={totalPages}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
+            <ScrollFadeIn>
+              <Box>
+                <Typography variant="body2">
+                  {`แสดงรู้หรือไม่ ${Math.min(
+                    (currentPage - 1) * limit + 1,
+                    data.totalItems || 0
+                  )} - 
+          ${Math.min(currentPage * limit, data.totalItems || 0)} 
+          จากทั้งหมด ${data.totalItems || 0} รู้หรือไม่`}
+                </Typography>
+              </Box>
+            </ScrollFadeIn>
+            <ScrollFadeIn>
+              <Box>
+                <ReusePagination
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
+                />
+              </Box>
+            </ScrollFadeIn>
+
             <Box
               sx={{
                 display: 'flex',
@@ -171,20 +189,40 @@ const DidyouknowPage: React.FC = () => {
                           color: '#888888',
                         }}
                       >
-                        {new Date(didyouknow.updated_at).toLocaleString(
-                          'th-TH',
-                          {
-                            timeZone: 'UTC',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          }
-                        )}
+                        {`วันที่อัพเดทข้อมูลรู้หรือไม่ - วันที่ ${new Date(
+                          didyouknow.updated_at
+                        ).toLocaleString('th-TH', {
+                          timeZone: 'UTC',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}`}
                       </Typography>
                     </Box>
                   </Card>
                 </ScrollFadeIn>
               ))}
+            </Box>
+            <Box pb={2}>
+              <ScrollFadeIn>
+                <Box>
+                  <Typography variant="body2">
+                    {`แสดงรู้หรือไม่ ${Math.min(
+                      (currentPage - 1) * limit + 1,
+                      data.totalItems || 0
+                    )} - 
+          ${Math.min(currentPage * limit, data.totalItems || 0)} 
+          จากทั้งหมด ${data.totalItems || 0} รู้หรือไม่`}
+                  </Typography>
+                </Box>
+              </ScrollFadeIn>
+              <ScrollFadeIn>
+                <ReusePagination
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
+                />
+              </ScrollFadeIn>
             </Box>
           </>
         )}

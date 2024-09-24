@@ -1,4 +1,11 @@
-import { Box, Button, Modal, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Modal,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import React from 'react';
 import { IoWarning } from 'react-icons/io5';
 import COLORS from 'theme/colors';
@@ -22,6 +29,9 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
   confirmText,
   cancelText,
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Modal
       open={isOpen}
@@ -35,11 +45,11 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 350,
+          width: isMobile ? '90%' : 350,
           bgcolor: 'background.paper',
           borderRadius: 3,
           boxShadow: 24,
-          p: 4,
+          p: { xs: 2, sm: 4 },
         }}
       >
         <Box display="flex" alignItems="center" mb={2}>
@@ -53,7 +63,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
             {title}
           </Typography>
         </Box>
-        <Typography id="confirm-modal-description" sx={{ mt: 2, mb: 3 }}>
+        <Typography id="confirm-modal-description" sx={{ mt: 2, mb: 3, ml: 2 }}>
           {description}
         </Typography>
         <Box mt={3} display="flex" justifyContent="flex-end">

@@ -10,7 +10,7 @@ const COLORS = {
     primary: '#1C1C1E',
   },
   divider: '#F2F2F7',
-  black: '#000',
+  black: '#000000',
   white: {
     1: '#fff',
     2: '#f5f5f9',
@@ -49,6 +49,7 @@ const COLORS = {
     4: '#ffd132',
     5: 'rgba(255, 149, 0, 1)',
     6: '#FF9500',
+    7: '#CA8A42',
   },
   yellow: {
     1: '#fff3cc',

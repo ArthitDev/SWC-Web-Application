@@ -1,5 +1,6 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 import {
   AppBar,
@@ -19,7 +20,9 @@ import { useUserProfile } from 'hooks/useUserProfile';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { logout } from 'services/logout';
+import { getProfileImageUrl } from 'services/profileSettingService';
 import { NavButton, TypographyLogoStyles } from 'styles/Navbar.style';
+import COLORS from 'theme/colors';
 
 import NavList from './NavList';
 import UserProfile from './UserProfile';
@@ -48,6 +51,11 @@ const NavBar: React.FC = () => {
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
+
+  // ตรวจสอบว่า user และ user.profileImage ถูกกำหนดแล้วก่อนใช้งาน
+  const profileImageUrl = user?.profileImage
+    ? getProfileImageUrl(user.profileImage)
+    : null;
 
   const handleNavigate = (path: string) => {
     router.push(path);
@@ -115,8 +123,7 @@ const NavBar: React.FC = () => {
                 alignItems: 'center',
               }}
             >
-              {user && <UserProfile user={user} onLogout={handleLogoutClick} />}{' '}
-              {/* Trigger modal instead of direct logout */}
+              {user && <UserProfile user={user} onLogout={handleLogoutClick} />}
             </Box>
             <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
               <IconButton
@@ -147,7 +154,17 @@ const NavBar: React.FC = () => {
           <Box sx={{ padding: 2, backgroundColor: '#235ADB', color: 'white' }}>
             {user && (
               <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 2 }}>
-                <Avatar sx={{ marginRight: 1 }}>{user.username[0]}</Avatar>
+                <Avatar
+                  src={profileImageUrl || undefined}
+                  sx={{
+                    mr: 2,
+                    color: COLORS.blue[6],
+                    backgroundColor: 'white',
+                    fontWeight: 500,
+                  }}
+                >
+                  {!profileImageUrl && user.username[0]}
+                </Avatar>
                 <Box>
                   <Typography variant="body1">{user.username}</Typography>
                   <Typography variant="body2">{user.email}</Typography>
@@ -161,6 +178,17 @@ const NavBar: React.FC = () => {
                   >
                     <SettingsIcon sx={{ marginRight: 1 }} />
                     <Typography variant="body2">ตั้งค่าบัญชี</Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => handleNavigate('/admin/contact')}
+                  >
+                    <NotificationsIcon sx={{ marginRight: 1 }} />
+                    <Typography variant="body2">การแจ้งเตือน</Typography>
                   </Box>
                 </Box>
               </Box>

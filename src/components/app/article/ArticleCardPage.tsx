@@ -33,8 +33,6 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
 
   const { page, limit, totalPages, setPage, setTotalPages } = usePagination();
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [artcleCount, setArtcleCount] = useState(0);
-  const [totalArticleCount, setTotalArticleCount] = useState(0);
 
   const handleCategoryChange = (event: SelectChangeEvent<string>) => {
     setSelectedCategory(event.target.value as string);
@@ -52,8 +50,6 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
       onSuccess: (data) => {
         if (data) {
           setTotalPages(data.totalPages || 0);
-          setArtcleCount(data.data?.length || 0);
-          setTotalArticleCount(data.totalItems || 0);
         }
       },
     }
@@ -139,7 +135,9 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
   return (
     <Box
       sx={{
-        padding: 3,
+        pl: 3,
+        pr: 3,
+        pb: 3,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -149,25 +147,44 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'end',
           width: '100%',
           pb: 2,
         }}
       >
-        <Box>
-          <Typography variant="body1">จำนวนบทความ : {artcleCount}</Typography>
-          <Typography variant="body1">ทั้งหมด : {totalArticleCount}</Typography>
-        </Box>
         <CategoryDropdown
           selectedCategory={selectedCategory}
           onCategoryChange={handleCategoryChange}
         />
       </Box>
+      <Box>
+        <ScrollFadeIn>
+          <Box pt={2.5}>
+            <Typography variant="body2">
+              {`แสดงบทความ ${Math.min(
+                (page - 1) * limit + 1,
+                articlesData?.totalItems || 0
+              )} - 
+        ${Math.min(page * limit, articlesData?.totalItems || 0)} 
+        จากทั้งหมด ${articlesData?.totalItems || 0} บทความ`}
+            </Typography>
+          </Box>
+        </ScrollFadeIn>
+        <ScrollFadeIn>
+          <Box pb={2}>
+            <ReusePagination
+              totalPages={totalPages}
+              currentPage={page}
+              onPageChange={setPage}
+            />
+          </Box>
+        </ScrollFadeIn>
+      </Box>
       {articlesData && articlesData.data && articlesData.data.length > 0 ? (
         articlesData.data.map((article: ArticleData) => (
           <ScrollFadeIn key={article.id}>
             <Card
-              elevation={1}
+              elevation={0}
               sx={{
                 width: '100%',
                 maxWidth: '400px',
@@ -176,6 +193,7 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
                 flexDirection: 'column',
                 position: 'relative',
                 overflow: 'hidden',
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
               }}
             >
               {article.article_cover && (
@@ -186,6 +204,7 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
                     width: '100%',
                     height: '250px',
                   }}
+                  onClick={() => handleReadMoreClick(article.id)}
                 >
                   <img
                     src={getArticleImageUrl(article.article_cover)}
@@ -229,12 +248,29 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
       ) : (
         <DataNotFound />
       )}
-
-      <ReusePagination
-        totalPages={totalPages}
-        currentPage={page}
-        onPageChange={setPage}
-      />
+      <Box>
+        <ScrollFadeIn>
+          <Box pt={2}>
+            <Typography variant="body2">
+              {`แสดงบทความ ${Math.min(
+                (page - 1) * limit + 1,
+                articlesData?.totalItems || 0
+              )} - 
+        ${Math.min(page * limit, articlesData?.totalItems || 0)} 
+        จากทั้งหมด ${articlesData?.totalItems || 0} บทความ`}
+            </Typography>
+          </Box>
+        </ScrollFadeIn>
+        <ScrollFadeIn>
+          <Box>
+            <ReusePagination
+              totalPages={totalPages}
+              currentPage={page}
+              onPageChange={setPage}
+            />
+          </Box>
+        </ScrollFadeIn>
+      </Box>
     </Box>
   );
 };

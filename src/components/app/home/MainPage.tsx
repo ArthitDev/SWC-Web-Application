@@ -1,8 +1,8 @@
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import HealingIcon from '@mui/icons-material/Healing';
 import { Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { InfoIcon } from 'lucide-react';
+import Image from 'next/image';
 import router from 'next/router';
 import React from 'react';
 import COLORS from 'theme/colors';
@@ -12,7 +12,6 @@ import ScrollFadeIn from 'utils/ScrollFadeIn';
 import DidyouknowCardHome from './DidyouknowCard';
 import FeatureBadge from './FeatureBadge';
 import HeaderIconRight from './HeaderIconRight';
-import IconCircle from './IconCircle';
 import InfoCard from './InfoCard';
 import TopArticlesCard from './TopArticlesCard';
 import TrickCardHome from './TrickCard';
@@ -43,31 +42,36 @@ const MainPage: React.FC = () => {
           />
 
           <ScrollFadeIn>
-            <Box sx={{ textAlign: 'center', marginBottom: 2 }}>
-              <IconCircle
-                icon={
-                  <HealingIcon sx={{ fontSize: 60, color: COLORS.blue[6] }} />
-                }
-                backgroundColor="#BFDBFE"
+            <Box sx={{ textAlign: 'center', marginBottom: 2, pt: 2 }}>
+              <Image
+                src="/images/logo_blue.png"
+                alt="Logo"
+                width={300}
+                height={120}
+                priority
               />
               <Box sx={{ textAlign: 'center' }}>
                 <Typography
                   variant="h4"
-                  sx={{ fontWeight: 'bold', color: COLORS.blue[6] }}
+                  sx={{
+                    fontWeight: 'bold',
+                    color: COLORS.blue[6],
+                    textShadow: '3px 3px 0px #a7bdf1',
+                  }}
                 >
-                  Smart Wound Care
+                  Smart . Wound . Care
                 </Typography>
                 <Box
                   sx={{
                     width: '100%',
-                    height: '10px',
+                    height: '7px',
                     backgroundColor: '#BFDBFE',
                     borderRadius: '10px',
-                    margin: '8px auto',
+                    margin: '15px auto',
                   }}
                 />
                 <Typography sx={{ color: COLORS.gray[11] }}>
-                  การวิเคราะห์แผลด้วย Ai เพื่อการรักษาที่ถูกต้อง
+                  วิเคราะห์ภาพแผลด้วย Ai เพื่อข้อมูลที่ถูกต้อง
                 </Typography>
               </Box>
             </Box>
@@ -82,12 +86,12 @@ const MainPage: React.FC = () => {
               <FeatureBadge
                 text="ใช้งานง่าย"
                 backgroundColor="#DCFCE7"
-                color={COLORS.green[6]}
+                color={COLORS.green[5]}
               />
               <FeatureBadge
                 text="ข้อมูลหลากหลาย"
                 backgroundColor="#FEF9C3"
-                color={COLORS.orange[6]}
+                color={COLORS.orange[7]}
               />
             </Box>
           </ScrollFadeIn>

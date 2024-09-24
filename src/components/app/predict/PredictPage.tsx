@@ -180,7 +180,6 @@ const PredictPage: React.FC = () => {
         <Typography variant="body1" sx={styles.Description}>
           ถ่ายภาพ หรือ เลือกภาพแผลเพื่อเริ่มต้นวิเคราะห์
         </Typography>
-
         <Box sx={styles.ImageContainer}>
           {imagePreview ? (
             <>

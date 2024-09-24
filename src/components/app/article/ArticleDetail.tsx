@@ -1,3 +1,4 @@
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { Box, CircularProgress, Link, Typography } from '@mui/material';
 import BackButtonPage from 'components/button/BackButtonPage';
 import DOMPurify from 'dompurify';
@@ -94,14 +95,46 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ id }) => {
         >
           <Box sx={{ marginBottom: 2 }}>
             {article.updated_at && (
-              <Typography variant="body2" color="text.secondary">
-                {new Date(article.updated_at).toLocaleDateString('th-TH', {
-                  timeZone: 'UTC',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </Typography>
+              <Box
+                sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}
+              >
+                <AccessTimeIcon
+                  sx={{
+                    fontSize: 16,
+                    marginRight: 0.5,
+                    color: 'text.secondary',
+                  }}
+                />
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    fontWeight: 400,
+                  }}
+                >
+                  {(() => {
+                    const date = new Date(article.updated_at);
+                    const datePart = date
+                      .toLocaleString('th-TH', {
+                        timeZone: 'Asia/Bangkok',
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                      })
+                      .replace(/(\d+) (...) (\d+)/, (_, d, m, y) => {
+                        const thaiYear = parseInt(y, 10) + 543;
+                        return `${d} ${m}. ${thaiYear}`;
+                      });
+                    const timePart = date.toLocaleString('th-TH', {
+                      timeZone: 'Asia/Bangkok',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false,
+                    });
+                    return `${datePart} (${timePart}) - วันที่และเวลาอัพเดทข้อมูลบทความ`;
+                  })()}
+                </Typography>
+              </Box>
             )}
             <Typography
               variant="h5"

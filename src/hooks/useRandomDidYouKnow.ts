@@ -9,11 +9,26 @@ const useRandomDidYouKnow = () => {
   return useQuery(
     'didYouKnow',
     async () => {
-      const didyouknows = await getAllDidyouknow(); // เรียกข้อมูลโดยใช้ pagination
-      if (didyouknows.length === 0) {
+      const AllDidyouknows = await getAllDidyouknow(); // เรียกข้อมูลโดยใช้ pagination
+      if (AllDidyouknows.length === 0) {
         throw new Error('No DidYouKnow available');
       }
-      return didyouknows[Math.floor(Math.random() * didyouknows.length)]; // สุ่มเลือก DidYouKnow หนึ่งตัว
+      const selectedDidYouKnows: any[] | PromiseLike<any[]> = [];
+      while (
+        selectedDidYouKnows.length < 5 &&
+        selectedDidYouKnows.length < AllDidyouknows.length
+      ) {
+        const randomDidyouknow =
+          AllDidyouknows[Math.floor(Math.random() * AllDidyouknows.length)];
+        if (
+          !selectedDidYouKnows.some(
+            (didyouknow) => didyouknow.id === randomDidyouknow.id
+          )
+        ) {
+          selectedDidYouKnows.push(randomDidyouknow);
+        }
+      }
+      return selectedDidYouKnows;
     },
     {
       staleTime: 1000 * 60 * 5, // 5 นาที

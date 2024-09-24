@@ -18,6 +18,17 @@ export type ArticleData = {
   category: string;
 };
 
+export type ContactData = {
+  id: number;
+  contact_name: string;
+  contact_email: string;
+  contact_message: string;
+  contact_subject: string;
+  isRead: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type TrickData = {
   id: number;
   trick_name: string;

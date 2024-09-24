@@ -27,15 +27,11 @@ import ScrollFadeIn from 'utils/ScrollFadeIn';
 type WoundCardPageProps = {
   filterEnabled: boolean;
   searchTerm: string;
-  setWoundCount: (count: number) => void;
-  setTotalWoundCount: (count: number) => void;
 };
 
 const WoundCardPage: React.FC<WoundCardPageProps> = ({
   filterEnabled,
   searchTerm,
-  setWoundCount,
-  setTotalWoundCount,
 }) => {
   const router = useRouter();
   const [blurredWounds, setBlurredWounds] = useState<{
@@ -57,8 +53,6 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
       onSuccess: (data) => {
         if (data) {
           setTotalPages(data.totalPages || 0);
-          setWoundCount(data.data?.length || 0);
-          setTotalWoundCount(data.totalItems || 0);
         }
       },
     }
@@ -154,13 +148,36 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
   return (
     <Box
       sx={{
-        padding: 3,
+        pl: 3,
+        pr: 3,
+        pb: 3,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         width: '100%',
       }}
     >
+      <ScrollFadeIn>
+        <Box pt={2.5}>
+          <Typography variant="body2">
+            {`แสดงแผล ${Math.min(
+              (page - 1) * limit + 1,
+              woundsData?.totalItems || 0
+            )} - 
+        ${Math.min(page * limit, woundsData?.totalItems || 0)} 
+        จากทั้งหมด ${woundsData?.totalItems || 0} แผล`}
+          </Typography>
+        </Box>
+      </ScrollFadeIn>
+      <ScrollFadeIn>
+        <Box pb={2}>
+          <ReusePagination
+            totalPages={totalPages}
+            currentPage={page}
+            onPageChange={setPage}
+          />
+        </Box>
+      </ScrollFadeIn>
       {woundsData?.data && woundsData.data.length > 0 ? (
         woundsData.data.map((wound: WoundData) => {
           const woundId = String(wound.id);
@@ -170,7 +187,7 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
           return (
             <ScrollFadeIn key={wound.id}>
               <Card
-                elevation={1}
+                elevation={0}
                 sx={{
                   width: '100%',
                   maxWidth: '400px',
@@ -179,6 +196,7 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
                   flexDirection: 'column',
                   position: 'relative',
                   overflow: 'hidden',
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 {wound.wound_cover && (
@@ -257,12 +275,27 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
       ) : (
         <DataNotFound />
       )}
-
-      <ReusePagination
-        totalPages={totalPages}
-        currentPage={page}
-        onPageChange={setPage}
-      />
+      <ScrollFadeIn>
+        <Box pt={2}>
+          <Typography variant="body2">
+            {`แสดงแผล ${Math.min(
+              (page - 1) * limit + 1,
+              woundsData?.totalItems || 0
+            )} - 
+        ${Math.min(page * limit, woundsData?.totalItems || 0)} 
+        จากทั้งหมด ${woundsData?.totalItems || 0} แผล`}
+          </Typography>
+        </Box>
+      </ScrollFadeIn>
+      <ScrollFadeIn>
+        <Box>
+          <ReusePagination
+            totalPages={totalPages}
+            currentPage={page}
+            onPageChange={setPage}
+          />
+        </Box>
+      </ScrollFadeIn>
     </Box>
   );
 };

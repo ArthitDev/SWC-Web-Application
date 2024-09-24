@@ -1,4 +1,11 @@
-import { Box, Button, Modal, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Modal,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import React from 'react';
 import { IoWarning } from 'react-icons/io5';
 import COLORS from 'theme/colors';
@@ -22,6 +29,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
   confirmText,
   cancelText,
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Modal
       open={isOpen}
@@ -35,7 +45,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: { xs: '90%', sm: '400px', md: '500px' },
+          width: isMobile ? '90%' : '500px',
           maxWidth: '100%',
           bgcolor: 'background.paper',
           borderRadius: 2,

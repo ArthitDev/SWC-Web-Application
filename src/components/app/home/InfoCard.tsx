@@ -19,7 +19,6 @@ const InfoCard: React.FC<{
   sxDescription,
 }) => (
   <ScrollFadeIn>
-    {' '}
     {/* ครอบ ScrollFadeIn รอบๆ Card */}
     <Card
       sx={{
@@ -31,6 +30,7 @@ const InfoCard: React.FC<{
         color: 'white',
         borderRadius: 3,
         marginBottom: 4,
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
       }}
     >
       <CardContent>

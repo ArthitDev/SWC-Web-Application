@@ -15,6 +15,7 @@ import ScrollFadeIn from 'utils/ScrollFadeIn'; // นำเข้า ScrollFadeI
 interface TricksResponse {
   data: TrickData[];
   totalPages: number;
+  totalItems: number;
 }
 
 const TrickPage: React.FC = () => {
@@ -79,11 +80,27 @@ const TrickPage: React.FC = () => {
 
         {!isLoading && !error && data && data.data.length > 0 && (
           <>
-            <ReusePagination
-              totalPages={totalPages}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
+            <ScrollFadeIn>
+              <Box pt={2.5}>
+                <Typography variant="body2">
+                  {`แสดงเคล็ดลับ ${Math.min(
+                    (currentPage - 1) * limit + 1,
+                    data.totalItems || 0
+                  )} - 
+          ${Math.min(currentPage * limit, data.totalItems || 0)} 
+          จากทั้งหมด ${data.totalItems || 0} เคล็ดลับ`}
+                </Typography>
+              </Box>
+            </ScrollFadeIn>
+            <ScrollFadeIn>
+              <Box>
+                <ReusePagination
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
+                />
+              </Box>
+            </ScrollFadeIn>
             <Box
               sx={{
                 display: 'flex',
@@ -96,8 +113,6 @@ const TrickPage: React.FC = () => {
             >
               {data.data.map((trick) => (
                 <ScrollFadeIn key={trick.id}>
-                  {' '}
-                  {/* ครอบ ScrollFadeIn รอบ Card */}
                   <Card
                     sx={{
                       display: 'flex',
@@ -171,17 +186,40 @@ const TrickPage: React.FC = () => {
                           color: '#888888',
                         }}
                       >
-                        {new Date(trick.updated_at).toLocaleString('th-TH', {
+                        {`วันที่อัพเดทข้อมูลเคล็ดไม่ลับ - วันที่ ${new Date(
+                          trick.updated_at
+                        ).toLocaleString('th-TH', {
                           timeZone: 'UTC',
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',
-                        })}
+                        })}`}
                       </Typography>
                     </Box>
                   </Card>
                 </ScrollFadeIn>
               ))}
+            </Box>
+            <Box pb={2}>
+              <ScrollFadeIn>
+                <Box>
+                  <Typography variant="body2">
+                    {`แสดงเคล็ดลับ ${Math.min(
+                      (currentPage - 1) * limit + 1,
+                      data.totalItems || 0
+                    )} - 
+          ${Math.min(currentPage * limit, data.totalItems || 0)} 
+          จากทั้งหมด ${data.totalItems || 0} เคล็ดลับ`}
+                  </Typography>
+                </Box>
+              </ScrollFadeIn>
+              <ScrollFadeIn>
+                <ReusePagination
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
+                />
+              </ScrollFadeIn>
             </Box>
           </>
         )}

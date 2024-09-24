@@ -15,6 +15,7 @@ const FeatureBadge: React.FC<{
       padding: '8px 16px',
       textAlign: 'center',
       fontWeight: 'bold',
+      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
     }}
   >
     {text}

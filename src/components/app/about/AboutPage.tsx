@@ -1,3 +1,4 @@
+import AttachEmailIcon from '@mui/icons-material/AttachEmail';
 import {
   Box,
   Button,
@@ -9,6 +10,7 @@ import {
 import BackButtonPage from 'components/button/BackButtonPage';
 import TermsDialog from 'components/landing/TermsDialog';
 import ConfirmDeleteModal from 'components/modal/ConfirmDeleteModal';
+import ContactModal from 'components/modal/ContactModal';
 import { motion } from 'framer-motion';
 import { History, InfoIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -20,6 +22,7 @@ import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 const AboutPage: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalContactOpen, setIsModalContactOpen] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [showCountdown, setShowCountdown] = useState(false);
   const [isCountingDown, setIsCountingDown] = useState(false); // สถานะนับถอยหลัง
@@ -35,6 +38,14 @@ const AboutPage: React.FC = () => {
     setCountdown(null);
     setShowCountdown(false);
     setIsCountingDown(false);
+  };
+
+  const handleOpenModalContact = () => {
+    setIsModalContactOpen(true);
+  };
+
+  const handleCloseModalContact = () => {
+    setIsModalContactOpen(false);
   };
 
   const handleConfirmReset = () => {
@@ -117,7 +128,7 @@ const AboutPage: React.FC = () => {
             variant="h6"
             sx={{ textAlign: 'center', mb: 1, fontWeight: 600 }}
           >
-            บริการวิเคราะห์ผลด้วย AI
+            บริการวิเคราะห์ภาพแผลด้วย AI
           </Typography>
           <Typography
             variant="h6"
@@ -216,6 +227,34 @@ const AboutPage: React.FC = () => {
           <Button
             variant="contained"
             sx={{
+              backgroundColor: COLORS.yellow[4],
+              color: 'white',
+              width: '80%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '8px 16px',
+              '&:hover': {
+                backgroundColor: COLORS.orange[4],
+              },
+            }}
+            startIcon={<AttachEmailIcon sx={{ ml: 2 }} />}
+            onClick={handleOpenModalContact}
+          >
+            ติดต่อเราหรือแจ้งปัญหา
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mt: 1,
+          }}
+        >
+          <Button
+            variant="contained"
+            sx={{
               backgroundColor: COLORS.red[5],
               color: 'white',
               width: '80%',
@@ -236,7 +275,7 @@ const AboutPage: React.FC = () => {
 
         <Typography
           variant="body2"
-          sx={{ textAlign: 'center', mt: 2, color: COLORS.gray[3], pb: 0 }}
+          sx={{ textAlign: 'center', mt: 2, color: COLORS.gray[3], pb: 3 }}
         >
           เวอร์ชัน 1.0.0
         </Typography>
@@ -254,6 +293,10 @@ const AboutPage: React.FC = () => {
         }
         confirmText="ยืนยันการลบ"
         cancelText="ยกเลิก"
+      />
+      <ContactModal
+        open={isModalContactOpen}
+        onClose={handleCloseModalContact}
       />
     </motion.div>
   );

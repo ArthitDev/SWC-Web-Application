@@ -15,8 +15,6 @@ const WoundPage: React.FC = () => {
   const [appliedSearchTerm, setAppliedSearchTerm] = useState('');
   const [filterEnabled, setFilterEnabled] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [woundCount, setWoundCount] = useState(0);
-  const [totalWoundCount, setTotalWoundCount] = useState(0);
 
   const handleSearch = () => {
     setAppliedSearchTerm(searchTerm);
@@ -81,15 +79,10 @@ const WoundPage: React.FC = () => {
         />
         <Box
           display="flex"
-          justifyContent="space-between"
+          justifyContent="end"
           alignItems="center"
           sx={{ mt: 2, pr: 3 }}
         >
-          <Box sx={{ ml: 3 }}>
-            <Typography variant="body1">จำนวนแผล : {woundCount}</Typography>
-            <Typography variant="body1">ทั้งหมด : {totalWoundCount}</Typography>
-          </Box>
-
           <Box display="flex" alignItems="center">
             <Typography variant="body1" sx={{ mr: 1 }}>
               {filterEnabled ? 'ปิดฟิลเตอร์' : 'เปิดฟิลเตอร์'}
@@ -108,8 +101,6 @@ const WoundPage: React.FC = () => {
           <WoundCardPage
             filterEnabled={filterEnabled}
             searchTerm={appliedSearchTerm}
-            setWoundCount={setWoundCount}
-            setTotalWoundCount={setTotalWoundCount}
           />
         </Box>
       </motion.div>
