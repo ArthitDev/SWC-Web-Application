@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from '@mui/material';
 import React from 'react';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 interface CustomSearchButtonProps extends ButtonProps {
   label: string;

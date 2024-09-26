@@ -8,7 +8,7 @@ import parse from 'html-react-parser';
 import React from 'react';
 import { useQuery } from 'react-query';
 import { getArticleById, getArticleImageUrl } from 'services/articleService';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import ScrollToTop from 'utils/ScrollToTop';
 

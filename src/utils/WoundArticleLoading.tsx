@@ -1,6 +1,6 @@
 import { Box, Grid, Paper, Skeleton } from '@mui/material';
 import React from 'react';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 const WoundArticleLoading: React.FC = () => {
   return (

@@ -5,7 +5,7 @@ import DidyouknowForm from 'components/form/DidyouknowForm';
 import SearchBox from 'components/search/SearchBox';
 import React, { useEffect, useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { DidyouknowData } from 'types/AdminGetDataTypes'; // import ประเภทข้อมูล
 import withAuth from 'utils/withAuth';
 

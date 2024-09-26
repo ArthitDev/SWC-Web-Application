@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useQuery } from 'react-query';
 import { getTopArticle } from 'services/articleService';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import ScrollFadeIn from 'utils/ScrollFadeIn';
 
 interface TopArticle {
@@ -75,7 +75,7 @@ const TopArticlesCard: React.FC = () => {
               padding: 0,
               width: '100%',
               maxWidth: 500,
-              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+              boxShadow: '7px 7px 5px 0px rgba(0, 0, 0, 0.1)',
               overflow: 'hidden',
               marginBottom: 1,
             }}
@@ -125,8 +125,10 @@ const TopArticlesCard: React.FC = () => {
                     height: '48px',
                     cursor: 'pointer',
                     borderRadius: '50px',
+                    transition: 'transform 0.3s',
                     '&:hover': {
                       backgroundColor: '#e3f2fd',
+                      transform: 'translateX(5px)',
                     },
                   }}
                   onClick={() => handleIconClick(article.id)}

@@ -1,7 +1,7 @@
 import type { ButtonProps } from '@mui/material';
 import { Button, CircularProgress } from '@mui/material';
 import React from 'react';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 type CustomButtonCencelProps = ButtonProps & {
   loading?: boolean;

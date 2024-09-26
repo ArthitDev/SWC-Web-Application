@@ -1,3 +1,5 @@
+import EventAvailableTwoToneIcon from '@mui/icons-material/EventAvailableTwoTone';
+import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
   Box,
@@ -8,6 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import ReadMoreButton from 'components/button/ReadMoreButton';
+import useFormatDate from 'hooks/useFormatDate';
 import usePagination from 'hooks/usePagination';
 import useRefetchWebSocket from 'hooks/useRefetchWebSocket';
 import { useRouter } from 'next/router';
@@ -34,9 +37,11 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
   searchTerm,
 }) => {
   const router = useRouter();
+  const { page: queryPage } = router.query;
   const [blurredWounds, setBlurredWounds] = useState<{
     [key: string]: boolean;
   }>({});
+  const { formatDate } = useFormatDate();
 
   useRefetchWebSocket('wounds', 'UPDATE_WOUNDS');
 
@@ -61,6 +66,12 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
   useEffect(() => {
     setPage(1); // เมื่อมีการค้นหาใหม่ จะกลับไปที่หน้า 1
   }, [searchTerm, setPage]);
+
+  useEffect(() => {
+    if (queryPage) {
+      setPage(Number(queryPage));
+    }
+  }, [queryPage]);
 
   const mutation = useMutation(
     (woundData: { woundId: number; clickCount: number }) =>
@@ -110,11 +121,11 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
     const clickCount = getClicksFromStorage(woundId) + 1;
     setClicksToStorage(woundId, clickCount);
 
-    if (clickCount >= 5) {
+    if (clickCount >= 3) {
       mutation.mutate({ woundId, clickCount });
       setClicksToStorage(woundId, 0);
     }
-    router.push(`/app/wound/${woundId}`);
+    router.push(`/app/wound/${woundId}?page=${page}`);
   };
 
   if (isLoading) {
@@ -189,6 +200,7 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
               <Card
                 elevation={0}
                 sx={{
+                  borderRadius: '12px',
                   width: '100%',
                   maxWidth: '400px',
                   marginBottom: 3,
@@ -196,7 +208,10 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
                   flexDirection: 'column',
                   position: 'relative',
                   overflow: 'hidden',
-                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                  boxShadow: '0 8px 40px -12px rgba(0,0,0,0.3)',
+                  '&:hover': {
+                    boxShadow: '0 16px 70px -12.125px rgba(0,0,0,0.3)',
+                  },
                 }}
               >
                 {wound.wound_cover && (
@@ -259,7 +274,26 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
                   >
                     {stripHtmlTags(wound.wound_content).substring(0, 100)}...
                   </Typography>
-                  <Box>
+                  <Box display="flex" alignItems="center" mt={2}>
+                    <RemoveRedEyeTwoToneIcon sx={{ mr: 1 }} />
+                    <Typography
+                      variant="body2"
+                      sx={{ fontWeight: 'medium', color: 'gray' }}
+                    >
+                      {wound.click_counts || 0}
+                    </Typography>
+                  </Box>
+                  <Box display="flex" alignItems="center" mt={1}>
+                    <EventAvailableTwoToneIcon sx={{ mr: 1 }} />{' '}
+                    <Typography
+                      variant="body2"
+                      sx={{ fontWeight: 'medium', color: 'gray' }}
+                    >
+                      {formatDate(wound.updated_at || 'ไม่ระบุ')}
+                    </Typography>
+                  </Box>
+
+                  <Box display={'flex'} justifyContent={'flex-end'}>
                     <ReadMoreButton
                       onClick={() => handleReadMoreClick(wound.id)}
                       fullWidth

@@ -21,7 +21,7 @@ import {
   getArticleImageUrl,
   updateArticle,
 } from 'services/articleService';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { ArticleFormData } from 'types/AdminFormDataPostTypes';
 import { ArticleData } from 'types/AdminGetDataTypes';
 import { showValidationError } from 'utils/ErrorFormToast';

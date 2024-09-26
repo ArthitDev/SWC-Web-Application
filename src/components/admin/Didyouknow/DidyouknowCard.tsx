@@ -10,7 +10,7 @@ import {
   deleteDidyouknow,
   getDidyouknowWithPagination,
 } from 'services/didyouknowService';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { DidyouknowData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
 import FetchError from 'utils/FetchError';

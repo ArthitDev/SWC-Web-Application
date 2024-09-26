@@ -9,13 +9,13 @@ const FeatureBadge: React.FC<{
   <Box
     sx={{
       borderRadius: '20px',
-      fontSize: { xs: '12px', sm: '16px' },
+      fontSize: { xs: '16px', sm: '16px' },
       backgroundColor,
       color,
-      padding: '8px 16px',
+      padding: '5px 10px',
       textAlign: 'center',
       fontWeight: 'bold',
-      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+      boxShadow: '7px 7px 5px 0px rgba(0, 0, 0, 0.1)',
     }}
   >
     {text}

@@ -77,3 +77,13 @@ export const updateIsRead = async (id: number, isRead: number) => {
     throw new Error(error.response?.data?.message || 'Error updating contact');
   }
 };
+
+// ฟังก์ชันสำหรับลบ contact ตาม id
+export const deleteContact = async (id: number) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/contact/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Error deleting contact');
+  }
+};

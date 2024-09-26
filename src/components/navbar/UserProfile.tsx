@@ -11,7 +11,7 @@ import useShowNotification from 'hooks/useShowNotification'; // นำเข้�
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { getProfileImageUrl } from 'services/profileSettingService';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 interface UserProfileProps {
   user: { username: string; email: string; profileImage: string };
@@ -27,7 +27,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout }) => {
 
   // นับจำนวนแจ้งเตือนที่ยังไม่ได้อ่าน และจัดรูปแบบ 1-99 หรือ 99+
   const unreadCount = unreadContacts ? Math.min(unreadContacts.length, 99) : 0;
-  const badgeContent = unreadCount > 99 ? '99+' : unreadCount;
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -63,7 +62,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout }) => {
     >
       <IconButton onClick={handleMenuOpen} color="inherit">
         <Badge
-          badgeContent={badgeContent}
+          badgeContent={unreadCount > 99 ? '99+' : unreadCount}
           color="error" // สีแดงสำหรับแจ้งเตือน
           invisible={unreadCount === 0} // ซ่อน Badge หากไม่มีแจ้งเตือน
         >
@@ -90,7 +89,15 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout }) => {
         <MenuItem disabled>{user.username}</MenuItem>
         <MenuItem disabled>{user.email}</MenuItem>
         <MenuItem onClick={handleContactClick}>
-          <NotificationsIcon sx={{ mr: 2 }} /> การแจ้งเตือน
+          <Badge
+            color="error"
+            variant="dot"
+            invisible={unreadCount === 0}
+            sx={{ mr: 2 }}
+          >
+            <NotificationsIcon />
+          </Badge>
+          การแจ้งเตือน
         </MenuItem>
         <MenuItem onClick={handleSettingsClick}>
           <SettingsIcon sx={{ mr: 2 }} /> ตั้งค่าบัญชี

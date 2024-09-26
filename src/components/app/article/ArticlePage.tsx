@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import SearchBoxApp from 'components/search/SearchBoxApp';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
 import ArticleCardPage from './ArticleCardPage';

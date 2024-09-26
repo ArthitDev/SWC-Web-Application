@@ -22,7 +22,7 @@ import React, { useState } from 'react';
 import { logout } from 'services/logout';
 import { getProfileImageUrl } from 'services/profileSettingService';
 import { NavButton, TypographyLogoStyles } from 'styles/Navbar.style';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 import NavList from './NavList';
 import UserProfile from './UserProfile';

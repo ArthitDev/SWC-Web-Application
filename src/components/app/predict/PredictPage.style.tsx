@@ -1,5 +1,5 @@
 import { SxProps, Theme } from '@mui/material/styles';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 export const Container: SxProps<Theme> = {
   maxWidth: 400,

@@ -3,7 +3,7 @@ import { Box, InputAdornment, TextField } from '@mui/material';
 import { styled } from '@mui/system';
 import CustomSearchButton from 'components/button/CustomSearchButton';
 import React from 'react';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 const Container = styled(Box)({
   display: 'flex',

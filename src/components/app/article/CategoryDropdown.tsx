@@ -2,7 +2,7 @@
 import { FormControl, MenuItem, Select } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import React from 'react';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 type CategoryDropdownProps = {
   selectedCategory: string;

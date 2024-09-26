@@ -2,7 +2,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // เพิ่มไ
 import { Box, Button, CardContent, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 const NoPredictFound = () => {
   const router = useRouter();

@@ -1,5 +1,8 @@
 import axios from 'axios';
-import { WoundFormData } from 'types/AdminFormDataPostTypes';
+import {
+  WoundFormData,
+  WoundFormDataMulti,
+} from 'types/AdminFormDataPostTypes';
 
 const API_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL;
 
@@ -54,7 +57,6 @@ export const getWoundById = async (id: string) => {
   return response.data;
 };
 
-// อัปเดตข้อมูลแผลพร้อมกับรูปภาพ (ถ้ามีการอัปโหลดใหม่) และชื่อภาษาไทย-อังกฤษ
 export const updateWound = async (
   id: string,
   data: WoundFormData,
@@ -96,4 +98,78 @@ export const trackWoundClick = async (woundId: string, clickCount: number) => {
     click_count: clickCount,
   });
   return response.data;
+};
+
+// สำหรับหลายรูป
+
+// สร้างข้อมูลแผลใหม่พร้อมกับรูปภาพและชื่อภาษาไทย-อังกฤษ
+export const createWounds = async (
+  data: WoundFormDataMulti,
+  images: File[]
+) => {
+  const formData = new FormData();
+
+  // Append text fields
+  formData.append('wound_name', data.wound_name);
+  formData.append('wound_name_th', data.wound_name);
+  formData.append('wound_name_en', data.wound_name_en);
+  formData.append('wound_content', data.wound_content);
+  formData.append('wound_note', data.wound_note);
+  formData.append('ref', JSON.stringify(data.ref));
+
+  // Append multiple images
+  images.forEach((image) => {
+    formData.append('images', image); // ส่งไฟล์หลายไฟล์ไปยัง API โดยใช้ฟิลด์ 'images'
+  });
+
+  // Send the request with multipart/form-data
+  const response = await axios.post(`${API_URL}/api/wounds/multi`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+  return response.data;
+};
+
+// อัปเดตข้อมูลแผลพร้อมกับรูปภาพ (ถ้ามีการอัปโหลดใหม่) และชื่อภาษาไทย-อังกฤษ
+export const updateWounds = async (
+  id: string,
+  data: WoundFormDataMulti,
+  images: File[]
+) => {
+  const formData = new FormData();
+
+  // Append text fields
+  formData.append('wound_name', data.wound_name);
+  formData.append('wound_name_th', data.wound_name);
+  formData.append('wound_name_en', data.wound_name_en);
+  formData.append('wound_content', data.wound_content);
+  formData.append('wound_note', data.wound_note);
+  formData.append('ref', JSON.stringify(data.ref));
+
+  // Append multiple images (handle array of images)
+  images.forEach((image, index) => {
+    formData.append(`wound_cover[${index}]`, image); // ส่งไฟล์หลายไฟล์ไปยัง API
+  });
+
+  // Send the request with multipart/form-data
+  const response = await axios.put(`${API_URL}/api/wounds/${id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+  return response.data;
+};
+
+export const getWoundImageUrls = (filePaths: string) => {
+  if (!filePaths) return []; // ถ้าไม่มีค่า filePaths, คืนค่า array ว่าง
+
+  const filePathArray = filePaths.includes(',')
+    ? filePaths.split(',').map((filePath) => filePath.trim()) // ถ้ามีหลายรูป
+    : [filePaths]; // ถ้ามีรูปเดียว
+
+  // สร้าง URL สำหรับแต่ละไฟล์
+  return filePathArray.map((filePath) => `${API_URL}/api/uploads/${filePath}`);
 };

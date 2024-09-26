@@ -11,7 +11,7 @@ import {
   getWoundImageUrl,
   getWoundsWithPagination,
 } from 'services/woundService';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { WoundData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
 import { extractTextAfterImage } from 'utils/extractTextUtils';

@@ -3,7 +3,7 @@ import React from 'react';
 import COLORS from 'themes/colors';
 import ScrollFadeIn from 'utils/ScrollFadeIn'; // นำเข้า ScrollFadeIn
 
-const InfoCard: React.FC<{
+const AboutCard: React.FC<{
   title: string;
   description: string;
   buttonText: string;
@@ -22,12 +22,11 @@ const InfoCard: React.FC<{
     {/* ครอบ ScrollFadeIn รอบๆ Card */}
     <Card
       sx={{
-        background:
-          'linear-gradient(90deg, rgba(58,156,253,1) 0%, rgba(35,90,219,1) 100%)',
+        backgroundColor: '#F2F9FC',
         width: '100%',
         maxWidth: 500,
         textAlign: 'center',
-        color: 'white',
+        color: 'black',
         borderRadius: 3,
         marginBottom: 4,
         boxShadow: '7px 7px 5px 0px rgba(0, 0, 0, 0.1)',
@@ -42,18 +41,19 @@ const InfoCard: React.FC<{
         </Typography>
         <Button
           variant="contained"
-          startIcon={buttonIcon}
+          endIcon={buttonIcon}
           onClick={onButtonClick}
           sx={{
+            boxShadow: '7px 7px 5px 0px rgba(0, 0, 0, 0.1)',
             borderRadius: '10px',
             backgroundColor: 'white',
             fontSize: 15,
             fontWeight: 'bold',
             color: COLORS.blue[6],
-            transition: 'transform 0.3s', // เพิ่มการเปลี่ยนแปลง
+            transition: 'transform 0.3s',
             '&:hover': {
-              backgroundColor: 'white',
-              transform: 'scale(1.05)', // ขยายปุ่มเล็กน้อย
+              boxShadow: '7px 7px 5px 0px rgba(0, 0, 0, 0.1)',
+              transform: 'translateX(5px)',
             },
           }}
         >
@@ -64,4 +64,4 @@ const InfoCard: React.FC<{
   </ScrollFadeIn>
 );
 
-export default InfoCard;
+export default AboutCard;

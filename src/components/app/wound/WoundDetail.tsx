@@ -10,7 +10,7 @@ import parse from 'html-react-parser';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { getWoundById, getWoundImageUrl } from 'services/woundService';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import ScrollToTop from 'utils/ScrollToTop';
 

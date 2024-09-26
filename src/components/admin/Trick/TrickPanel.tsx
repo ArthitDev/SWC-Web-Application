@@ -5,7 +5,7 @@ import TrickForm from 'components/form/TrickForm';
 import SearchBox from 'components/search/SearchBox';
 import React, { useEffect, useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { TrickData } from 'types/AdminGetDataTypes';
 import withAuth from 'utils/withAuth';
 

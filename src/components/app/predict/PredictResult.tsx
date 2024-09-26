@@ -20,7 +20,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { getWoundImageUrl, trackWoundClick } from 'services/woundService';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import NoPredictFound from 'utils/NoPredictFound';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 

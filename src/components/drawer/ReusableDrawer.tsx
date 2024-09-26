@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import { IoWarning } from 'react-icons/io5';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 type ReusableDrawerProps = {
   open: boolean;

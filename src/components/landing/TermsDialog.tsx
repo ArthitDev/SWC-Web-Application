@@ -4,7 +4,7 @@ import React from 'react';
 import { FaFolderOpen } from 'react-icons/fa6';
 import { IoMdCamera } from 'react-icons/io';
 import { MdCheck } from 'react-icons/md';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 interface TermsDialogProps {
   open: boolean;

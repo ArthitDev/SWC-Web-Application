@@ -1,3 +1,5 @@
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import { Box, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
@@ -5,9 +7,11 @@ import { InfoIcon } from 'lucide-react';
 import Image from 'next/image';
 import router from 'next/router';
 import React from 'react';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import ScrollFadeIn from 'utils/ScrollFadeIn';
+
+import AboutCard from '@/components/app/home/AboutCard';
 
 import DidyouknowCardHome from './DidyouknowCard';
 import FeatureBadge from './FeatureBadge';
@@ -106,7 +110,8 @@ const MainPage: React.FC = () => {
             title="แผลคืออะไร ?"
             description="แผล คือ การบาดเจ็บหรือความเสียหายที่เกิดขึ้นกับเนื้อเยื่อของร่างกายสามารถเกิดขึ้นมาได้
             จากหลายสาเหตุแผลสามารถแบ่งออกเป็นหลายประเภทตามสาเหตุและลักษณะของแผล"
-            buttonText="อ่านบทความฉบับเต็ม"
+            buttonText="อ่านเนื้อหาฉบับเต็ม"
+            buttonIcon={<AutoStoriesIcon />}
             sxDescription={{
               textIndent: '2rem',
               textAlign: 'justify',
@@ -126,13 +131,38 @@ const MainPage: React.FC = () => {
                 variant="h5"
                 component="h1"
                 fontWeight={'bold'}
-                sx={{ color: COLORS.blue[6] }}
+                sx={{
+                  color: COLORS.blue[6],
+                }}
               >
                 บทความยอดนิยมสูงสุด 5 อันดับ
               </Typography>
             </Box>
           </ScrollFadeIn>
           <TopArticlesCard />
+          <ScrollFadeIn>
+            <Box sx={{ pb: 3, pt: 2 }}>
+              <Typography
+                variant="h5"
+                component="h1"
+                fontWeight={'bold'}
+                sx={{
+                  color: COLORS.blue[6],
+                }}
+              >
+                มีข้อสงสัย ? ติดต่อเรา
+              </Typography>
+            </Box>
+          </ScrollFadeIn>
+          <ScrollFadeIn>
+            <AboutCard
+              title="หากมีข้อสงสัยและอยากติดต่อเรา"
+              description="อ่านเพิ่มเติมเกี่ยวกับบริการของเราและติดต่อเราได้เลย"
+              buttonText="ไปยังหน้าเกี่ยวกับเรา"
+              buttonIcon={<ArrowForwardIcon />}
+              onButtonClick={() => router.push('/app/about')}
+            />
+          </ScrollFadeIn>
         </Box>
       </Box>
     </motion.div>

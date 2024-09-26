@@ -1,7 +1,7 @@
 import type { ButtonProps } from '@mui/material';
 import { Button } from '@mui/material';
 import React from 'react';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 type CustomButtonAddProps = ButtonProps & {
   onClick: () => void;

@@ -5,7 +5,7 @@ import WoundForm from 'components/form/WoundForm';
 import SearchBox from 'components/search/SearchBox';
 import React, { useEffect, useState } from 'react';
 import { IoAddCircleOutline } from 'react-icons/io5';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { WoundData } from 'types/AdminGetDataTypes';
 import withAuth from 'utils/withAuth';
 

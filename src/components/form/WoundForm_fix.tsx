@@ -1,22 +1,19 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Button, TextField, Typography } from '@mui/material';
-import CustomButtonSave from 'components/button/CustomButtonSave';
-import ImageUpload from 'components/input/ImageUpload';
+import ImageUpload from 'components/input/imageUpload_fix';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { useMutation, useQueryClient } from 'react-query';
-import {
-  createWound,
-  getWoundImageUrl,
-  updateWound,
-} from 'services/woundService';
-import COLORS from 'themes/colors';
-import { WoundFormData } from 'types/AdminFormDataPostTypes';
-import { WoundData } from 'types/AdminGetDataTypes';
-import { showValidationError } from 'utils/ErrorFormToast';
+import { WoundFormDataMulti } from 'types/AdminFormDataPostTypes';
+import { WoundDataMulti } from 'types/AdminGetDataTypes';
+
+import CustomButtonSave from '@/components/button/CustomButtonSave';
+import { createWounds, updateWounds } from '@/services/woundService';
+import COLORS from '@/themes/colors';
+import { showValidationError } from '@/utils/ErrorFormToast';
 
 // Dynamically import TinyMCEEditor with SSR disabled
 const TinyMCEEditor = dynamic(() => import('components/editor/TinyMCEEditor'), {
@@ -25,63 +22,64 @@ const TinyMCEEditor = dynamic(() => import('components/editor/TinyMCEEditor'), {
 
 type WoundFormProps = {
   onCloseDrawer: () => void;
-  initialData?: WoundData | null;
+  initialData?: WoundDataMulti | null;
 };
+
+const MAX_IMAGES = 6;
 
 const WoundForm: React.FC<WoundFormProps> = ({
   onCloseDrawer,
   initialData,
 }) => {
-  const { control, handleSubmit, reset, setValue } = useForm<WoundFormData>({
-    defaultValues: initialData || {
-      wound_name: '',
-      wound_name_en: '', // เพิ่มค่า wound_name_en
-      wound_content: '',
-      wound_note: '',
-      ref: [{ value: '' }],
-      wound_cover: null,
-    },
-  });
+  const { control, handleSubmit, reset, setValue } =
+    useForm<WoundFormDataMulti>({
+      defaultValues: initialData || {
+        wound_name: '',
+        wound_name_en: '',
+        wound_content: '',
+        wound_note: '',
+        ref: [{ value: '' }],
+        wound_cover: [],
+      },
+    });
 
-  const { fields, append, remove } = useFieldArray<WoundFormData>({
+  const { fields, append, remove } = useFieldArray<WoundFormDataMulti>({
     control,
     name: 'ref',
   });
 
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
 
   useEffect(() => {
     if (initialData) {
       setValue('wound_name', initialData.wound_name);
-      setValue('wound_name_en', initialData.wound_name_en); // เซ็ตค่า wound_name_en
+      setValue('wound_name_en', initialData.wound_name_en);
       setValue('wound_content', initialData.wound_content);
-      if (initialData.wound_cover) {
-        setPreviewImage(getWoundImageUrl(initialData.wound_cover));
-      } else {
-        setPreviewImage(null);
-      }
+      setValue('wound_note', initialData.wound_note);
 
+      // ตรวจสอบว่า wound_cover เป็น array หรือไม่
       setValue(
-        'ref',
-        initialData.ref?.map((refItem) => ({ value: refItem.value })) || [
-          { value: '' },
-        ]
+        'wound_cover',
+        Array.isArray(initialData.wound_cover) ? initialData.wound_cover : []
       );
+
+      setValue('ref', initialData.ref || [{ value: '' }]);
     }
   }, [initialData, setValue]);
 
   const mutation = useMutation(
     initialData
-      ? (data: { formData: WoundFormData; image: File | null }) =>
-          updateWound(
+      ? (data: { formData: WoundFormDataMulti; images: File[] }) =>
+          updateWounds(
             initialData.id.toString(),
             data.formData,
-            data.image || undefined
+            data.images || [] // ใช้ array ของไฟล์
           )
-      : (data: { formData: WoundFormData; image: File }) =>
-          createWound(data.formData, data.image),
+      : (data: { formData: WoundFormDataMulti; images: File[] }) =>
+          createWounds(data.formData, data.images), // ส่ง array ของไฟล์หลายๆ ภาพ
     {
       onMutate: () => {
         setLoading(true);
@@ -106,18 +104,16 @@ const WoundForm: React.FC<WoundFormProps> = ({
     }
   );
 
-  const handleFormSubmit = (data: WoundFormData) => {
-    // ใช้ wound_name เป็น wound_name_th
+  const handleFormSubmit = async (data: WoundFormDataMulti) => {
     const woundFormData = {
       ...data,
-      wound_name_th: data.wound_name, // ตั้งค่า wound_name_th ให้เท่ากับ wound_name
+      wound_name_th: data.wound_name,
     };
 
-    const imageFile = woundFormData.wound_cover as unknown as File | null;
-    if (imageFile) {
-      mutation.mutate({ formData: woundFormData, image: imageFile });
+    if (imageFiles.length > 0) {
+      mutation.mutate({ formData: woundFormData, images: imageFiles });
     } else {
-      toast.error('โปรดอัพโหลดรูปภาพ');
+      toast.error('โปรดอัปโหลดรูปภาพ');
       setLoading(false);
     }
   };
@@ -126,29 +122,12 @@ const WoundForm: React.FC<WoundFormProps> = ({
     showValidationError(errors); // เรียกฟังก์ชันเพื่อแสดง error
   };
 
-  const handleClearImage = () => {
-    setPreviewImage(null);
-    setValue('wound_cover', null);
-  };
+  const handleClearImage = (index: number) => {
+    const updatedImages = previewImages.filter((_, i) => i !== index);
+    setPreviewImages(updatedImages);
 
-  const handleImageUpload = (file: File | null) => {
-    if (file) {
-      // ตรวจสอบขนาดไฟล์
-      const fileSizeMB = file.size / (1024 * 1024);
-      if (fileSizeMB > 15) {
-        toast.error('ขนาดรูปปกไม่ควรเกิน 15MB');
-        return; // ไม่ดำเนินการอัปโหลดรูปภาพต่อ
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string);
-        setValue('wound_cover', file);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      handleClearImage();
-    }
+    // อัปเดต wound_cover หลังจากลบรูป
+    setValue('wound_cover', updatedImages);
   };
 
   return (
@@ -229,17 +208,22 @@ const WoundForm: React.FC<WoundFormProps> = ({
           )}
         />
       </Box>
-
       {/* รูปปก */}
-      <Box>
+      <Box mb={2}>
         <Typography variant="h6">รูปปก</Typography>
         <ImageUpload
-          onImageUpload={handleImageUpload}
-          previewImage={previewImage}
+          onImageUpload={(files) => {
+            setImageFiles((prevFiles) => [...prevFiles, ...files]); // รวมไฟล์ใหม่เข้ากับไฟล์ที่มีอยู่
+            setPreviewImages((prevImages) => [
+              ...prevImages,
+              ...files.map((file) => URL.createObjectURL(file)),
+            ]); // อัปเดต URL สำหรับพรีวิว
+          }}
           onClearImage={handleClearImage}
+          maxImages={MAX_IMAGES}
+          currentImages={previewImages}
         />
       </Box>
-
       {/* เนื้อหา */}
       <Box mb={3} mt={3}>
         <Typography variant="h6" mb={2}>
@@ -358,7 +342,6 @@ const WoundForm: React.FC<WoundFormProps> = ({
           </Button>
         </Box>
       </Box>
-
       {/* ปุ่มบันทึก */}
       <Box mt={10} display="flex" justifyContent="flex-end">
         <CustomButtonSave variant="contained" color="primary" loading={loading}>

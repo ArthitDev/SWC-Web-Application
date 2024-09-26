@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { getTricksWithPagination } from 'services/trickService';
 import { deleteWound } from 'services/woundService';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { TrickData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
 import FetchError from 'utils/FetchError';

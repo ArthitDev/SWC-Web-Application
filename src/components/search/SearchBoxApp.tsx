@@ -12,7 +12,7 @@ import { styled } from '@mui/system';
 import CustomSearchButton from 'components/button/CustomSearchButton';
 import React, { useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 import ListeningSnackbar from './ListeningSnackbar';
 

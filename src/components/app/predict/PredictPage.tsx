@@ -12,7 +12,7 @@ import { FaRegTrashAlt, FaTimes } from 'react-icons/fa';
 import { useMutation } from 'react-query';
 import Webcam from 'react-webcam';
 import { predictImage } from 'services/predictService'; // Import predictImage service
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
 import * as styles from './PredictPage.style';

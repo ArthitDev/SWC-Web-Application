@@ -19,7 +19,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useMutation } from 'react-query';
 import { createContact } from 'services/contactService';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 import CustomModal from './CustomModal';
 

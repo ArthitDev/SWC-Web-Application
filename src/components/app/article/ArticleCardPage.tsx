@@ -1,3 +1,5 @@
+import EventAvailableTwoToneIcon from '@mui/icons-material/EventAvailableTwoTone';
+import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone';
 import {
   Box,
   Card,
@@ -7,9 +9,10 @@ import {
   Typography,
 } from '@mui/material';
 import ReadMoreButton from 'components/button/ReadMoreButton';
+import useFormatDate from 'hooks/useFormatDate';
 import usePagination from 'hooks/usePagination';
 import useRefetchWebSocket from 'hooks/useRefetchWebSocket';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import {
@@ -31,8 +34,11 @@ type ArticleCardPageProps = {
 const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
   useRefetchWebSocket('articles', 'UPDATE_ARTICLES');
 
+  const router = useRouter();
+  const { page: queryPage } = router.query;
   const { page, limit, totalPages, setPage, setTotalPages } = usePagination();
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const { formatDate } = useFormatDate();
 
   const handleCategoryChange = (event: SelectChangeEvent<string>) => {
     setSelectedCategory(event.target.value as string);
@@ -58,6 +64,12 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
   useEffect(() => {
     setPage(1); // เมื่อมีการค้นหาใหม่ จะกลับไปที่หน้า 1
   }, [searchTerm, setPage]);
+
+  useEffect(() => {
+    if (queryPage) {
+      setPage(Number(queryPage));
+    }
+  }, [queryPage]);
 
   const mutation = useMutation(
     (articleData: { articleId: number; clickCount: number }) =>
@@ -101,7 +113,7 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
       setClicksToStorage(articleId, 0);
     }
 
-    router.push(`/app/article/${articleId}`);
+    router.push(`/app/article/${articleId}?page=${page}`);
   };
 
   if (isLoading) {
@@ -186,6 +198,7 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
             <Card
               elevation={0}
               sx={{
+                borderRadius: '12px',
                 width: '100%',
                 maxWidth: '400px',
                 marginBottom: 3,
@@ -193,7 +206,10 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
                 flexDirection: 'column',
                 position: 'relative',
                 overflow: 'hidden',
-                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                boxShadow: '0 8px 40px -12px rgba(0,0,0,0.3)',
+                '&:hover': {
+                  boxShadow: '0 16px 70px -12.125px rgba(0,0,0,0.3)',
+                },
               }}
             >
               {article.article_cover && (
@@ -233,11 +249,29 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
                 >
                   {stripHtmlTags(article.article_content).substring(0, 100)}...
                 </Typography>
-                <Box>
+                <Box display="flex" alignItems="center" mt={2}>
+                  <RemoveRedEyeTwoToneIcon sx={{ mr: 1 }} />
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 'medium', color: 'gray' }}
+                  >
+                    {article.clicks?.[0]?.click_count || 0}
+                  </Typography>
+                </Box>
+
+                <Box display="flex" alignItems="center" mt={1}>
+                  <EventAvailableTwoToneIcon sx={{ mr: 1 }} />{' '}
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 'medium', color: 'gray' }}
+                  >
+                    {formatDate(article.updated_at || 'ไม่ระบุ')}
+                  </Typography>
+                </Box>
+                <Box display={'flex'} justifyContent={'flex-end'}>
                   <ReadMoreButton
                     onClick={() => handleReadMoreClick(article.id)}
                     fullWidth
-                    text="อ่านเพิ่มเติม"
                     sx={{ mt: 3 }}
                   />
                 </Box>

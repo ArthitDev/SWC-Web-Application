@@ -1,7 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close'; // Import Close icon
 import { IconButton, Snackbar, styled } from '@mui/material';
 import React from 'react';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 
 // Snackbar styles
 const SnackbarContent = styled('div')({

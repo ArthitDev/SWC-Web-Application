@@ -6,6 +6,22 @@ export type WoundData = {
   wound_content: string;
   wound_note: string;
   ref: { value: string }[];
+  click_counts: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type WoundDataMulti = {
+  id: number;
+  wound_name: string;
+  wound_name_en: string;
+  wound_cover: (string | null)[];
+  wound_content: string;
+  wound_note: string;
+  ref: { value: string }[];
+  click_counts: number;
+  created_at: string;
+  updated_at: string;
 };
 
 export type ArticleData = {
@@ -16,6 +32,16 @@ export type ArticleData = {
   article_note: string;
   ref: { value: string }[];
   category: string;
+  clicks: [
+    {
+      id: number;
+      created_at: string;
+      updated_at: string;
+      click_count: number;
+    }
+  ];
+  created_at: string;
+  updated_at: string;
 };
 
 export type ContactData = {

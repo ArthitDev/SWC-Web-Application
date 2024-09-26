@@ -11,7 +11,7 @@ import {
   getArticleImageUrl,
   getArticlesWithPagination,
 } from 'services/articleService';
-import COLORS from 'theme/colors';
+import COLORS from 'themes/colors';
 import { ArticleData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
 import { extractTextAfterImage } from 'utils/extractTextUtils';

@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import SearchBox from 'components/search/SearchBox';
 import React, { useEffect, useState } from 'react';
+import withAuth from 'utils/withAuth';
 
 import ContactCard from './ContactCard';
 import ContactDropdown from './ContactDropdown';
@@ -91,4 +92,4 @@ const ContactPanel: React.FC<ContactPanelProps> = () => {
   );
 };
 
-export default ContactPanel;
+export default withAuth(ContactPanel);
