@@ -37,6 +37,12 @@ const WoundPage: React.FC = () => {
     setOpenModal(false);
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   useEffect(() => {
     if (searchTerm === '') {
       setAppliedSearchTerm('');
@@ -75,6 +81,7 @@ const WoundPage: React.FC = () => {
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           onSearch={handleSearch}
+          onKeyUp={handleKeyPress}
           placeholder="ค้นหาแผล..."
         />
         <Box

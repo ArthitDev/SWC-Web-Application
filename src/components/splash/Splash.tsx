@@ -50,7 +50,7 @@ const SplashScreen: React.FC = () => {
       <Fade in={visible} timeout={{ enter: 1700, exit: 500 }}>
         <div style={{ maxWidth: '300px', marginBottom: 10 }}>
           <Image
-            src="/images/logo-landing.png"
+            src="/images/logo-landing.webp"
             alt="Landing Logo"
             width={1000}
             height={424}

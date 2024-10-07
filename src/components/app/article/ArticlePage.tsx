@@ -15,6 +15,12 @@ const ArticlePage: React.FC = () => {
     setAppliedSearchTerm(searchTerm); // อัปเดตค่าที่จะใช้ในการค้นหาจริง ๆ
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   useEffect(() => {
     if (searchTerm === '') {
       setAppliedSearchTerm('');
@@ -53,6 +59,7 @@ const ArticlePage: React.FC = () => {
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           onSearch={handleSearch}
+          onKeyUp={handleKeyPress}
           placeholder="ค้นหาบทความ..."
           buttonLabel="ค้นหา"
         />

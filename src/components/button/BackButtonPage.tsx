@@ -18,19 +18,23 @@ const BackButtonPage: React.FC<BackButtonPageProps> = ({
   const isSmallScreen = useMediaQuery('(max-width:600px)'); // เช็คขนาดหน้าจอ
 
   const handleBackClick = () => {
-    const currentPage = router.query.page;
-    const { pathname } = router; // ดึงเส้นทางปัจจุบัน เช่น /app/wound/[id]
-
-    if (currentPage) {
-      const dynamicPath = pathname.replace(/\/\[[^\]]+\]/, '');
-      router.push(`${dynamicPath}?page=${currentPage}`);
-    } else {
-      router.back();
-    }
-    if (customRoute) {
-      router.push(customRoute);
-    } else if (onClick) {
+    if (onClick) {
+      // ถ้ามีการกำหนด onClick ให้เรียกฟังก์ชัน onClick ก่อน
       onClick();
+    } else if (customRoute) {
+      // ถ้ามี customRoute ให้ใช้ router.push ไปที่เส้นทางนั้น
+      router.push(customRoute);
+    } else {
+      // ถ้าไม่มีทั้ง onClick และ customRoute ให้ใช้ router.back()
+      const currentPage = router.query.page;
+      const { pathname } = router; // ดึงเส้นทางปัจจุบัน เช่น /app/wound/[id]
+
+      if (currentPage) {
+        const dynamicPath = pathname.replace(/\/\[[^\]]+\]/, '');
+        router.push(`${dynamicPath}?page=${currentPage}`);
+      } else {
+        router.back();
+      }
     }
   };
 

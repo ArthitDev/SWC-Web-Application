@@ -120,7 +120,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ open, onClose }) => {
             textAlign={'center'}
             sx={{ color: COLORS.blue[6] }}
           >
-            ติดต่อเราหรือแจ้งปัญหา
+            ติดต่อเรา
           </Typography>
 
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -129,15 +129,12 @@ const ContactModal: React.FC<ContactModalProps> = ({ open, onClose }) => {
             </Typography>
             <FormControl fullWidth>
               <Select
-                defaultValue=""
+                defaultValue="ทั่วไป"
                 displayEmpty
                 inputProps={{ 'aria-label': 'เลือกหัวข้อ' }}
                 {...register('subject', { required: 'กรุณาเลือกหัวข้อ' })}
                 error={!!errors.subject}
               >
-                <MenuItem value="" disabled>
-                  เลือกหัวข้อ
-                </MenuItem>
                 <MenuItem value="ทั่วไป">ทั่วไป</MenuItem>
                 <MenuItem value="แจ้งปัญหา">แจ้งปัญหา</MenuItem>
                 <MenuItem value="ข้อเสนอแนะ">ข้อเสนอแนะ</MenuItem>
@@ -196,8 +193,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ open, onClose }) => {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
-              sx={{ mt: 1 }}
+              sx={{ mt: 1, backgroundColor: COLORS.blue[6] }}
               startIcon={
                 mutation.isLoading ? (
                   <CircularProgress size={20} color="inherit" />
@@ -205,7 +201,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ open, onClose }) => {
                   <SendIcon />
                 )
               }
-              disabled={mutation.isLoading} // ปิดปุ่มขณะส่งข้อมูล
+              disabled={mutation.isLoading}
             >
               {mutation.isLoading ? 'กำลังส่ง...' : 'ส่งข้อความ'}
             </Button>

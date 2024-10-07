@@ -16,11 +16,11 @@ type WoundPanelProps = {};
 const WoundPanel: React.FC<WoundPanelProps> = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [editingWound, setEditingWound] = useState<WoundData | null>(null); // สถานะแก้ไข
-  const [appliedSearchTerm, setAppliedSearchTerm] = useState(''); // เก็บค่าที่จะใช้ในการค้นหาจริง ๆ
+  const [editingWound, setEditingWound] = useState<WoundData | null>(null);
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState('');
 
   const handleSearch = () => {
-    setAppliedSearchTerm(searchTerm); // อัปเดตค่าที่จะใช้ในการค้นหาจริง ๆ
+    setAppliedSearchTerm(searchTerm);
   };
 
   const toggleDrawer = (open: boolean) => () => {

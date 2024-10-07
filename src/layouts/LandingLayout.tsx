@@ -13,6 +13,11 @@ export default function Landing({ children }: LandingProps) {
           'linear-gradient(335deg, rgba(58,156,253,1) 40%, rgba(23,35,110,1) 100%)',
         minHeight: '100vh',
         width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',
       }}
     >
       <main>{children}</main>

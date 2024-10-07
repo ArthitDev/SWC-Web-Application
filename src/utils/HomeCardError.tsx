@@ -45,9 +45,7 @@ const HomeCardError: React.FC<HomeCardErrorProps> = ({
         }}
       >
         <Typography
-          variant="h6"
           sx={{
-            fontWeight: 'bold',
             color: textColor,
             display: 'flex',
             alignItems: 'center',

@@ -1,15 +1,22 @@
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
   Box,
   Checkbox,
+  FormControl,
   FormControlLabel,
+  IconButton,
+  InputAdornment,
+  InputLabel,
   Link,
+  OutlinedInput,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
 import CustomButton from 'components/button/CustomButton';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useMutation } from 'react-query';
@@ -28,12 +35,17 @@ const LoginForm: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormInputs>();
+  const [showPassword, setShowPassword] = useState(false);
 
   const mutation = useMutation(loginAdmin, {
     onSuccess: () => {
       router.push('/admin');
     },
   });
+
+  const handleClickShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     toast.promise(mutation.mutateAsync(data), {
@@ -57,24 +69,40 @@ const LoginForm: React.FC = () => {
           margin="normal"
           fullWidth
           id="username"
-          label="ชื่อผู้ใช้"
-          autoComplete="username"
+          label="ชื่อผู้ใช้ หรือ อีเมล"
           autoFocus
-          {...register('username', { required: 'กรุณากรอกชื่อผู้ใช้' })}
+          {...register('username', {
+            required: 'กรุณากรอกชื่อผู้ใช้ หรือ อีเมล',
+          })}
           error={!!errors.username}
           helperText={errors.username?.message}
         />
-        <TextField
-          margin="normal"
-          fullWidth
-          label="รหัสผ่าน"
-          type="password"
-          id="password"
-          autoComplete="current-password"
-          {...register('password', { required: 'กรุณากรอกรหัสผ่าน' })}
-          error={!!errors.password}
-          helperText={errors.password?.message}
-        />
+
+        <FormControl fullWidth margin="normal" variant="outlined">
+          <InputLabel htmlFor="password">รหัสผ่าน</InputLabel>
+          <OutlinedInput
+            id="password"
+            type={showPassword ? 'text' : 'password'}
+            label="รหัสผ่าน"
+            {...register('password', { required: 'กรุณากรอกรหัสผ่าน' })}
+            error={!!errors.password}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+          {errors.password && (
+            <Typography color="error">{errors.password.message}</Typography>
+          )}
+        </FormControl>
+
         <Box
           sx={{
             display: 'flex',

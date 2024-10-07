@@ -1,6 +1,5 @@
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
-// สำหรับสถานะยังไม่ได้อ่าน
 import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { Box, Button, Grid, Modal, Paper, Typography } from '@mui/material';
@@ -85,7 +84,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ searchTerm, category }) => {
         prev ? { ...prev, isRead: newStatus } : prev
       );
     }
-    setOpenModal(false);
+    // setOpenModal(false);
   };
 
   const handleOpenModal = (contact: ContactData) => {
@@ -429,15 +428,25 @@ const ContactCard: React.FC<ContactCardProps> = ({ searchTerm, category }) => {
               รายละเอียดการติดต่อ
             </Typography>
             <Typography id="modal-description" sx={{ mt: 2 }}>
+              <strong>สถานะ :</strong>{' '}
+              {selectedContact?.isRead === 0 ? (
+                <>
+                  ยังไม่ได้อ่าน
+                  <MarkEmailUnreadIcon sx={{ color: 'red', ml: 1 }} />
+                </>
+              ) : (
+                <>
+                  อ่านแล้ว
+                  <MarkEmailReadIcon sx={{ color: 'green', ml: 1 }} />
+                </>
+              )}
+              <br />
               <strong>ชื่อผู้ติดต่อ :</strong> {selectedContact?.contact_name}
               <br />
               <strong>อีเมล :</strong> {selectedContact?.contact_email}
               <br />
               <strong>ประเภทการติดต่อ :</strong>{' '}
               {selectedContact?.contact_subject}
-              <br />
-              <strong>สถานะ :</strong>{' '}
-              {selectedContact?.isRead === 0 ? 'ยังไม่ได้อ่าน' : 'อ่านแล้ว'}
               <br />
               <Box sx={{ maxHeight: '60vh', overflowY: 'auto' }}>
                 <strong>ข้อความ :</strong> {selectedContact?.contact_message}
@@ -471,12 +480,12 @@ const ContactCard: React.FC<ContactCardProps> = ({ searchTerm, category }) => {
                 {selectedContact?.isRead === 0 ? (
                   <>
                     <RadioButtonUncheckedIcon sx={{ mr: 1 }} />
-                    ยังไม่ได้อ่าน
+                    เปลี่ยนสถานะ
                   </>
                 ) : (
                   <>
                     <CheckCircleIcon sx={{ mr: 1 }} />
-                    อ่านแล้ว
+                    เปลี่ยนสถานะ
                   </>
                 )}
               </Button>

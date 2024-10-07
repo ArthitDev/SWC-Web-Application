@@ -1,14 +1,21 @@
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
   Box,
   Container,
   CssBaseline,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+  InputLabel,
   Link,
-  TextField,
+  OutlinedInput,
   Typography,
 } from '@mui/material';
 import CustomButton from 'components/button/CustomButton';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useMutation } from 'react-query';
@@ -30,6 +37,9 @@ const ResetPassword: React.FC = () => {
   const { query } = router;
   const token = query.token as string;
 
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const mutation = useMutation(resetPassword, {
     onSuccess: () => {
       toast.success('รีเซ็ตรหัสผ่านสำเร็จ');
@@ -39,6 +49,14 @@ const ResetPassword: React.FC = () => {
       toast.error('รีเซ็ตรหัสผ่านล้มเหลว กรุณาลองใหม่');
     },
   });
+
+  const handleClickShowNewPassword = () => {
+    setShowNewPassword((prev) => !prev);
+  };
+
+  const handleClickShowConfirmPassword = () => {
+    setShowConfirmPassword((prev) => !prev);
+  };
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     if (token) {
@@ -68,50 +86,96 @@ const ResetPassword: React.FC = () => {
           onSubmit={handleSubmit(onSubmit)}
           sx={{ mt: 1, width: '100%' }}
         >
-          <TextField
-            margin="normal"
-            fullWidth
-            id="newPassword"
-            label="รหัสผ่านใหม่"
-            type="password"
-            autoComplete="new-password"
-            autoFocus
-            {...register('newPassword', {
-              required: 'กรุณากรอกรหัสผ่านใหม่',
-              minLength: {
-                value: 6,
-                message: 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร',
-              },
-            })}
-            error={!!errors.newPassword}
-            helperText={errors.newPassword?.message}
-            InputLabelProps={{
-              style: { fontFamily: 'Prompt, Arial, sans-serif' },
-            }}
-            inputProps={{
-              style: { fontFamily: 'Prompt, Arial, sans-serif' },
-            }}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
-            id="confirmPassword"
-            label="ยืนยันรหัสผ่าน"
-            type="password"
-            autoComplete="new-password"
-            {...register('confirmPassword', {
-              required: 'กรุณายืนยันรหัสผ่าน',
-              validate: (value) => value === newPassword || 'รหัสผ่านไม่ตรงกัน',
-            })}
-            error={!!errors.confirmPassword}
-            helperText={errors.confirmPassword?.message}
-            InputLabelProps={{
-              style: { fontFamily: 'Prompt, Arial, sans-serif' },
-            }}
-            inputProps={{
-              style: { fontFamily: 'Prompt, Arial, sans-serif' },
-            }}
-          />
+          {/* รหัสผ่านใหม่ */}
+          <FormControl fullWidth margin="normal" variant="outlined">
+            <InputLabel
+              htmlFor="newPassword"
+              sx={{ fontFamily: 'Prompt, Arial, sans-serif' }}
+            >
+              รหัสผ่านใหม่
+            </InputLabel>
+            <OutlinedInput
+              id="newPassword"
+              type={showNewPassword ? 'text' : 'password'}
+              label="รหัสผ่านใหม่"
+              autoComplete="new-password"
+              {...register('newPassword', {
+                required: 'กรุณากรอกรหัสผ่านใหม่',
+                minLength: {
+                  value: 6,
+                  message: 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร',
+                },
+              })}
+              error={!!errors.newPassword}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowNewPassword}
+                    edge="end"
+                  >
+                    {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              inputProps={{
+                style: { fontFamily: 'Prompt, Arial, sans-serif' },
+              }}
+            />
+            {errors.newPassword && (
+              <FormHelperText
+                error
+                sx={{ fontFamily: 'Prompt, Arial, sans-serif' }}
+              >
+                {errors.newPassword.message}
+              </FormHelperText>
+            )}
+          </FormControl>
+
+          {/* ยืนยันรหัสผ่าน */}
+          <FormControl fullWidth margin="normal" variant="outlined">
+            <InputLabel
+              htmlFor="confirmPassword"
+              sx={{ fontFamily: 'Prompt, Arial, sans-serif' }}
+            >
+              ยืนยันรหัสผ่าน
+            </InputLabel>
+            <OutlinedInput
+              id="confirmPassword"
+              type={showConfirmPassword ? 'text' : 'password'}
+              label="ยืนยันรหัสผ่าน"
+              autoComplete="new-password"
+              {...register('confirmPassword', {
+                required: 'กรุณายืนยันรหัสผ่าน',
+                validate: (value) =>
+                  value === newPassword || 'รหัสผ่านไม่ตรงกัน',
+              })}
+              error={!!errors.confirmPassword}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowConfirmPassword}
+                    edge="end"
+                  >
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              inputProps={{
+                style: { fontFamily: 'Prompt, Arial, sans-serif' },
+              }}
+            />
+            {errors.confirmPassword && (
+              <FormHelperText
+                error
+                sx={{ fontFamily: 'Prompt, Arial, sans-serif' }}
+              >
+                {errors.confirmPassword.message}
+              </FormHelperText>
+            )}
+          </FormControl>
+
           <Box
             sx={{
               display: 'flex',

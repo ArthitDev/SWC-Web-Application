@@ -19,6 +19,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import Slider from 'react-slick';
 import { getWoundImageUrl, trackWoundClick } from 'services/woundService';
 import COLORS from 'themes/colors';
 import NoPredictFound from 'utils/NoPredictFound';
@@ -32,8 +33,8 @@ type PredictResultProps = {};
 const PredictResult: React.FC<PredictResultProps> = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImageOverlayOpen, setIsImageOverlayOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Track selected image
   const router = useRouter();
-
   const { result, setResult } = usePredict();
 
   const handleBackClick = () => {
@@ -50,12 +51,14 @@ const PredictResult: React.FC<PredictResultProps> = () => {
     setIsModalOpen(false);
   };
 
-  const handleOpenImageOverlay = () => {
+  const handleOpenImageOverlay = (imageUrl: string) => {
+    setSelectedImage(imageUrl); // Set the selected image
     setIsImageOverlayOpen(true);
   };
 
   const handleCloseImageOverlay = () => {
     setIsImageOverlayOpen(false);
+    setSelectedImage(null); // Clear the selected image on close
   };
 
   if (!result) {
@@ -64,10 +67,18 @@ const PredictResult: React.FC<PredictResultProps> = () => {
 
   const { predictions, image_url } = result;
 
-  // เรียงลำดับ predictions ตามค่า confidence จากมากไปน้อย
   const sortedPredictions = predictions.sort(
     (a, b) => b.confidence - a.confidence
   );
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+  };
 
   return (
     <>
@@ -89,7 +100,7 @@ const PredictResult: React.FC<PredictResultProps> = () => {
               <>
                 <Box
                   component="img"
-                  src={image_url}
+                  src={getWoundImageUrl(image_url)}
                   alt="Preview"
                   sx={{
                     position: 'absolute',
@@ -103,7 +114,9 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                 />
                 <IconButton
                   sx={styles.DeletePreviewButton}
-                  onClick={handleOpenImageOverlay}
+                  onClick={() =>
+                    handleOpenImageOverlay(getWoundImageUrl(image_url))
+                  }
                 >
                   <ZoomInIcon style={{ color: 'blue', fontSize: '24px' }} />
                 </IconButton>
@@ -182,25 +195,56 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                     </Box>
                   )}
 
-                  {prediction.additional_data?.wound_cover && (
-                    <Box sx={{ mt: 2, textAlign: 'center' }}>
-                      <Box
-                        component="img"
-                        src={getWoundImageUrl(
-                          prediction.additional_data.wound_cover
-                        )}
-                        alt="Wound Image"
-                        sx={{
-                          width: '100%',
-                          height: '200px',
-                          borderRadius: '8px',
-                          objectFit: 'cover',
-                        }}
-                      />
-                    </Box>
-                  )}
+                  {prediction.additional_data?.wound_covers &&
+                    prediction.additional_data.wound_covers.length > 0 && (
+                      <Box sx={{ mt: 2, textAlign: 'center' }}>
+                        <Slider {...sliderSettings}>
+                          {prediction.additional_data.wound_covers.map(
+                            (cover, coverIndex) => (
+                              <Box
+                                key={coverIndex}
+                                sx={{ position: 'relative' }}
+                              >
+                                <Box
+                                  component="img"
+                                  src={getWoundImageUrl(cover)}
+                                  alt={`Wound Image ${coverIndex + 1}`}
+                                  sx={{
+                                    width: '100%',
+                                    height: '220px',
+                                    borderRadius: '8px',
+                                    objectFit: 'cover',
+                                  }}
+                                />
+                                <IconButton
+                                  onClick={() =>
+                                    handleOpenImageOverlay(
+                                      getWoundImageUrl(cover)
+                                    )
+                                  }
+                                  sx={{
+                                    position: 'absolute',
+                                    bottom: 8,
+                                    right: 8,
+                                    backgroundColor: 'rgba(255, 255, 255, 1)',
+                                    '&:hover': {
+                                      backgroundColor: '#f8d7da',
+                                    },
+                                    borderRadius: '20%',
+                                    padding: '4px',
+                                  }}
+                                >
+                                  <ZoomInIcon
+                                    style={{ color: 'blue', fontSize: '24px' }}
+                                  />
+                                </IconButton>
+                              </Box>
+                            )
+                          )}
+                        </Slider>
+                      </Box>
+                    )}
 
-                  {/* ซ่อนปุ่มดูเพิ่มเติมหาก wound_type คือ "ไม่พบแผล" */}
                   {prediction.wound_type !== 'ไม่พบแผล' && (
                     <Box
                       sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
@@ -208,6 +252,7 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                       <Button
                         variant="text"
                         sx={{
+                          mt: 2,
                           color: COLORS.blue[6],
                           textTransform: 'none',
                           fontSize: '1.1rem',
@@ -228,6 +273,7 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                             sx={{
                               position: 'relative',
                               fontSize: '25px',
+                              mt: 0.3,
                             }}
                           />
                         }
@@ -245,34 +291,33 @@ const PredictResult: React.FC<PredictResultProps> = () => {
       <Modal
         open={isImageOverlayOpen}
         onClose={handleCloseImageOverlay}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
         <Box
           sx={{
             position: 'relative',
-            width: '80%',
-            maxWidth: 700,
-            minWidth: 400,
-            maxHeight: '90vh',
+            width: { xs: '90%', sm: '80%', md: '70%', lg: '60%' },
+            maxWidth: '100%',
+            height: 'auto',
+            minWidth: 350,
+            maxHeight: '100vh',
             borderRadius: '12px',
             overflow: 'hidden',
-            boxShadow: 3,
           }}
         >
-          <Box
-            component="img"
-            src={image_url || ''}
-            alt="Enlarged Preview"
-            sx={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-            }}
-          />
+          {selectedImage && (
+            <Box
+              component="img"
+              src={selectedImage}
+              alt="Zoom Preview"
+              sx={{
+                width: '100%',
+                height: '100%',
+                borderRadius: '12px',
+                objectFit: 'cover',
+              }}
+            />
+          )}
           <IconButton
             sx={{
               position: 'absolute',

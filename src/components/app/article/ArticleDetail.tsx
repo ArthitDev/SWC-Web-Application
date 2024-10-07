@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { Box, CircularProgress, Link, Typography } from '@mui/material';
 import BackButtonPage from 'components/button/BackButtonPage';
@@ -12,15 +13,20 @@ import COLORS from 'themes/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import ScrollToTop from 'utils/ScrollToTop';
 
+import ArticleTag from '@/components/app/article/ArticleTag';
+import VideoPlayer from '@/components/input/VideoPlayer';
+import DataNotFound from '@/utils/DataNotFound';
+
+interface ArticleVideo {
+  value: string;
+}
+
 interface ArticleDetailProps {
   id: string;
+  article_video: ArticleVideo[];
 }
 
-interface QueryError {
-  message: string;
-}
-
-const ArticleDetail: React.FC<ArticleDetailProps> = ({ id }) => {
+const ArticleDetail: React.FC<ArticleDetailProps> = ({ id, article_video }) => {
   useRefetchWebSocket('article', 'UPDATE_ARTICLE');
   const {
     data: article,
@@ -75,12 +81,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ id }) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          height="100vh"
           padding={2}
         >
-          <Typography color="error">
-            Error: {(error as QueryError).message}
-          </Typography>
+          <DataNotFound />
         </Box>
       )}
 
@@ -131,7 +134,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ id }) => {
                       minute: '2-digit',
                       hour12: false,
                     });
-                    return `${datePart} (${timePart}) - วันที่และเวลาอัพเดทข้อมูลบทความ`;
+                    return `${datePart} (${timePart}) - วันที่และเวลาอัพเดทข้อมูล`;
                   })()}
                 </Typography>
               </Box>
@@ -195,6 +198,29 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ id }) => {
                 </Typography>
               </Box>
             )}
+          </Box>
+          <Box pt={2}>
+            {article_video && article_video.length > 0 && (
+              <Box sx={{ padding: 2 }}>
+                <Typography
+                  variant="h5"
+                  gutterBottom
+                  textAlign="center"
+                  fontWeight="bold"
+                  pb={1}
+                >
+                  วีดีโอประกอบบทความ
+                </Typography>
+                {article_video.map((video: ArticleVideo, index: number) => (
+                  <Box key={index} sx={{ marginBottom: 3 }}>
+                    <VideoPlayer url={video.value} />
+                  </Box>
+                ))}
+              </Box>
+            )}
+          </Box>
+          <Box pb={2}>
+            <ArticleTag />
           </Box>
           <Box pt={2}>
             {parsedRefs.length > 0 && (

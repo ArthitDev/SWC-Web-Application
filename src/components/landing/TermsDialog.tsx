@@ -31,7 +31,7 @@ const TermsDialog: React.FC<TermsDialogProps> = ({ open, onClose }) => {
             width={512}
             height={512}
             priority={true}
-            src="/images/documentCheck.png"
+            src="/images/documentCheck.webp"
             alt="Landing Logo"
             style={{
               width: '100%',

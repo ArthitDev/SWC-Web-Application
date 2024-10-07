@@ -54,6 +54,7 @@ const AboutPage: React.FC = () => {
       // ถ้านับถอยหลังอยู่ ให้ route ไปหน้า / ทันที
       clearInterval(countdownIntervalRef.current as NodeJS.Timeout);
       localStorage.removeItem('hasVisitedLandingPage');
+      localStorage.removeItem('hasVisitedPredictPage');
       router.push('/');
       return;
     }
@@ -117,7 +118,7 @@ const AboutPage: React.FC = () => {
           />
           <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2, mt: 2 }}>
             <Image
-              src="/images/logo-full.png"
+              src="/images/logo-full.webp"
               alt="SWC Logo"
               width={170}
               height={70}
@@ -129,7 +130,7 @@ const AboutPage: React.FC = () => {
             variant="h6"
             sx={{ textAlign: 'center', mb: 1, fontWeight: 600 }}
           >
-            บริการวิเคราะห์ภาพแผลด้วย AI
+            บริการวให้ข้อมูลเกี่ยวกับแผล
           </Typography>
           <Typography
             variant="h6"
@@ -160,7 +161,7 @@ const AboutPage: React.FC = () => {
             <Typography variant="h6" sx={{ fontSize: 15 }}>
               {[
                 'ให้ข้อมูลเกี่ยวกับแผลประเภทต่างๆ',
-                'วิเคราะห์แผลจากรูปภาพด้วยเทคโนโลยี AI',
+                'วิเคราะห์แผลจากรูปภาพด้วย AI',
                 'ไม่จำเป็นต้องสมัครสมาชิกหรือเข้าสู่ระบบ',
                 'ใช้งานง่าย สะดวก รวดเร็ว',
               ].map((text, index) => (
@@ -228,7 +229,7 @@ const AboutPage: React.FC = () => {
           <Button
             variant="contained"
             sx={{
-              backgroundColor: COLORS.yellow[4],
+              backgroundColor: COLORS.yellow[5],
               color: 'white',
               width: '80%',
               display: 'flex',
@@ -236,7 +237,7 @@ const AboutPage: React.FC = () => {
               alignItems: 'center',
               padding: '8px 16px',
               '&:hover': {
-                backgroundColor: COLORS.orange[4],
+                backgroundColor: COLORS.yellow[5],
               },
             }}
             startIcon={<AttachEmailIcon sx={{ ml: 2 }} />}
@@ -278,7 +279,7 @@ const AboutPage: React.FC = () => {
           variant="body2"
           sx={{ textAlign: 'center', mt: 2, color: COLORS.gray[3], pb: 3 }}
         >
-          เวอร์ชัน 1.0.0
+          เวอร์ชัน 0.1.0
         </Typography>
       </Container>
       <TermsDialog open={openModal} onClose={handleCloseModal} />

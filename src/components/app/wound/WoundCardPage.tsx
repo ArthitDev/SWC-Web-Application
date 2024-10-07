@@ -41,6 +41,9 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
   const [blurredWounds, setBlurredWounds] = useState<{
     [key: string]: boolean;
   }>({});
+  const [randomWoundImages, setRandomWoundImages] = useState<{
+    [key: string]: string;
+  }>({});
   const { formatDate } = useFormatDate();
 
   useRefetchWebSocket('wounds', 'UPDATE_WOUNDS');
@@ -51,17 +54,25 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
     data: woundsData,
     isLoading,
     error,
+    refetch,
   } = useQuery(
     ['wounds', page, limit, searchTerm],
     () => getWoundsWithPagination(page, limit, searchTerm),
     {
+      cacheTime: 1000 * 60 * 10,
       onSuccess: (data) => {
         if (data) {
           setTotalPages(data.totalPages || 0);
         }
       },
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
     }
   );
+
+  useEffect(() => {
+    refetch();
+  }, [router.query.page, refetch]);
 
   useEffect(() => {
     setPage(1); // เมื่อมีการค้นหาใหม่ จะกลับไปที่หน้า 1
@@ -75,7 +86,7 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
 
   const mutation = useMutation(
     (woundData: { woundId: number; clickCount: number }) =>
-      trackWoundClick(woundData.woundId.toString(), woundData.clickCount),
+      trackWoundClick(woundData.woundId, woundData.clickCount),
     {
       onSuccess: () => {
         // Reset click count in local storage on success
@@ -127,6 +138,24 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
     }
     router.push(`/app/wound/${woundId}?page=${page}`);
   };
+
+  // สุ่มเลือกรูปภาพแผล
+  useEffect(() => {
+    if (woundsData?.data) {
+      const randomImages: { [key: string]: string } = {};
+      woundsData.data.forEach((wound: WoundData) => {
+        if (wound.wound_covers && wound.wound_covers.length > 0) {
+          const randomIndex = Math.floor(
+            Math.random() * wound.wound_covers.length
+          );
+          randomImages[wound.id] = getWoundImageUrl(
+            wound.wound_covers[randomIndex].url
+          );
+        }
+      });
+      setRandomWoundImages(randomImages);
+    }
+  }, [woundsData]);
 
   if (isLoading) {
     return (
@@ -214,7 +243,7 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
                   },
                 }}
               >
-                {wound.wound_cover && (
+                {wound.wound_covers && wound.wound_covers.length > 0 && (
                   <Box
                     sx={{
                       position: 'relative',
@@ -233,7 +262,7 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
                     }}
                   >
                     <img
-                      src={getWoundImageUrl(wound.wound_cover)}
+                      src={randomWoundImages[woundId]}
                       alt={wound.wound_name}
                       style={{
                         width: '100%',

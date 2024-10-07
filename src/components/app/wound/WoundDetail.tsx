@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
@@ -14,15 +15,20 @@ import COLORS from 'themes/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import ScrollToTop from 'utils/ScrollToTop';
 
+import WoundTag from '@/components/app/wound/WoundTag';
+import VideoPlayer from '@/components/input/VideoPlayer';
+import DataNotFound from '@/utils/DataNotFound';
+
+interface WoundVideo {
+  value: string;
+}
+
 interface WoundDetailProps {
   id: string;
+  wound_video: WoundVideo[];
 }
 
-interface QueryError {
-  message: string;
-}
-
-const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
+const WoundDetail: React.FC<WoundDetailProps> = ({ id, wound_video }) => {
   const [isBlurred, setIsBlurred] = useState(true); // สถานะการเบลอของรูปภาพ
   useRefetchWebSocket('wounds', 'UPDATE_WOUNDS');
 
@@ -65,7 +71,7 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
       variants={fadeInVariants}
       transition={fadeInTransition}
     >
-      <BackButtonPage label={wound?.wound_name || 'Back'} />
+      <BackButtonPage label={wound?.wound_name || 'กลับ'} />
       {isLoading && (
         <Box
           display="flex"
@@ -81,12 +87,9 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          height="100vh"
           padding={2}
         >
-          <Typography color="error">
-            Error: {(error as QueryError).message}
-          </Typography>
+          <DataNotFound />
         </Box>
       )}
       {!isLoading && !error && wound && (
@@ -136,7 +139,7 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
                       minute: '2-digit',
                       hour12: false,
                     });
-                    return `${datePart} (${timePart}) - วันที่และเวลาอัพเดทข้อมูลแผล`;
+                    return `${datePart} (${timePart}) - วันที่และเวลาอัพเดทข้อมูล`;
                   })()}
                 </Typography>
               </Box>
@@ -151,41 +154,43 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
               {wound.wound_name}
             </Typography>
           </Box>
-          {wound.wound_cover && (
-            <Box
-              onClick={toggleBlur}
-              sx={{
-                position: 'relative',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginBottom: 2,
-                cursor: 'pointer',
-              }}
-            >
-              <img
-                src={getWoundImageUrl(wound.wound_cover)}
-                alt={wound.wound_name}
-                style={{
-                  width: '100%',
-                  maxHeight: '300px',
-                  objectFit: 'cover',
-                  borderRadius: '8px',
-                  filter: isBlurred ? 'blur(10px)' : 'none',
-                  transition: 'filter 0.3s ease',
+          <Box pb={1}>
+            {wound.wound_covers && wound.wound_covers.length > 0 && (
+              <Box
+                onClick={toggleBlur}
+                sx={{
+                  position: 'relative',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: 2,
+                  cursor: 'pointer',
                 }}
-              />
-              {isBlurred && (
-                <VisibilityOffIcon
-                  sx={{
-                    position: 'absolute',
-                    color: 'white',
-                    fontSize: '2rem',
+              >
+                <img
+                  src={getWoundImageUrl(wound.wound_covers[0].url)}
+                  alt={wound.wound_name}
+                  style={{
+                    width: '100%',
+                    maxHeight: '300px',
+                    objectFit: 'cover',
+                    borderRadius: '8px',
+                    filter: isBlurred ? 'blur(8px)' : 'none',
+                    transition: 'filter 0.3s ease',
                   }}
                 />
-              )}
-            </Box>
-          )}
+                {isBlurred && (
+                  <VisibilityOffIcon
+                    sx={{
+                      position: 'absolute',
+                      color: 'white',
+                      fontSize: '2rem',
+                    }}
+                  />
+                )}
+              </Box>
+            )}
+          </Box>
           {wound.wound_content && (
             <Box className="wound-content">{parse(safeContent)}</Box>
           )}
@@ -225,17 +230,45 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
               }}
             >
               <WarningRoundedIcon
-                sx={{ marginRight: 1, color: COLORS.yellow[3], fontSize: 32 }}
+                sx={{ marginRight: 1, color: COLORS.orange[6], fontSize: 32 }}
               />
               <Typography variant="body2" color="text.secondary">
-                <Typography variant="body1" color="text.primary">
+                <Typography
+                  variant="body1"
+                  color="text.primary"
+                  component="span"
+                >
                   โปรดทราบ
                 </Typography>
+                <br></br>
                 รูปภาพวิธีการดูแลรักษาเป็นเพียงภาพประกอบไม่ใช่ภาพจากขั้นตอนการรักษาจริง
               </Typography>
             </Box>
           </Box>
-          <Box pt={2}>
+          <Box pt={1}>
+            {wound_video && wound_video.length > 0 && (
+              <Box sx={{ padding: 1 }}>
+                <Typography
+                  variant="h5"
+                  gutterBottom
+                  textAlign="center"
+                  fontWeight="bold"
+                  pb={2}
+                >
+                  วีดีโอประกอบการรักษา
+                </Typography>
+                {wound_video.map((video: WoundVideo, index: number) => (
+                  <Box key={index} sx={{ marginBottom: 3 }}>
+                    <VideoPlayer url={video.value} />
+                  </Box>
+                ))}
+              </Box>
+            )}
+          </Box>
+          <Box>
+            <WoundTag />
+          </Box>
+          <Box pt={3}>
             {parsedRefs.length > 0 && (
               <Box
                 sx={{
@@ -248,7 +281,7 @@ const WoundDetail: React.FC<WoundDetailProps> = ({ id }) => {
                 }}
               >
                 <Typography
-                  variant="h6"
+                  variant="h5"
                   gutterBottom
                   sx={{
                     fontWeight: 'bold',

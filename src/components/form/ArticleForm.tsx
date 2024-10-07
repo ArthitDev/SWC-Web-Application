@@ -9,7 +9,6 @@ import {
   Typography,
 } from '@mui/material';
 import CustomButtonSave from 'components/button/CustomButtonSave';
-import ImageUpload from 'components/input/ImageUpload';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
@@ -25,6 +24,8 @@ import COLORS from 'themes/colors';
 import { ArticleFormData } from 'types/AdminFormDataPostTypes';
 import { ArticleData } from 'types/AdminGetDataTypes';
 import { showValidationError } from 'utils/ErrorFormToast';
+
+import ImageUpload from '@/components/input/ImageUpload';
 
 const TinyMCEEditor = dynamic(() => import('components/editor/TinyMCEEditor'), {
   ssr: false,
@@ -45,14 +46,30 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
       article_content: '',
       article_note: '',
       ref: [{ value: '' }],
+      article_video: [{ value: '' }],
+
       article_cover: null,
       category: '',
     },
   });
 
-  const { fields, append, remove } = useFieldArray<ArticleFormData>({
+  const {
+    fields: refFields,
+    append: appendRef,
+    remove: removeRef,
+  } = useFieldArray<ArticleFormData>({
     control,
     name: 'ref',
+  });
+
+  // เพิ่ม useFieldArray สำหรับ wound_video
+  const {
+    fields: videoFields,
+    append: appendVideo,
+    remove: removeVideo,
+  } = useFieldArray<ArticleFormData>({
+    control,
+    name: 'article_video',
   });
 
   const queryClient = useQueryClient();
@@ -75,6 +92,12 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
         initialData.ref?.map((refItem) => ({ value: refItem.value })) || [
           { value: '' },
         ]
+      );
+      setValue(
+        'article_video',
+        initialData.article_video?.map((WoundVideoItem) => ({
+          value: WoundVideoItem.value,
+        })) || [{ value: '' }]
       );
     }
   }, [initialData, setValue]);
@@ -285,7 +308,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
         <Typography variant="h6" mb={2}>
           แหล่งอ้างอิง
         </Typography>
-        {fields.map((item, index) => (
+        {refFields.map((item, index) => (
           <Box key={index} display="flex" alignItems="center" mb={2}>
             <Controller
               name={`ref.${index}.value`}
@@ -310,8 +333,72 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
               )}
             />
             <Button
-              onClick={() => remove(index)}
-              disabled={fields.length === 1}
+              onClick={() => removeRef(index)}
+              disabled={refFields.length === 1}
+              sx={{
+                minWidth: 'auto',
+                p: 1,
+                ml: 1,
+                color: 'error.main',
+                bgcolor: 'transparent',
+                border: 'none',
+                '&:hover': {
+                  bgcolor: 'transparent',
+                },
+              }}
+            >
+              <FaRegTrashAlt />
+            </Button>
+          </Box>
+        ))}
+        <Box display="flex" alignItems="center" pb={2}>
+          <Button
+            startIcon={<AddIcon />}
+            onClick={() => appendRef({ value: '' })}
+            sx={{
+              bgcolor: COLORS.blue[6],
+              color: 'white',
+              '&:hover': {
+                bgcolor: COLORS.blue[6],
+              },
+            }}
+          >
+            เพิ่มแหล่งอ้างอิง
+          </Button>
+        </Box>
+      </Box>
+
+      <Box>
+        <Typography variant="h6" mb={2}>
+          เพิ่มลิงก์วีดีโอบทความ
+        </Typography>
+        {videoFields.map((item, index) => (
+          <Box key={index} display="flex" alignItems="center" mb={2}>
+            <Controller
+              name={`article_video.${index}.value`}
+              control={control}
+              defaultValue={item.value}
+              rules={{
+                required: 'โปรดป้อนลิงก์วีดีโอ',
+                pattern: {
+                  value: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i,
+                  message: 'โปรดป้อนรูปแบบลิงก์หรือ URL ที่ถูกต้อง',
+                },
+              }}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  size="small"
+                  placeholder="ป้อนลิงก์วีดีโอ"
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                />
+              )}
+            />
+            <Button
+              onClick={() => removeVideo(index)} // ใช้ removeVideo แทน removeRef
+              disabled={videoFields.length === 1}
               sx={{
                 minWidth: 'auto',
                 p: 1,
@@ -331,7 +418,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
         <Box display="flex" alignItems="center">
           <Button
             startIcon={<AddIcon />}
-            onClick={() => append({ value: '' })}
+            onClick={() => appendVideo({ value: '' })}
             sx={{
               bgcolor: COLORS.blue[6],
               color: 'white',
@@ -340,7 +427,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
               },
             }}
           >
-            เพิ่มแหล่งอ้างอิง
+            เพิ่มลิงก์วีดีโอ
           </Button>
         </Box>
       </Box>

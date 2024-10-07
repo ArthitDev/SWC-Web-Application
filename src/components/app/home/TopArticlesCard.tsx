@@ -8,6 +8,9 @@ import { getTopArticle } from 'services/articleService';
 import COLORS from 'themes/colors';
 import ScrollFadeIn from 'utils/ScrollFadeIn';
 
+import ErrorFiveCards from '@/utils/ErrorFiveCard';
+import LoadingFiveCards from '@/utils/LoadingFiveCards';
+
 interface TopArticle {
   id: number;
   article_name: string;
@@ -26,7 +29,10 @@ const getFontSize = (index: number) => {
 
 const TopArticlesCard: React.FC = () => {
   const router = useRouter();
-  const { data } = useQuery<TopArticle[]>('topArticles', getTopArticle);
+  const { data, isLoading, isError } = useQuery<TopArticle[]>(
+    'topArticles',
+    getTopArticle
+  );
 
   const handleIconClick = (articleId: number) => {
     router.push(`/app/article/${articleId}`);
@@ -53,6 +59,18 @@ const TopArticlesCard: React.FC = () => {
       />
     );
   };
+
+  if (isLoading) {
+    return <LoadingFiveCards />;
+  }
+
+  if (isError) {
+    return <ErrorFiveCards errorType="loadingError" />;
+  }
+
+  if (!data || data.length === 0) {
+    return <ErrorFiveCards errorType="noDataError" />;
+  }
 
   return (
     <Box
@@ -102,7 +120,7 @@ const TopArticlesCard: React.FC = () => {
                       marginBottom: 0.5,
                     }}
                   >
-                    {truncateText(article.article_name, 30)}
+                    {truncateText(article.article_name, 26)}
                   </Typography>
                   <Typography
                     variant="subtitle2"

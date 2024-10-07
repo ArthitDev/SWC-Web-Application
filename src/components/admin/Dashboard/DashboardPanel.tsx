@@ -80,28 +80,28 @@ const DashboardPanel: React.FC = () => {
 
   const dashboardItems = [
     {
-      title: 'จำนวนแผลทั้งหมด',
+      title: 'แผลทั้งหมด',
       value: data?.woundCount,
       icon: HealingIcon,
       color: '#FF6B6B',
       path: '/admin/wound',
     },
     {
-      title: 'จำนวนบทความทั้งหมด',
+      title: 'บทความทั้งหมด',
       value: data?.articleCount,
       icon: BookIcon,
       color: '#4ECDC4',
       path: '/admin/articles',
     },
     {
-      title: 'จำนวนเคล็ดไม่ลับทั้งหมด',
+      title: 'เคล็ดไม่ลับทั้งหมด',
       value: data?.trickCount,
       icon: EmojiObjectsIcon,
       color: '#6BCB77',
       path: '/admin/trick',
     },
     {
-      title: 'จำนวนรู้หรือไม่ทั้งหมด',
+      title: 'รู้หรือไม่ทั้งหมด',
       value: data?.didYouKnowCount,
       icon: LightbulbIcon,
       color: '#FFD93D',
@@ -190,7 +190,7 @@ const DashboardPanel: React.FC = () => {
           <Grid item xs={12} md={6}>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <LineChart
-                title="แผลที่ได้รับความนิยม"
+                title="แผลที่ถูกอ่านบ่อยครั้ง"
                 labels={woundDates}
                 dataPoints={woundDataPoints}
                 woundLabels={woundLabels}

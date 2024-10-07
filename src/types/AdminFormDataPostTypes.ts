@@ -2,18 +2,11 @@ export type WoundFormData = {
   wound_name: string;
   wound_name_en: string;
   wound_content: string;
-  wound_cover: string | null | File;
+  wound_cover: (File | string)[];
   wound_note: string;
   ref: { value: string }[];
-};
-
-export type WoundFormDataMulti = {
-  wound_name: string;
-  wound_name_en: string;
-  wound_content: string;
-  wound_cover: (string | null | File)[];
-  wound_note: string;
-  ref: { value: string }[];
+  wound_video: { value: string }[];
+  removedImages?: number[];
 };
 
 export type ArticleFormData = {
@@ -22,6 +15,7 @@ export type ArticleFormData = {
   article_content: string;
   article_note: string;
   ref: { value: string }[];
+  article_video: { value: string }[];
   category: string;
 };
 

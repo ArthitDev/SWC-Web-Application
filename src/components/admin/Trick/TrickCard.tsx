@@ -82,7 +82,7 @@ const TrickCard: React.FC<TrickCardProps> = ({ onEdit, searchTerm }) => {
 
   const handleConfirmDelete = () => {
     if (selectedTrickId !== null) {
-      toast.promise(mutation.mutateAsync(String(selectedTrickId)), {
+      toast.promise(mutation.mutateAsync(Number(selectedTrickId)), {
         loading: 'กำลังลบรายการ...',
         success: 'รายการถูกลบเรียบร้อยแล้ว!',
         error: 'เกิดข้อผิดพลาดในการลบรายการ',

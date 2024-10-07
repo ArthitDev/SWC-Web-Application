@@ -20,7 +20,7 @@ interface DidyouknowResponse {
 const DidyouknowPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const limit = 10;
+  const limit = 5;
 
   // ใช้ useQuery พร้อมกับการกำหนดประเภทข้อมูลของ data และ error
   const { data, isLoading, error } = useQuery<DidyouknowResponse, Error>(
@@ -189,7 +189,7 @@ const DidyouknowPage: React.FC = () => {
                           color: '#888888',
                         }}
                       >
-                        {`วันที่อัพเดทข้อมูลรู้หรือไม่ - วันที่ ${new Date(
+                        {`วันที่อัพเดทข้อมูล - วันที่ ${new Date(
                           didyouknow.updated_at
                         ).toLocaleString('th-TH', {
                           timeZone: 'UTC',

@@ -56,6 +56,7 @@ const COLORS = {
     2: '#ffe899',
     3: '#ffdc66',
     4: '#ffd132',
+    5: '#D6B70A',
   },
   transparent: {
     1: 'rgba(0,0,0,0.1)',

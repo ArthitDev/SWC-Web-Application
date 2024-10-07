@@ -10,6 +10,7 @@ export const createArticle = async (data: ArticleFormData, image: File) => {
   formData.append('article_content', data.article_content);
   formData.append('article_note', data.article_note);
   formData.append('ref', JSON.stringify(data.ref));
+  formData.append('article_video', JSON.stringify(data.article_video));
   formData.append('image', image);
   formData.append('category', data.category);
 
@@ -64,6 +65,7 @@ export const updateArticle = async (
   formData.append('article_note', data.article_note);
   formData.append('ref', JSON.stringify(data.ref));
   formData.append('category', data.category);
+  formData.append('article_video', JSON.stringify(data.article_video));
   if (image) {
     formData.append('image', image);
   }
@@ -102,5 +104,10 @@ export const trackArticleClick = async (
 // อ่านข้อมูลบทความ Top 5 ตามการ Click
 export const getTopArticle = async () => {
   const response = await axios.get(`${API_URL}/api/top-articles`);
+  return response.data;
+};
+
+export const getOnlyArticles = async () => {
+  const response = await axios.get(`${API_URL}/api/articlesname`);
   return response.data;
 };

@@ -21,7 +21,7 @@ interface TricksResponse {
 const TrickPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const limit = 10; // จำนวนรายการต่อหน้า
+  const limit = 5; // จำนวนรายการต่อหน้า
 
   const { data, isLoading, error } = useQuery<TricksResponse, Error>(
     ['tricks', currentPage], // ใช้ query key เพื่อแยก cache ตามหน้า
@@ -186,7 +186,7 @@ const TrickPage: React.FC = () => {
                           color: '#888888',
                         }}
                       >
-                        {`วันที่อัพเดทข้อมูลเคล็ดไม่ลับ - วันที่ ${new Date(
+                        {`วันที่อัพเดทข้อมูล - วันที่ ${new Date(
                           trick.updated_at
                         ).toLocaleString('th-TH', {
                           timeZone: 'UTC',

@@ -49,17 +49,25 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
     data: articlesData,
     isLoading,
     error,
+    refetch,
   } = useQuery(
     ['articles', selectedCategory, page, limit, searchTerm], // รวม searchTerm ใน dependency array
     () => getArticlesWithPagination(selectedCategory, searchTerm, page, limit),
     {
+      cacheTime: 1000 * 60 * 10,
       onSuccess: (data) => {
         if (data) {
           setTotalPages(data.totalPages || 0);
         }
       },
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
     }
   );
+
+  useEffect(() => {
+    refetch(); // เรียกให้ข้อมูลรีเฟรชเมื่อกลับมาหน้าเดิม
+  }, [router.query.page, refetch]);
 
   useEffect(() => {
     setPage(1); // เมื่อมีการค้นหาใหม่ จะกลับไปที่หน้า 1
@@ -216,11 +224,9 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
                 <Box
                   sx={{
                     position: 'relative',
-                    cursor: 'pointer',
                     width: '100%',
                     height: '250px',
                   }}
-                  onClick={() => handleReadMoreClick(article.id)}
                 >
                   <img
                     src={getArticleImageUrl(article.article_cover)}
@@ -255,7 +261,9 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
                     variant="body2"
                     sx={{ fontWeight: 'medium', color: 'gray' }}
                   >
-                    {article.clicks?.[0]?.click_count || 0}
+                    {article.article_name === 'ทำความรู้จักแผล'
+                      ? 'ไม่นับจำนวนการอ่าน'
+                      : article.clicks?.[0]?.click_count || 0}
                   </Typography>
                 </Box>
 

@@ -1,7 +1,16 @@
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Fab } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { keyframes, useTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
+
+import COLORS from '@/themes/colors';
+
+// สร้าง keyframes สำหรับ breathing effect
+const breatheAnimation = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+`;
 
 const ScrollToTop: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -31,13 +40,18 @@ const ScrollToTop: React.FC = () => {
 
   return (
     <Fab
-      color="primary"
       onClick={scrollToTop}
       sx={{
+        backgroundColor: 'rgba(58, 156, 253, 1)',
+        color: 'white',
         position: 'fixed',
         bottom: theme.spacing(12),
         right: theme.spacing(2),
         display: isVisible ? 'inline-flex' : 'none',
+        animation: `${breatheAnimation} 2s ease-in-out infinite`, // ใช้ animation breathing
+        '&:hover': {
+          backgroundColor: COLORS.blue[6],
+        },
       }}
     >
       <ArrowUpwardIcon />

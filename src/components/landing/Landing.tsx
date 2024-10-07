@@ -46,7 +46,7 @@ const LandingPage: React.FC = () => {
       <Slide in={true} direction="up" timeout={1700}>
         <div style={{ maxWidth: '300px', marginBottom: 10 }}>
           <Image
-            src="/images/logo-landing.png"
+            src="/images/logo-landing.webp"
             alt="Landing Logo"
             width={1000}
             height={424}
@@ -81,7 +81,7 @@ const LandingPage: React.FC = () => {
                 width={513}
                 height={115}
                 priority={true}
-                src="/images/under_swc.png"
+                src="/images/under_swc.webp"
                 alt="underline"
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 513px"
                 style={{

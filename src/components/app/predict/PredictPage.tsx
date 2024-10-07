@@ -5,6 +5,7 @@ import { Box, Button, IconButton, Typography } from '@mui/material';
 import { usePredict } from 'contexts/PredictContext';
 import { motion } from 'framer-motion';
 import useMobilePermissions from 'hooks/useMobilePermissions'; // Import the custom hook
+import { InfoIcon } from 'lucide-react';
 import router from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast'; // Import toast
@@ -15,6 +16,9 @@ import { predictImage } from 'services/predictService'; // Import predictImage s
 import COLORS from 'themes/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 
+import HeaderIconRight from '@/components/app/home/HeaderIconRight';
+
+import HowToUseModal from './HowToUseModal'; // เพิ่มการนำเข้า HowToUseModal
 import * as styles from './PredictPage.style';
 import PrivacyNoticeCard from './PrivacyNoticeCard';
 
@@ -24,6 +28,8 @@ const PredictPage: React.FC = () => {
   const [objectFit, setObjectFit] = useState<'cover' | 'contain'>('cover');
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
+  const [isHowToUseModalOpen, setIsHowToUseModalOpen] = useState(false); // เพิ่ม state สำหรับการเปิด/ปิด Modal
+
   const webcamRef = useRef<Webcam>(null);
   const { checkFilePermission } = useMobilePermissions();
 
@@ -39,7 +45,12 @@ const PredictPage: React.FC = () => {
   }, []);
 
   const handleFileInputClick = async () => {
-    await checkFilePermission();
+    try {
+      await checkFilePermission();
+      toast.dismiss();
+    } catch (err) {
+      toast.error('ยังไม่ได้อนุญาตสิทธิ์ในการเข้าถึงไฟล์');
+    }
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,11 +60,10 @@ const PredictPage: React.FC = () => {
 
     const file = event.target.files?.[0];
     if (file) {
-      if (file.size > 15 * 1024 * 1024) {
-        // Create a new variable to hold input value
+      if (file.size > 7 * 1024 * 1024) {
         const inputElement = event.target as HTMLInputElement;
-        inputElement.value = ''; // Reset input without modifying the event parameter directly
-        toast.error('ขนาดของรูปภาพไม่ควรเกิน 15MB');
+        inputElement.value = '';
+        toast.error('ขนาดของรูปภาพไม่ควรเกิน 7MB');
         return;
       }
 
@@ -77,7 +87,6 @@ const PredictPage: React.FC = () => {
     setSelectedImage(null);
     setImagePreview(null);
 
-    // รีเซ็ตค่า input ของไฟล์
     const fileInput = document.querySelector(
       'input[type="file"]'
     ) as HTMLInputElement;
@@ -90,7 +99,6 @@ const PredictPage: React.FC = () => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot();
       if (imageSrc) {
-        // Convert base64 to file
         const byteString = atob(imageSrc.split(',')[1]);
         const mimeString = imageSrc.split(',')[0].split(':')[1].split(';')[0];
         const ab = new ArrayBuffer(byteString.length);
@@ -111,15 +119,13 @@ const PredictPage: React.FC = () => {
   };
 
   const handleOpenCamera = async () => {
-    setSelectedImage(null);
-    setImagePreview(null); // Clear image preview
-
     try {
       await navigator.mediaDevices.getUserMedia({ video: true });
       setIsCameraOpen(true);
+      toast.dismiss();
       toast.success('เปิดกล้องแล้ว');
     } catch (err) {
-      toast.error('กรุณาให้สิทธ์ในการเข้าถึงกล้อง');
+      toast.error('ยังไม่ได้อนุญาตสิทธิ์ในการเข้าถึงกล้อง');
     }
   };
 
@@ -135,17 +141,18 @@ const PredictPage: React.FC = () => {
       },
       onSuccess: (data) => {
         toast.dismiss('loading');
-        toast.success('การพยากรณ์เสร็จสิ้น');
+        toast.success('การวิเคราะห์เสร็จสิ้น');
 
-        // Save the result to Context instead of using query parameters
         setResult(data);
-
-        // Navigate to result page
         router.push('/app/predict/result');
       },
-      onError: () => {
+      onError: (error: any) => {
         toast.dismiss('loading');
-        toast.error('เกิดข้อผิดพลาดในการวิเคราะห์ภาพ');
+        if (error.message.includes('The server took too long to respond')) {
+          toast.error('เซิร์ฟเวอร์ไม่ตอบสนองในเวลาที่กำหนด');
+        } else {
+          toast.error('เกิดข้อผิดพลาดในการวิเคราะห์ภาพ');
+        }
       },
     }
   );
@@ -162,6 +169,14 @@ const PredictPage: React.FC = () => {
     mutation.mutate(formData);
   };
 
+  const handleOpenHowToUseModal = () => {
+    setIsHowToUseModalOpen(true);
+  };
+
+  const handleCloseHowToUseModal = () => {
+    setIsHowToUseModalOpen(false);
+  };
+
   return (
     <motion.div
       initial="initial"
@@ -170,13 +185,26 @@ const PredictPage: React.FC = () => {
       variants={fadeInVariants}
       transition={fadeInTransition}
     >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 2,
+          position: 'relative',
+        }}
+      >
+        <HeaderIconRight
+          icon={<InfoIcon color={COLORS.blue[6]} />}
+          onClick={handleOpenHowToUseModal}
+        />
+      </Box>
       <Box sx={styles.Container}>
         <Typography variant="h4" component="h1" sx={styles.Header}>
           วิเคราะห์ภาพแผลด้วย AI
         </Typography>
-
         <Box sx={styles.Divider} />
-
         <Typography variant="body1" sx={styles.Description}>
           ถ่ายภาพ หรือ เลือกภาพแผลเพื่อเริ่มต้นวิเคราะห์
         </Typography>
@@ -292,6 +320,13 @@ const PredictPage: React.FC = () => {
             <CameraAltIcon />
           </Button>
         </Box>
+
+        {/* เพิ่ม HowToUseModal */}
+        <HowToUseModal
+          open={isHowToUseModalOpen}
+          onClose={handleCloseHowToUseModal}
+        />
+
         <PrivacyNoticeCard />
       </Box>
     </motion.div>

@@ -2,7 +2,9 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
-const DynamicLandingPage = dynamic(() => import('components/landing/Landing'));
+const DynamicLandingPage = dynamic(
+  () => import('@/components/landing/Landing')
+);
 
 const LandingPage: React.FC = () => {
   const router = useRouter();

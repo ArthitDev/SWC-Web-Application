@@ -5,6 +5,12 @@ import { parseCookies } from 'utils/nookies';
 
 const DynamicLoginForm = dynamic(() => import('components/login/LoginForm'));
 
+const LoginPage: React.FC = () => {
+  return <DynamicLoginForm />;
+};
+
+export default LoginPage;
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const cookies = parseCookies(ctx);
   const { accessToken } = cookies;
@@ -23,9 +29,3 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     props: {},
   };
 };
-
-const LoginPage: React.FC = () => {
-  return <DynamicLoginForm />;
-};
-
-export default LoginPage;

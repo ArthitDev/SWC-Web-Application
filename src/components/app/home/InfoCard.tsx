@@ -50,10 +50,10 @@ const InfoCard: React.FC<{
             fontSize: 15,
             fontWeight: 'bold',
             color: COLORS.blue[6],
-            transition: 'transform 0.3s', // เพิ่มการเปลี่ยนแปลง
+            transition: 'transform 0.3s',
             '&:hover': {
               backgroundColor: 'white',
-              transform: 'scale(1.05)', // ขยายปุ่มเล็กน้อย
+              transform: 'scale(1.05)',
             },
           }}
         >

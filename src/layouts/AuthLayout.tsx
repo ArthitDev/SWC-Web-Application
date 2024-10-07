@@ -23,7 +23,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
       <Box sx={boxStyle}>
         <Box sx={titleStyle}>
           <Image
-            src="/images/logo-full.png"
+            src="/images/logo-full.webp"
             alt="SWC Logo"
             width={170}
             height={70}

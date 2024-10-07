@@ -4,14 +4,14 @@ import COLORS from 'themes/colors';
 import ScrollFadeIn from 'utils/ScrollFadeIn'; // นำเข้า ScrollFadeIn
 
 const AboutCard: React.FC<{
-  title: string;
+  // title: string;
   description: string;
   buttonText: string;
   buttonIcon?: React.ReactNode;
   onButtonClick?: () => void;
   sxDescription?: object;
 }> = ({
-  title,
+  // title,
   description,
   buttonText,
   buttonIcon,
@@ -22,7 +22,6 @@ const AboutCard: React.FC<{
     {/* ครอบ ScrollFadeIn รอบๆ Card */}
     <Card
       sx={{
-        backgroundColor: '#F2F9FC',
         width: '100%',
         maxWidth: 500,
         textAlign: 'center',
@@ -33,10 +32,18 @@ const AboutCard: React.FC<{
       }}
     >
       <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+        {/* <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
           {title}
-        </Typography>
-        <Typography sx={{ marginBottom: 2, ...sxDescription }}>
+        </Typography> */}
+        <Typography
+          sx={{
+            pt: 2,
+            marginBottom: 2,
+            ...sxDescription,
+            fontSize: 15,
+            fontWeight: 'medium',
+          }}
+        >
           {description}
         </Typography>
         <Button

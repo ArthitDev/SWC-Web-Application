@@ -37,6 +37,7 @@ interface SearchBoxAppProps {
   onSearch: () => void;
   placeholder?: string;
   buttonLabel?: string;
+  onKeyUp?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 type Language = 'th-TH' | 'en-US';
@@ -156,6 +157,12 @@ const SearchBoxApp: React.FC<SearchBoxAppProps> = ({
     onSearch();
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <Container>
       <CustomTextField
@@ -167,6 +174,7 @@ const SearchBoxApp: React.FC<SearchBoxAppProps> = ({
         }
         fullWidth
         size="small"
+        onKeyUp={handleKeyPress}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">

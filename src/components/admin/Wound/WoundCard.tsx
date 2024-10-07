@@ -76,7 +76,7 @@ const WoundCard: React.FC<WoundCardProps> = ({ onEdit, searchTerm }) => {
 
   const handleConfirmDelete = () => {
     if (selectedWoundId !== null) {
-      toast.promise(mutation.mutateAsync(String(selectedWoundId)), {
+      toast.promise(mutation.mutateAsync(Number(selectedWoundId)), {
         loading: 'กำลังลบรายการ...',
         success: 'ลบรายการเรียบร้อยแล้ว!',
         error: 'เกิดข้อผิดพลาดในการลบรายการ',
@@ -91,7 +91,9 @@ const WoundCard: React.FC<WoundCardProps> = ({ onEdit, searchTerm }) => {
 
   if (isFetching) return <WoundArticleLoading />;
   if (error) return <FetchError />;
-  if (!woundsData || woundsData.data.length === 0) return <DataNotFound />;
+  if (!woundsData || !woundsData.data || woundsData.data.length === 0) {
+    return <DataNotFound />;
+  }
 
   return (
     <Box sx={{ width: 'calc(100% - 30px)', margin: '0 auto' }}>
@@ -165,9 +167,9 @@ const WoundCard: React.FC<WoundCardProps> = ({ onEdit, searchTerm }) => {
               sx={{ textAlign: 'center', mt: { xs: 1, sm: 0 } }}
             >
               <Box display="flex" justifyContent="center">
-                {item.wound_cover ? (
+                {item.wound_covers && item.wound_covers.length > 0 ? (
                   <img
-                    src={getWoundImageUrl(item.wound_cover)}
+                    src={getWoundImageUrl(item.wound_covers[0].url)}
                     alt={item.wound_name}
                     style={{
                       width: '80px',

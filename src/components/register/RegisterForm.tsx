@@ -1,7 +1,19 @@
-import { Box, Link, TextField, Typography } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import {
+  Box,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  Link,
+  OutlinedInput,
+  TextField,
+  Typography,
+} from '@mui/material';
 import CustomButton from 'components/button/CustomButton';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useMutation } from 'react-query';
@@ -29,6 +41,17 @@ const RegisterForm: React.FC = () => {
     },
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const handleClickShowConfirmPassword = () => {
+    setShowConfirmPassword((prev) => !prev);
+  };
+
   const onSubmit: SubmitHandler<FormInputs> = (formData) => {
     toast.promise(mutation.mutateAsync(formData), {
       loading: 'กำลังสร้างบัญชี Admin...',
@@ -54,7 +77,6 @@ const RegisterForm: React.FC = () => {
           fullWidth
           id="username"
           label="ชื่อผู้ใช้"
-          autoComplete="username"
           autoFocus
           {...register('username', { required: 'กรุณากรอกชื่อผู้ใช้' })}
           error={!!errors.username}
@@ -65,7 +87,6 @@ const RegisterForm: React.FC = () => {
           fullWidth
           id="email"
           label="อีเมล"
-          autoComplete="email"
           {...register('email', {
             required: 'กรุณากรอกอีเมล',
             pattern: {
@@ -76,37 +97,70 @@ const RegisterForm: React.FC = () => {
           error={!!errors.email}
           helperText={errors.email?.message}
         />
-        <TextField
-          margin="normal"
-          fullWidth
-          label="รหัสผ่าน"
-          type="password"
-          id="password"
-          autoComplete="new-password"
-          {...register('password', {
-            required: 'กรุณากรอกรหัสผ่าน',
-            minLength: {
-              value: 8,
-              message: 'รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร',
-            },
-          })}
-          error={!!errors.password}
-          helperText={errors.password?.message}
-        />
-        <TextField
-          margin="normal"
-          fullWidth
-          label="ยืนยันรหัสผ่าน"
-          type="password"
-          id="confirmPassword"
-          autoComplete="new-password"
-          {...register('confirmPassword', {
-            required: 'กรุณายืนยันรหัสผ่าน',
-            validate: (value) => value === password || 'รหัสผ่านไม่ตรงกัน',
-          })}
-          error={!!errors.confirmPassword}
-          helperText={errors.confirmPassword?.message}
-        />
+
+        {/* รหัสผ่าน */}
+        <FormControl fullWidth margin="normal" variant="outlined">
+          <InputLabel htmlFor="password">รหัสผ่าน</InputLabel>
+          <OutlinedInput
+            id="password"
+            type={showPassword ? 'text' : 'password'}
+            label="รหัสผ่าน"
+            {...register('password', {
+              required: 'กรุณากรอกรหัสผ่าน',
+              minLength: {
+                value: 8,
+                message: 'รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร',
+              },
+            })}
+            error={!!errors.password}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+          {errors.password && (
+            <Typography color="error">{errors.password.message}</Typography>
+          )}
+        </FormControl>
+
+        {/* ยืนยันรหัสผ่าน */}
+        <FormControl fullWidth margin="normal" variant="outlined">
+          <InputLabel htmlFor="confirmPassword">ยืนยันรหัสผ่าน</InputLabel>
+          <OutlinedInput
+            id="confirmPassword"
+            type={showConfirmPassword ? 'text' : 'password'}
+            label="ยืนยันรหัสผ่าน"
+            {...register('confirmPassword', {
+              required: 'กรุณายืนยันรหัสผ่าน',
+              validate: (value) => value === password || 'รหัสผ่านไม่ตรงกัน',
+            })}
+            error={!!errors.confirmPassword}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle confirm password visibility"
+                  onClick={handleClickShowConfirmPassword}
+                  edge="end"
+                >
+                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+          {errors.confirmPassword && (
+            <Typography color="error">
+              {errors.confirmPassword.message}
+            </Typography>
+          )}
+        </FormControl>
+
         <Box
           sx={{
             display: 'flex',
