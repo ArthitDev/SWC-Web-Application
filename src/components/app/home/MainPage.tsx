@@ -196,7 +196,8 @@ const MainPage: React.FC = () => {
           </ScrollFadeIn>
           <ScrollFadeIn>
             <AboutCard
-              description="อ่านเพิ่มเติมเกี่ยวกับบริการของเราและติดต่อเราได้เลย"
+              title="เกี่ยวกับเรา"
+              description="อ่านเพิ่มเติมเกี่ยวกับบริการของเราและติดต่อเรา"
               buttonText="ไปยังหน้าเกี่ยวกับเรา"
               buttonIcon={<ArrowForwardIcon />}
               onButtonClick={() => router.push('/app/about')}

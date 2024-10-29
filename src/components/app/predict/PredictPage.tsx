@@ -28,7 +28,8 @@ const PredictPage: React.FC = () => {
   const [objectFit, setObjectFit] = useState<'cover' | 'contain'>('cover');
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
-  const [isHowToUseModalOpen, setIsHowToUseModalOpen] = useState(false); // เพิ่ม state สำหรับการเปิด/ปิด Modal
+  const [isHowToUseModalOpen, setIsHowToUseModalOpen] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
 
   const webcamRef = useRef<Webcam>(null);
   const { checkFilePermission } = useMobilePermissions();
@@ -137,16 +138,18 @@ const PredictPage: React.FC = () => {
     (imageData: FormData) => predictImage(imageData),
     {
       onMutate: () => {
+        setIsScanning(true);
         toast.loading('กำลังวิเคราะห์ภาพ...', { id: 'loading' });
       },
       onSuccess: (data) => {
         toast.dismiss('loading');
         toast.success('การวิเคราะห์เสร็จสิ้น');
-
         setResult(data);
+        setIsScanning(false);
         router.push('/app/predict/result');
       },
       onError: (error: any) => {
+        setIsScanning(false);
         toast.dismiss('loading');
         if (error.message.includes('The server took too long to respond')) {
           toast.error('เซิร์ฟเวอร์ไม่ตอบสนองในเวลาที่กำหนด');
@@ -231,6 +234,8 @@ const PredictPage: React.FC = () => {
               >
                 <FaRegTrashAlt style={{ color: 'red', fontSize: '24px' }} />
               </IconButton>
+
+              {isScanning && <Box sx={styles.ScanEffect}></Box>}
             </>
           ) : (
             <>
@@ -320,8 +325,6 @@ const PredictPage: React.FC = () => {
             <CameraAltIcon />
           </Button>
         </Box>
-
-        {/* เพิ่ม HowToUseModal */}
         <HowToUseModal
           open={isHowToUseModalOpen}
           onClose={handleCloseHowToUseModal}

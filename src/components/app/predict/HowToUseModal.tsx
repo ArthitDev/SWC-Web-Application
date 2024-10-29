@@ -1,4 +1,4 @@
-import { ArrowBack, ArrowForward } from '@mui/icons-material';
+import { ArrowBack, ArrowForward, SkipNext } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -101,16 +101,16 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ open, onClose }) => {
       >
         <Box
           sx={{
-            position: 'relative',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             padding: '16px 24px 15px',
+            position: 'relative',
           }}
         >
           <Typography
             variant="body1"
             sx={{
-              position: 'absolute',
-              top: 15,
-              left: 25,
               fontWeight: 'medium',
               fontSize: '1.1rem',
             }}
@@ -125,6 +125,32 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ open, onClose }) => {
               }}
             >
               {`${activeStep + 1}/${stepsContent.length}`}
+            </Box>
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              fontWeight: 'medium',
+              fontSize: '1.1rem',
+              cursor: 'pointer',
+            }}
+            onClick={onClose}
+          >
+            <Box
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '4px 12px',
+                borderRadius: '16px',
+                backgroundColor: COLORS.blue[6],
+                color: 'white',
+              }}
+            >
+              ข้าม
+              <SkipNext sx={{ marginLeft: '5px' }} />
             </Box>
           </Typography>
         </Box>

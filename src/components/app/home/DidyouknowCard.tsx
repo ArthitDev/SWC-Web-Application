@@ -120,6 +120,7 @@ const DidyouknowCardHome: React.FC = () => {
             alignItems: 'center',
             marginBottom: 1,
             overflowX: 'hidden',
+            borderRadius: 'inherit',
           }}
         >
           <AnimatePresence mode="wait">
@@ -129,10 +130,15 @@ const DidyouknowCardHome: React.FC = () => {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: isNext ? -100 : 100, opacity: 0 }}
               transition={{ duration: 0.5 }}
+              style={{
+                overflow: 'hidden',
+                borderRadius: 'inherit',
+              }}
             >
               <Typography
                 variant="h6"
                 sx={{
+                  fontSize: '20px',
                   fontWeight: 'bold',
                   color: '#CA8A42',
                   display: 'flex',
@@ -154,6 +160,7 @@ const DidyouknowCardHome: React.FC = () => {
             overflowY: 'auto',
             paddingBottom: '60px',
             overflowX: 'hidden',
+            borderRadius: 'inherit',
           }}
         >
           <AnimatePresence mode="wait">
@@ -163,10 +170,14 @@ const DidyouknowCardHome: React.FC = () => {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: isNext ? -100 : 100, opacity: 0 }}
               transition={{ duration: 0.5 }}
+              style={{
+                overflow: 'hidden',
+                borderRadius: 'inherit',
+              }}
             >
               <Typography
                 sx={{
-                  fontSize: 16,
+                  fontSize: '16px',
                   color: '#000000',
                   lineHeight: 1.5,
                 }}
@@ -213,7 +224,7 @@ const DidyouknowCardHome: React.FC = () => {
             right: 16,
             borderRadius: '12px',
             backgroundColor: '#EAB308',
-            fontSize: 14,
+            fontSize: '14px',
             fontWeight: 'medium',
             color: 'white',
             transition: 'transform 0.3s',
@@ -224,6 +235,7 @@ const DidyouknowCardHome: React.FC = () => {
             textTransform: 'none',
             padding: '6px 12px',
             boxShadow: 'none',
+            marginTop: '20px',
           }}
           endIcon={<ArrowForwardIcon />}
         >

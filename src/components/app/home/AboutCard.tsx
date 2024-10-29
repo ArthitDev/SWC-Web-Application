@@ -4,14 +4,14 @@ import COLORS from 'themes/colors';
 import ScrollFadeIn from 'utils/ScrollFadeIn'; // นำเข้า ScrollFadeIn
 
 const AboutCard: React.FC<{
-  // title: string;
+  title: string;
   description: string;
   buttonText: string;
   buttonIcon?: React.ReactNode;
   onButtonClick?: () => void;
   sxDescription?: object;
 }> = ({
-  // title,
+  title,
   description,
   buttonText,
   buttonIcon,
@@ -32,9 +32,9 @@ const AboutCard: React.FC<{
       }}
     >
       <CardContent>
-        {/* <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
           {title}
-        </Typography> */}
+        </Typography>
         <Typography
           sx={{
             pt: 2,

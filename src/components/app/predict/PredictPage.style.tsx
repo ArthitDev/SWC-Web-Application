@@ -57,7 +57,6 @@ export const ImageContainerResult: SxProps<Theme> = {
   position: 'relative',
   border: '1px solid #e2e8f0',
   borderRadius: 4,
-  p: 3,
   textAlign: 'center',
   mt: 2,
   mb: 2,
@@ -68,6 +67,7 @@ export const ImageContainerResult: SxProps<Theme> = {
   alignItems: 'center',
   backgroundColor: '#f8fafc',
   overflow: 'hidden',
+  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
 };
 
 export const IconWrapper: SxProps<Theme> = {
@@ -124,4 +124,20 @@ export const DeletePreviewButton: SxProps<Theme> = {
   borderRadius: '8px',
   boxShadow: 1,
   padding: '5px',
+};
+
+export const ScanEffect = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))', // ปรับเป็นสีดำเข้ม
+  animation: 'scan 2s infinite', // เพิ่มระยะเวลาแอนิเมชันให้เหมาะสม
+  pointerEvents: 'none',
+
+  '@keyframes scan': {
+    '0%': { transform: 'translateY(-100%)' }, // เริ่มต้นจากนอกกล่องด้านบน
+    '100%': { transform: 'translateY(100%)' }, // เคลื่อนไปที่จุดสูงสุดด้านล่าง
+  },
 };

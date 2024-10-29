@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CloseIcon from '@mui/icons-material/Close';
 import ImageIcon from '@mui/icons-material/Image';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
@@ -17,7 +17,7 @@ import CustomModal from 'components/modal/CustomModal';
 import { usePredict } from 'contexts/PredictContext';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Slider from 'react-slick';
 import { getWoundImageUrl, trackWoundClick } from 'services/woundService';
@@ -32,8 +32,10 @@ type PredictResultProps = {};
 
 const PredictResult: React.FC<PredictResultProps> = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [isImageOverlayOpen, setIsImageOverlayOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Track selected image
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [objectFit, setObjectFit] = useState<'cover' | 'contain'>('cover');
   const router = useRouter();
   const { result, setResult } = usePredict();
 
@@ -61,6 +63,18 @@ const PredictResult: React.FC<PredictResultProps> = () => {
     setSelectedImage(null); // Clear the selected image on close
   };
 
+  useEffect(() => {
+    if (result?.image_url) {
+      // Check if image_url exists
+      const img = new Image();
+      img.src = getWoundImageUrl(result.image_url);
+      img.onload = () => {
+        const aspectRatio = img.width / img.height;
+        setObjectFit(aspectRatio > 1 ? 'cover' : 'contain');
+      };
+    }
+  }, [result]);
+
   if (!result) {
     return <NoPredictFound />;
   }
@@ -78,6 +92,19 @@ const PredictResult: React.FC<PredictResultProps> = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: true,
+    beforeChange: (oldIndex: number, newIndex: number) =>
+      setCurrentSlide(newIndex),
+    customPaging: (i: number) => (
+      <div
+        style={{
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          backgroundColor: i === currentSlide ? COLORS.blue[6] : '#cccccc',
+          margin: '12px 0px',
+        }}
+      />
+    ),
   };
 
   return (
@@ -108,8 +135,8 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    objectFit: 'cover',
                     borderRadius: '8px',
+                    objectFit,
                   }}
                 />
                 <IconButton
@@ -146,14 +173,15 @@ const PredictResult: React.FC<PredictResultProps> = () => {
               >
                 <CardContent>
                   <Typography
-                    variant="h6"
+                    variant="h5"
                     sx={{
                       fontWeight: 'bold',
-                      mb: 1,
+                      pt: 1.5,
+                      mb: 1.5,
                       textAlign:
                         prediction.wound_type === 'ไม่พบแผล'
                           ? 'center'
-                          : 'left',
+                          : 'center',
                       marginTop:
                         prediction.wound_type === 'ไม่พบแผล' ? '15px' : '0px',
                     }}
@@ -167,14 +195,41 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
+                        flexDirection: 'column',
                       }}
                     >
                       <Box
                         sx={{
-                          width: '80%',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          width: '100%',
+                          pb: 0.5,
+                        }}
+                      >
+                        <Typography
+                          variant="body1"
+                          sx={{ fontWeight: 'bold', color: COLORS.blue[6] }}
+                        >
+                          ความเชื่อมั่น
+                        </Typography>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontWeight: 'bold', color: COLORS.blue[6] }}
+                        >
+                          {prediction.confidence === 99.99 ||
+                          prediction.confidence === 100.0
+                            ? '99.99'
+                            : prediction.confidence.toFixed(1)}
+                          %
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          width: '100%',
                           bgcolor: '#E0E0E0',
                           height: '8px',
                           borderRadius: '4px',
+                          marginBottom: '4px',
                         }}
                       >
                         <Box
@@ -186,18 +241,12 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                           }}
                         />
                       </Box>
-                      <Typography
-                        variant="body1"
-                        sx={{ fontWeight: 'bold', color: COLORS.blue[6] }}
-                      >
-                        {prediction.confidence.toFixed(1)}%
-                      </Typography>
                     </Box>
                   )}
 
                   {prediction.additional_data?.wound_covers &&
                     prediction.additional_data.wound_covers.length > 0 && (
-                      <Box sx={{ mt: 2, textAlign: 'center' }}>
+                      <Box sx={{ mt: 1, textAlign: 'center' }}>
                         <Slider {...sliderSettings}>
                           {prediction.additional_data.wound_covers.map(
                             (cover, coverIndex) => (
@@ -250,14 +299,19 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                       sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
                     >
                       <Button
-                        variant="text"
+                        variant="contained"
                         sx={{
-                          mt: 2,
-                          color: COLORS.blue[6],
+                          mt: 3,
+                          color: '#ffffff',
+                          backgroundColor: COLORS.blue[6],
                           textTransform: 'none',
-                          fontSize: '1.1rem',
+                          fontSize: '16px',
                           display: 'flex',
                           alignItems: 'center',
+                          width: '100%',
+                          '&:hover': {
+                            backgroundColor: COLORS.blue[6],
+                          },
                         }}
                         onClick={async () => {
                           const woundId = prediction.additional_data?.id;
@@ -269,11 +323,24 @@ const PredictResult: React.FC<PredictResultProps> = () => {
                           }
                         }}
                         endIcon={
-                          <ChevronRightIcon
+                          <ArrowForwardIcon
                             sx={{
                               position: 'relative',
-                              fontSize: '25px',
-                              mt: 0.3,
+                              fontSize: '18px',
+                              fontWeight: 'bold',
+                              mt: 0.2,
+                              animation: 'moveRight 1s infinite',
+                              '@keyframes moveRight': {
+                                '0%': {
+                                  transform: 'translateX(0)',
+                                },
+                                '50%': {
+                                  transform: 'translateX(5px)',
+                                },
+                                '100%': {
+                                  transform: 'translateX(0)',
+                                },
+                              },
                             }}
                           />
                         }
@@ -296,10 +363,11 @@ const PredictResult: React.FC<PredictResultProps> = () => {
         <Box
           sx={{
             position: 'relative',
-            width: { xs: '90%', sm: '80%', md: '70%', lg: '60%' },
+            width: { xs: '95%', sm: '60%', md: '50%', lg: '30%' },
             maxWidth: '100%',
             height: 'auto',
             minWidth: 350,
+            objectFit: 'cover',
             maxHeight: '100vh',
             borderRadius: '12px',
             overflow: 'hidden',

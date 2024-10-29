@@ -135,6 +135,7 @@ const TrickCardHome = () => {
               <Typography
                 variant="h6"
                 sx={{
+                  fontSize: '20px',
                   fontWeight: 'bold',
                   color: '#1B8F29',
                   display: 'flex',
@@ -177,7 +178,7 @@ const TrickCardHome = () => {
             >
               <Typography
                 sx={{
-                  fontSize: 16,
+                  fontSize: '16px',
                   color: '#000000',
                   lineHeight: 1.5,
                 }}
