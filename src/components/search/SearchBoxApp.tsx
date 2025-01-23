@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import MicIcon from '@mui/icons-material/Mic';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -58,7 +59,6 @@ const SearchBoxApp: React.FC<SearchBoxAppProps> = ({
   const [language, setLanguage] = useState<Language>('th-TH');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
-  // eslint-disable-next-line no-undef
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   const handleLanguageMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
