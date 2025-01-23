@@ -11,57 +11,57 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the latest code from main branch
+      # Step 1: Checkout the latest code
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
-      - name: 🔄 Clear npm cache manually
+      # Step 2: Clear npm/yarn cache manually
+      - name: 🔄 Clear cache
         run: |
-            echo "Clearing npm cache..."
-            rm -rf **/node_modules .next/cache
+          echo "Clearing cache..."
+          rm -rf node_modules .next/cache
 
-
-      # Step 2: Setup Node.js 20.17.0 environment
+      # Step 3: Set up Node.js environment
       - name: 📦 Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.17.0'
-          cache: 'npm'
+          cache: 'yarn'
 
-      # Step 3: Cache dependencies
-      - name: 📁 Cache npm dependencies
+      # Step 4: Cache yarn dependencies
+      - name: 📁 Cache yarn dependencies
         uses: actions/cache@v3
         id: cache-node-modules
         with:
           path: |
-            **/node_modules
+            node_modules
             .next/cache
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-yarn-
 
-      # Step 4: Install dependencies
+      # Step 5: Install dependencies
       - name: 🔨 Install Dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
-          echo "Installing dependencies..."
-          npm ci --no-audit --no-fund --prefer-offline --progress=false
+          echo "Installing dependencies with yarn..."
+          yarn install --frozen-lockfile
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
           CI: true
 
-      # Step 5: Create .env file from GitHub Secrets
+      # Step 6: Create .env file
       - name: 📄 Create .env.production file
         run: |
           echo "${{ secrets.ENV_FILE_CONTENTS }}" > .env.production
 
-      # Step 6: Build the Next.js project
+      # Step 7: Build the Next.js project
       - name: 🏗 Build Project
         run: |
           echo "Building project..."
-          npm run build
+          yarn build
 
-      # Step 7: Deploy files to the server using FTP
+      # Step 8: Deploy files to the server
       - name: 📂 Sync all folders and files to the server
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -73,8 +73,5 @@ jobs:
           dry-run: false
           exclude: |
             **/*.DS_Store
-            **/node_modules
             **/README.md
-            **/.git*
-            **/.github/
           log-level: verbose
