@@ -1,22 +1,8 @@
+import Splash from 'components/splash/Splash';
 import type { NextPage } from 'next';
-import Router from 'next/router';
-import { useEffect } from 'react';
 
-import Landing from './Landing';
-
-const HomePage: NextPage = () => {
-  useEffect(() => {
-    const adminTest = false;
-    if (adminTest) {
-      Router.push('/Homepage');
-    }
-  }, []);
-
-  return (
-    <>
-      <Landing />
-    </>
-  );
+const MainPage: NextPage = () => {
+  return <Splash />;
 };
 
-export default HomePage;
+export default MainPage;

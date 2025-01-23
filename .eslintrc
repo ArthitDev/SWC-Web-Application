@@ -25,6 +25,9 @@
         "import"
       ],
       "extends": ["next/core-web-vitals", "plugin:prettier/recommended"],
+      "globals": {
+        "NodeJS": true
+      },
       "parserOptions": {
         "project": "./tsconfig.json"
       },

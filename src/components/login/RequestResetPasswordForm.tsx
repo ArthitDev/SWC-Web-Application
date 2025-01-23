@@ -1,0 +1,109 @@
+import {
+  Box,
+  Container,
+  CssBaseline,
+  Link,
+  TextField,
+  Typography,
+} from '@mui/material';
+import CustomButton from 'components/button/CustomButton';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
+import { useMutation } from 'react-query';
+import { requestResetPassword } from 'services/requestResetPassword';
+
+type FormInputs = {
+  email: string;
+};
+
+const RequestResetPassword: React.FC = () => {
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormInputs>();
+
+  const mutation = useMutation(requestResetPassword, {
+    onSuccess: () => {
+      router.push('/login');
+    },
+  });
+
+  const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    toast.promise(mutation.mutateAsync(data), {
+      loading: 'กำลังส่งคำขอรีเซ็ตรหัสผ่าน...',
+      success: 'ส่งคำขอรีเซ็ตรหัสผ่านสำเร็จ กรุณาตรวจสอบกล่องอีเมลของคุณ',
+      error:
+        'ส่งคำขอรีเซ็ตรหัสผ่านล้มเหลว กรุณาตรวจสอบอีเมลของคุณ และ ลองใหม่อีกครั้ง',
+    });
+  };
+
+  return (
+    <Box>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography component="h2" variant="h6">
+            ขอรีเซ็ตรหัสผ่านและส่งชื่อผู้ใช้
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{ mt: 1, width: '100%' }}
+          >
+            <TextField
+              margin="normal"
+              fullWidth
+              id="email"
+              label="อีเมล"
+              autoComplete="email"
+              autoFocus
+              {...register('email', {
+                required: 'กรุณากรอกอีเมล',
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                  message: 'รูปแบบอีเมลไม่ถูกต้อง (เช่น example@domain.com)',
+                },
+              })}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <CustomButton
+                type="submit"
+                fullWidth
+                text="ส่งคำขอ"
+                sx={{
+                  mt: 3,
+                  mb: 2,
+                }}
+              />
+            </Box>
+          </Box>
+          <Box sx={{ mt: 2 }}>
+            <Link href="/login" variant="body2">
+              {'กลับไปที่หน้าเข้าสู่ระบบ'}
+            </Link>
+          </Box>
+        </Box>
+      </Container>
+    </Box>
+  );
+};
+
+export default RequestResetPassword;

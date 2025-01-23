@@ -1,0 +1,100 @@
+/* Global styles for wound content and article content */
+.wound-content *,
+.article-content * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Ensure consistent sizing */
+}
+
+/* Styling for paragraphs */
+.wound-content p,
+.article-content p {
+  margin-bottom: 1em; /* Add spacing between paragraphs */
+  line-height: 1.6; /* Improve readability */
+}
+
+/* Styling for headings */
+.wound-content h1,
+.article-content h1,
+.wound-content h2,
+.article-content h2,
+.wound-content h3,
+.article-content h3,
+.wound-content h4,
+.article-content h4,
+.wound-content h5,
+.article-content h5,
+.wound-content h6,
+.article-content h6 {
+  margin: 1em 0 0.5em; /* Margin for headings */
+  font-weight: bold; /* Ensure headings are bold */
+}
+
+/* Styling for unordered and ordered lists */
+.wound-content ul,
+.article-content ul {
+  list-style-type: disc; /* Use bullet points for unordered lists */
+  padding-left: 1.5em; /* Indentation for lists */
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.wound-content ol,
+.article-content ol {
+  list-style-type: decimal; /* Use numbering for ordered lists */
+  padding-left: 1.5em; /* Indentation for lists */
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Styling for list items */
+.wound-content li,
+.article-content li {
+  margin-bottom: 0.5em; /* Add spacing between list items */
+}
+
+/* Styling for images */
+.wound-content img,
+.article-content img {
+  max-width: 100%; /* Ensure images are responsive */
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Display images as block elements */
+  margin: 1em 0; /* Add spacing around images */
+  border-radius: 8px; /* Optional: add rounded corners to images */
+}
+
+/* Styling for links */
+.wound-content a,
+.article-content a {
+  color: inherit; /* Inherit text color for links */
+  text-decoration: underline; /* Underline links */
+}
+
+/* Styling for blockquotes */
+.wound-content blockquote,
+.article-content blockquote {
+  margin: 1em 0; /* Add spacing around blockquotes */
+  padding: 0.5em 1em; /* Add padding inside blockquotes */
+  border-left: 5px solid #ccc; /* Add left border for blockquotes */
+  background-color: #f9f9f9; /* Light background for blockquotes */
+  font-style: italic; /* Italicize text in blockquotes */
+}
+
+/* Styling for preformatted text */
+.wound-content pre,
+.article-content pre {
+  background-color: #f5f5f5; /* Light background for code blocks */
+  padding: 1em; /* Add padding inside code blocks */
+  overflow: auto; /* Enable scrolling for code blocks */
+  border-radius: 4px; /* Add rounded corners to code blocks */
+}
+
+/* Styling for inline code */
+.wound-content code,
+.article-content code {
+  font-family: monospace; /* Use monospace font for inline code */
+  background-color: #f5f5f5; /* Light background for inline code */
+  padding: 0.2em 0.4em; /* Add padding for inline code */
+  border-radius: 4px; /* Add rounded corners for inline code */
+  display: inline-block; /* Display code as inline-block */
+}
