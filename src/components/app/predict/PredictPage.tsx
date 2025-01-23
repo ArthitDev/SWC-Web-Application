@@ -19,6 +19,7 @@ import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
 import HeaderIconRight from '@/components/app/home/HeaderIconRight';
 
 import HowToUseModal from './HowToUseModal'; // เพิ่มการนำเข้า HowToUseModal
+import PaymentModal from './PaymentModal';
 import * as styles from './PredictPage.style';
 import PrivacyNoticeCard from './PrivacyNoticeCard';
 
@@ -30,6 +31,7 @@ const PredictPage: React.FC = () => {
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
   const [isHowToUseModalOpen, setIsHowToUseModalOpen] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   const webcamRef = useRef<Webcam>(null);
   const { checkFilePermission } = useMobilePermissions();
@@ -155,6 +157,7 @@ const PredictPage: React.FC = () => {
           toast.error('เซิร์ฟเวอร์ไม่ตอบสนองในเวลาที่กำหนด');
         } else {
           toast.error('เกิดข้อผิดพลาดในการวิเคราะห์ภาพ');
+          setIsPaymentModalOpen(true);
         }
       },
     }
@@ -178,6 +181,10 @@ const PredictPage: React.FC = () => {
 
   const handleCloseHowToUseModal = () => {
     setIsHowToUseModalOpen(false);
+  };
+
+  const handleClosePaymentModal = () => {
+    setIsPaymentModalOpen(false);
   };
 
   return (
@@ -332,6 +339,10 @@ const PredictPage: React.FC = () => {
 
         <PrivacyNoticeCard />
       </Box>
+      <PaymentModal
+        open={isPaymentModalOpen}
+        onClose={handleClosePaymentModal}
+      />
     </motion.div>
   );
 };

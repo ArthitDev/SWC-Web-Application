@@ -130,13 +130,13 @@ const AboutPage: React.FC = () => {
             variant="h6"
             sx={{ textAlign: 'center', mb: 1, fontWeight: 600 }}
           >
-            บริการวให้ข้อมูลเกี่ยวกับแผล
+            บริการให้ข้อมูลเกี่ยวกับแผล
           </Typography>
           <Typography
             variant="h6"
             sx={{ textAlign: 'center', fontWeight: 600 }}
           >
-            ที่ใช้งานง่ายและไม่ต้องลงทะเบียน
+            ใช้งานง่ายและไม่ต้องลงทะเบียน
           </Typography>
         </Box>
         <Card
@@ -161,7 +161,7 @@ const AboutPage: React.FC = () => {
             <Typography variant="h6" sx={{ fontSize: 15 }}>
               {[
                 'ให้ข้อมูลเกี่ยวกับแผลประเภทต่างๆ',
-                'วิเคราะห์แผลจากรูปภาพด้วย AI',
+                'วิเคราะห์แผลจากรูปด้วย AI',
                 'ไม่จำเป็นต้องสมัครสมาชิกหรือเข้าสู่ระบบ',
                 'ใช้งานง่าย สะดวก รวดเร็ว',
               ].map((text, index) => (

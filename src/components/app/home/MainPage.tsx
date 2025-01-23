@@ -142,7 +142,7 @@ const MainPage: React.FC = () => {
           <InfoCard
             title="วิเคราะห์ภาพแผลทันที"
             description="รับการวินิจฉัยแผลโดยการอัปโหลดรูปภาพแผล"
-            buttonText="ถ่ายรูปภาพแผล"
+            buttonText="ไปยังหน้าวิเคราะห์แผล"
             buttonIcon={<CameraAltIcon />}
             onButtonClick={() => router.push('/app/predict')}
           />
