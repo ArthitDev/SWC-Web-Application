@@ -24,6 +24,7 @@ import {
 } from 'services/woundService';
 import { WoundData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
+import { extractTextAfterImage } from 'utils/extractTextUtils';
 import ReusePagination from 'utils/ReusePagination';
 import ScrollFadeIn from 'utils/ScrollFadeIn';
 
@@ -96,12 +97,6 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
       },
     }
   );
-
-  const stripHtmlTags = (html: string) => {
-    const tmp = document.createElement('DIV');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
-  };
 
   const toggleBlur = (id: number | string) => {
     const woundId = String(id);
@@ -301,7 +296,11 @@ const WoundCardPage: React.FC<WoundCardPageProps> = ({
                     color="text.secondary"
                     textAlign="start"
                   >
-                    {stripHtmlTags(wound.wound_content).substring(0, 100)}...
+                    {extractTextAfterImage(wound.wound_content).substring(
+                      0,
+                      100
+                    )}
+                    ...
                   </Typography>
                   <Box display="flex" alignItems="center" mt={2}>
                     <RemoveRedEyeTwoToneIcon sx={{ mr: 1 }} />

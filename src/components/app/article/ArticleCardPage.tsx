@@ -22,6 +22,7 @@ import {
 } from 'services/articleService';
 import { ArticleData } from 'types/AdminGetDataTypes';
 import DataNotFound from 'utils/DataNotFound';
+import { extractTextAfterImage } from 'utils/extractTextUtils';
 import ReusePagination from 'utils/ReusePagination';
 import ScrollFadeIn from 'utils/ScrollFadeIn'; // นำเข้า ScrollFadeIn
 
@@ -94,12 +95,6 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
       },
     }
   );
-
-  const stripHtmlTags = (html: string) => {
-    const tmp = document.createElement('DIV');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
-  };
 
   const getClicksFromStorage = (articleId: number) => {
     const clicks = JSON.parse(localStorage.getItem('articleClicks') || '{}');
@@ -253,7 +248,11 @@ const ArticleCardPage: React.FC<ArticleCardPageProps> = ({ searchTerm }) => {
                   color="text.secondary"
                   textAlign="start"
                 >
-                  {stripHtmlTags(article.article_content).substring(0, 100)}...
+                  {extractTextAfterImage(article.article_content).substring(
+                    0,
+                    100
+                  )}
+                  ...
                 </Typography>
                 <Box display="flex" alignItems="center" mt={2}>
                   <RemoveRedEyeTwoToneIcon sx={{ mr: 1 }} />

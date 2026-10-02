@@ -11,6 +11,7 @@ import { useQuery } from 'react-query';
 import { getArticleById, getArticleImageUrl } from 'services/articleService';
 import COLORS from 'themes/colors';
 import { fadeInTransition, fadeInVariants } from 'utils/pageTransition';
+import { getSafeExternalUrl } from 'utils/safeUrl';
 import ScrollToTop from 'utils/ScrollToTop';
 
 import ArticleTag from '@/components/app/article/ArticleTag';
@@ -247,7 +248,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ id, article_video }) => {
                 {parsedRefs.map((refItem: { value: string }, index: number) => (
                   <Link
                     key={index}
-                    href={refItem.value}
+                    href={getSafeExternalUrl(refItem.value)}
                     target="_blank"
                     rel="noopener noreferrer"
                     color="inherit"
