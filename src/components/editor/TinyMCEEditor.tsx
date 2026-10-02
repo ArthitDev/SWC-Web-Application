@@ -1,6 +1,12 @@
 import { Editor } from '@tinymce/tinymce-react';
 import useImageResizer from 'hooks/useImageResizer';
 import React, { useCallback } from 'react';
+import type { RawEditorOptions } from 'tinymce';
+
+type UploadHandler = NonNullable<RawEditorOptions['images_upload_handler']>;
+type FilePickerCallback = NonNullable<RawEditorOptions['file_picker_callback']>;
+type BlobInfo = Parameters<UploadHandler>[0];
+type FilePickerArgs = Parameters<FilePickerCallback>;
 
 interface TinyMCEEditorProps {
   value: string;
@@ -23,13 +29,13 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({
   return (
     <Editor
       tinymceScriptSrc={'/libs/tinymce/tinymce.min.js'}
+      licenseKey="gpl"
       value={editorValue}
       onEditorChange={handleEditorChange}
       init={{
         height: 700,
         menubar: false,
         branding: false,
-        license_key: 'gpl',
         content_style: `
           @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;700&display=swap');
           body {
@@ -43,7 +49,7 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({
         automatic_uploads: false,
         paste_data_images: true,
 
-        images_upload_handler: (blobInfo) => {
+        images_upload_handler: (blobInfo: BlobInfo) => {
           return new Promise<string>((resolve, reject) => {
             resizeImage(blobInfo.blob(), 800, 600, 0.8) // Resize the image before converting to base64
               .then((resizedBase64) => {
@@ -55,7 +61,11 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({
           });
         },
 
-        file_picker_callback: (callback, value, meta) => {
+        file_picker_callback: (
+          callback: FilePickerArgs[0],
+          value: FilePickerArgs[1],
+          meta: FilePickerArgs[2]
+        ) => {
           if (meta.filetype === 'image') {
             const input = document.createElement('input');
             input.setAttribute('type', 'file');
